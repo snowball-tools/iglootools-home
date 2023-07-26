@@ -4,11 +4,11 @@ import React, { useEffect, useState } from "react";
 import { browserSupportsWebAuthn } from "@simplewebauthn/browser";
 import Home from "../components/Home";
 import Login from "../components/Login";
-import { AppProvider } from "../context/context";
+import { AppProvider, useAppState } from "../context/context";
 
 export default function HomePage() {
-  // hardcoded for now
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const isAuthenticated = useAppState();
+  console.log("isAuthenticated", isAuthenticated);
   const [isWebAuthnSupported, setIsWebAuthnSupported] = useState(true);
   useEffect(() => {
     const supported =
@@ -16,5 +16,5 @@ export default function HomePage() {
     setIsWebAuthnSupported(supported);
   }, []);
 
-  return <AppProvider>{isAuthenticated ? <Home /> : <Login />}</AppProvider>;
+  return <AppProvider>{isAuthenticated ? <Login /> : <Home />}</AppProvider>;
 }

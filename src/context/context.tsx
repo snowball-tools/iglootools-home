@@ -16,6 +16,7 @@ export function AppProvider({ children }: React.PropsWithChildren) {
   useEffect(() => {
     if (typeof localStorage !== "undefined") {
       const storedState = localStorage.getItem(STATE_KEY);
+      console.log("storedState", storedState);
       if (storedState) {
         const parsedState = JSON.parse(storedState) as CredentialState;
         dispatch({

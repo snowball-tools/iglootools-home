@@ -9,7 +9,7 @@ import {
   SWITCH_CHAIN,
 } from "../helpers/actions";
 
-import { initialState, CredentialState } from "../helpers/constants";
+import { initialState, CredentialState, STATE_KEY } from "../helpers/constants";
 
 export function credentialReducer(
   state = initialState,
@@ -28,7 +28,15 @@ export function credentialReducer(
         sessionExpiration: action.payload.sessionExpiration,
       };
     case DISCONNECT:
-      return initialState;
+      console.log("DISCONNECT");
+
+      // clear local storage
+      // todo: should the reducer handle this?
+      localStorage.removeItem(STATE_KEY);
+
+      return {
+        ...initialState,
+      };
     case PENDING_REQUEST:
       return {
         ...state,

@@ -8,11 +8,13 @@ import {
   authenticateWithWebAuthn,
   getSessionSigsForWebAuthn,
   registerWithWebAuthn,
+  sendTransaction,
 } from "../helpers/webauthn";
 import { AUTHENTICATED } from "../helpers/actions";
 import { initialState } from "../helpers/constants";
 import "../styles/styles.css";
 import AnimatedComponent from "@/components/AnimatedComponent";
+import { type SessionSigsMap } from "@lit-protocol/types";
 
 const LoginViews = {
   SIGN_UP: "sign_up",
@@ -31,11 +33,12 @@ export default function Login() {
   const dispatch = useAppDispatch();
 
   const [view, setView] = useState(LoginViews.SIGN_UP);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const [username, setUsername] = useState("");
   const [pkp, setPKP] = useState(currentPKP);
   const [ethAddress, setEthAddress] = useState("");
+  const [sessionSigsStored, setSessionSigs] = useState({} as SessionSigsMap);
 
   async function createPKPWithWebAuthn(username: string) {
     setView(LoginViews.REGISTERING);
@@ -96,6 +99,10 @@ export default function Login() {
 
         console.log("sessionSigs", sessionSigs);
 
+        if (sessionSigs) {
+          setSessionSigs(sessionSigs);
+        }
+
         setView(LoginViews.SESSION_CREATED);
 
         dispatch({
@@ -113,6 +120,25 @@ export default function Login() {
     } catch (e: Error | any) {
       console.error(e);
       setErrorMsg(e.message);
+      setView(LoginViews.ERROR);
+    }
+  }
+
+  async function sendTranaction() {
+    if (sessionSigsStored && pkp) {
+      console.log("sessionSigsStored", sessionSigsStored);
+
+      const authData = await authenticateWithWebAuthn();
+
+      const tx = await sendTransaction(
+        pkp,
+        authData,
+        ethAddress,
+        "0x669E4aCd20Aa30ABA80483fc8B82aeD626e60B60" // testing
+      );
+    } else {
+      console.error("no sessionSigsStored");
+      setErrorMsg("no sessionSigsStored");
       setView(LoginViews.ERROR);
     }
   }
@@ -178,9 +204,10 @@ export default function Login() {
             <button
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
+              onClick={sendTranaction}
               disabled={true}
             >
-              [Soon] Send Transaction via ethersjs
+              Send Transaction via ethersjs
             </button>
           </>
         );

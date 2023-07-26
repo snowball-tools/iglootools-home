@@ -2,18 +2,11 @@ import { LitAuthClient, WebAuthnProvider } from "@lit-protocol/lit-auth-client";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { ProviderType } from "@lit-protocol/constants";
 import { AuthMethod, AuthCallbackParams } from "@lit-protocol/types";
-import {
-  LitAbility,
-  LitAccessControlConditionResource,
-} from "@lit-protocol/auth-helpers";
-import { startAuthentication } from "@simplewebauthn/browser";
-import { ethers } from "ethers";
-import base64url from "base64url";
-import { PublicKeyCredentialRequestOptionsJSON } from "@simplewebauthn/typescript-types";
+import { LitAbility, LitActionResource } from "@lit-protocol/auth-helpers";
+import { PKPEthersWallet, ethRequestHandler } from "@lit-protocol/pkp-ethers";
+import { BigNumber } from "ethers";
 
-const relayServerUrl = "https://relay-server-staging.herokuapp.com";
-const rpId = "iglootools.xyz";
-const rpcUrl = "https://chain-rpc.litprotocol.com/http";
+// to do: "static" func -> ts object
 
 export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
@@ -84,9 +77,8 @@ export async function getSessionSigsForWebAuthn(
     chain: "ethereum",
     resourceAbilityRequests: [
       {
-        // to do:
-        resource: new LitAccessControlConditionResource("litAction://*"),
-        ability: LitAbility.PKPSigning,
+        resource: new LitActionResource("*"),
+        ability: LitAbility.LitActionExecution,
       },
     ],
     switchChain: false,
@@ -94,4 +86,80 @@ export async function getSessionSigsForWebAuthn(
   });
 
   return sessionSigs;
+}
+
+// to do
+export async function createPkpEthersWallet(
+  pkpPublicKey: string,
+  authData: AuthMethod
+) {
+  const litNodeClient = new LitNodeClient({
+    litNetwork: "serrano",
+    debug: false,
+  });
+  await litNodeClient.connect();
+
+  const signSessionKeyResponse = await litNodeClient.signSessionKey({
+    authMethods: [authData],
+    pkpPublicKey,
+    expiration: DEFAULT_EXP,
+    resources: [
+      {
+        resource: new LitActionResource("*"),
+        ability: LitAbility.LitActionExecution,
+      },
+    ],
+    chainId: 1,
+  });
+
+  const pkpWallet = new PKPEthersWallet({
+    controllerAuthSig: signSessionKeyResponse.authSig,
+    // Or you can also pass in controllerSessionSigs
+    pkpPubKey: pkpPublicKey,
+    rpc: "https://chain-rpc.litprotocol.com/http",
+  });
+  await pkpWallet.init();
+
+  return pkpWallet;
+}
+
+// to do
+export async function sendTransaction(
+  pkpPublicKey: string,
+  authData: AuthMethod,
+  ethAddress: string,
+  toEthAddress: string
+) {
+  const pkpWallet = (await createPkpEthersWallet(
+    pkpPublicKey,
+    authData
+  )) as PKPEthersWallet;
+
+  const from = ethAddress;
+  const to = toEthAddress;
+  const gasLimit = BigNumber.from("21000");
+  const value = BigNumber.from("10");
+  const data = "0x";
+
+  const transactionRequest = {
+    from,
+    to,
+    gasLimit,
+    value,
+    data,
+  };
+
+  const signedTransactionRequest = await pkpWallet.signTransaction(
+    transactionRequest
+  );
+
+  const result = await ethRequestHandler({
+    signer: pkpWallet,
+    payload: {
+      method: "eth_sendTransaction",
+      params: [signedTransactionRequest],
+    },
+  });
+
+  return result;
 }

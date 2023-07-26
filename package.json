@@ -21,6 +21,7 @@
     "@lit-protocol/encryption": "^2.2.47",
     "@lit-protocol/lit-auth-client": "^2.2.47",
     "@lit-protocol/lit-node-client": "^2.2.47",
+    "@lit-protocol/pkp-ethers": "^2.2.47",
     "@lit-protocol/types": "^2.2.47",
     "@simplewebauthn/browser": "^7.1.0",
     "@simplewebauthn/typescript-types": "^7.0.0",
