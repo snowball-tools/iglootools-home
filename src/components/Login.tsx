@@ -67,6 +67,7 @@ export default function Login() {
       let pkpToAuthWith = pkp;
       if (!pkpToAuthWith) {
         const pkps = await fetchPKPs(authData);
+
         if (pkps.length === 0) {
           throw new Error(
             "No PKPs found for this passkey. Please register a new passkey to mint a new PKP."
@@ -146,7 +147,7 @@ export default function Login() {
         return (
           <>
             <h1 className="text-4xl font-bold text-white">Minted</h1>
-            <h2 className="text-1xl font-bold text-white">${pkp}</h2>
+            <h2 className="text-1xl font-bold text-white">{pkp}</h2>
             <button
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
@@ -166,6 +167,13 @@ export default function Login() {
         return (
           <>
             <h1 className="text-4xl font-bold text-white">Session Created</h1>
+            <button
+              type="submit"
+              className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
+              disabled={true}
+            >
+              [Soon] Send Transaction via ethersjs
+            </button>
           </>
         );
       case LoginViews.ERROR:
