@@ -179,23 +179,32 @@ export default function Login() {
       default:
         return (
           <>
-            <div className="relative p-5 bg-gray-700 rounded">
-              <input
-                className="w-full h-full text-lg bg-transparent text-white outline-none"
-                style={{ caretColor: "white" }}
-                value={username}
-                placeholder="Passkey Name"
-                onChange={(e) => setUsername(e.target.value)}
-              />
+            <div className="flex-grow">
+              <div className="relative p-5 bg-gray-700 rounded">
+                <input
+                  className="w-full h-full text-lg bg-transparent text-white outline-none"
+                  style={{ caretColor: "white" }}
+                  value={username}
+                  placeholder="Passkey Name"
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+              <button
+                type="submit"
+                className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
+                disabled={username.length === 0}
+                onClick={() => createPKPWithWebAuthn(username)}
+              >
+                Submit
+              </button>
+              <button
+                type="submit"
+                className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
+                onClick={(e) => authThenGetSessionSigs(e)}
+              >
+                Log In
+              </button>
             </div>
-            <button
-              type="submit"
-              className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
-              disabled={username.length === 0}
-              onClick={() => createPKPWithWebAuthn(username)}
-            >
-              Submit
-            </button>
           </>
         );
     }
