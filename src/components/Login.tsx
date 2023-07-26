@@ -148,7 +148,9 @@ export default function Login() {
       case LoginViews.SIGN_IN:
         return (
           <>
-            <h1 className="text-4xl font-bold text-white">Sign In</h1>
+            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              Sign In
+            </h1>
             <button
               className="w-full border border-indigo-500 bg-indigo-600 bg-opacity-20 px-6 py-3 text-base text-indigo-300 hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               onClick={authenticateWithWebAuthn}
@@ -160,26 +162,36 @@ export default function Login() {
       case LoginViews.REGISTERING:
         return (
           <>
-            <h1 className="text-4xl font-bold text-white">Registering</h1>
+            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              Registering
+            </h1>
           </>
         );
       case LoginViews.AUTHENTICATING:
         return (
           <>
-            <h1 className="text-4xl font-bold text-white">Authenticating</h1>
+            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              Authenticating
+            </h1>
           </>
         );
       case LoginViews.MINTING:
         return (
           <>
-            <h1 className="text-4xl font-bold text-white">Minting</h1>
+            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              Minting
+            </h1>
           </>
         );
       case LoginViews.MINTED:
         return (
           <>
-            <h1 className="text-4xl font-bold text-white">Minted</h1>
-            <h2 className="text-1xl font-bold text-white">{ethAddress}</h2>
+            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              Minted
+            </h1>
+            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              {ethAddress}
+            </h2>
             <button
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
@@ -192,29 +204,39 @@ export default function Login() {
       case LoginViews.CREATING_SESSION:
         return (
           <>
-            <h1 className="text-4xl font-bold text-white">Creating Session</h1>
-            <h2 className="text-1xl font-bold text-white">{ethAddress}</h2>
+            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              Creating Session
+            </h1>
+            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              {ethAddress}
+            </h2>
           </>
         );
       case LoginViews.SESSION_CREATED:
         return (
           <>
-            <h1 className="text-4xl font-bold text-white">Session Created</h1>
-            <h2 className="text-1xl font-bold text-white">{ethAddress}</h2>
+            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              Session Created
+            </h1>
+            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              {ethAddress}
+            </h2>
             <button
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
               onClick={sendTranaction}
               disabled={true}
             >
-              Send Transaction via ethersjs
+              [WIP] Send Transaction via ethersjs
             </button>
           </>
         );
       case LoginViews.ERROR:
         return (
           <>
-            <h1 className="text-4xl font-bold text-white">Error</h1>
+            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              Error
+            </h1>
             <p className="text-white">{errorMsg}</p>
           </>
         );
