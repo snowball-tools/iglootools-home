@@ -3,7 +3,7 @@ import React from "react";
 const NavBar: React.FC = () => {
   return (
     <nav className="absolute items-center justify-between p-4 h-30">
-      <div>
+      <a href="https://iglootools.xyz">
         <svg
           width="40"
           height="30"
@@ -120,7 +120,7 @@ const NavBar: React.FC = () => {
             </linearGradient>
           </defs>
         </svg>
-      </div>
+      </a>
     </nav>
   );
 };
