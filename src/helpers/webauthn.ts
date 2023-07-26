@@ -37,7 +37,7 @@ export async function registerWithWebAuthn(username: string) {
   const txHash = await provider.verifyAndMintPKPThroughRelayer(options);
   const response = await provider.relay.pollRequestUntilTerminalState(txHash);
 
-  return response.pkpPublicKey;
+  return response;
 }
 
 export async function authenticateWithWebAuthn() {

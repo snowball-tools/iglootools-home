@@ -35,14 +35,19 @@ export default function Login() {
 
   const [username, setUsername] = useState("");
   const [pkp, setPKP] = useState(currentPKP);
+  const [ethAddress, setEthAddress] = useState("");
 
   async function createPKPWithWebAuthn(username: string) {
     setView(LoginViews.REGISTERING);
 
-    const publicKey = await registerWithWebAuthn(username);
+    const response = await registerWithWebAuthn(username);
 
-    if (publicKey) {
-      setPKP(publicKey);
+    if (response.pkpPublicKey) {
+      setPKP(response.pkpPublicKey);
+    }
+
+    if (response.pkpEthAddress) {
+      setEthAddress(response.pkpEthAddress);
     }
 
     setView(LoginViews.AUTHENTICATING);
@@ -74,6 +79,8 @@ export default function Login() {
           );
         } else {
           pkpToAuthWith = pkps[0].publicKey;
+          setPKP(pkpToAuthWith);
+          setEthAddress(pkps[0].ethAddress);
         }
       }
 
@@ -146,7 +153,7 @@ export default function Login() {
         return (
           <>
             <h1 className="text-4xl font-bold text-white">Minted</h1>
-            <h2 className="text-1xl font-bold text-white">{pkp}</h2>
+            <h2 className="text-1xl font-bold text-white">{ethAddress}</h2>
             <button
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
@@ -160,12 +167,14 @@ export default function Login() {
         return (
           <>
             <h1 className="text-4xl font-bold text-white">Creating Session</h1>
+            <h2 className="text-1xl font-bold text-white">{ethAddress}</h2>
           </>
         );
       case LoginViews.SESSION_CREATED:
         return (
           <>
             <h1 className="text-4xl font-bold text-white">Session Created</h1>
+            <h2 className="text-1xl font-bold text-white">{ethAddress}</h2>
             <button
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
