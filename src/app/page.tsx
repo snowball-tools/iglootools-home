@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { browserSupportsWebAuthn } from "@simplewebauthn/browser";
-import Home from "./Home";
-import Login from "./Login";
-import { AppProvider } from "./appContext";
+import Home from "../components/Home";
+import Login from "../components/Login";
+import { AppProvider } from "../context/context";
 
 export default function HomePage() {
   // hardcoded for now

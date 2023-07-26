@@ -7,13 +7,13 @@ import {
   PENDING_REQUEST,
   REQUEST_HANDLED,
   SWITCH_CHAIN,
-} from "./actions";
+} from "../helpers/actions";
 
-import { initialState, CredentialState } from "./constants";
+import { initialState, CredentialState } from "../helpers/constants";
 
 export function credentialReducer(
   state = initialState,
-  action: CredentialActionTypes,
+  action: CredentialActionTypes
 ): CredentialState {
   switch (action.type) {
     case RESTORE_STATE:

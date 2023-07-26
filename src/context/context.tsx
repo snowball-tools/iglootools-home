@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useReducer, useEffect } from "react";
-import { credentialReducer } from "./reducer";
-import { CredentialState, initialState, STATE_KEY } from "./constants";
-import { CredentialActionTypes, RESTORE_STATE } from "./actions";
+import { credentialReducer } from "../reducers/reducer";
+import { CredentialState, initialState, STATE_KEY } from "../helpers/constants";
+import { CredentialActionTypes, RESTORE_STATE } from "../helpers/actions";
 
 export const AppContext = createContext(initialState);
 export const AppDispatchContext = createContext(
-  (action: CredentialActionTypes) => {},
+  (action: CredentialActionTypes) => {}
 );
 
 export function AppProvider({ children }: React.PropsWithChildren) {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAppDispatch, useAppState } from "./appContext";
+import { useAppDispatch, useAppState } from "../context/context";
 import {
   DEFAULT_EXP,
   authenticate,
@@ -9,9 +9,9 @@ import {
   fetchPKPs,
   getSessionSigsForWebAuthn,
   registerWithWebAuthn,
-} from "../lib/webauthn";
-import { AUTHENTICATED } from "./actions";
-import { initialState } from "./constants";
+} from "../helpers/webauthn";
+import { AUTHENTICATED } from "../helpers/actions";
+import { initialState } from "../helpers/constants";
 import RetroTextbox from "@/components/RetroTextbox";
 import "../styles/styles.css";
 import AnimatedComponent from "@/components/AnimatedComponent";

@@ -15,7 +15,6 @@ const RetroTextbox: React.FC<RetroTextboxProps> = ({ onSubmit }) => {
           e.preventDefault();
           onSubmit(text);
         }}
-        className="w-1/2"
       >
         <div className="relative p-5 bg-gray-700 rounded">
           <input
