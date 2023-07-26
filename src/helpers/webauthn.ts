@@ -1,11 +1,7 @@
 import { LitAuthClient, WebAuthnProvider } from "@lit-protocol/lit-auth-client";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { ProviderType } from "@lit-protocol/constants";
-import {
-  AuthMethod,
-  WebAuthnAuthenticationVerificationParams,
-  AuthCallbackParams,
-} from "@lit-protocol/types";
+import { AuthMethod, AuthCallbackParams } from "@lit-protocol/types";
 import {
   LitAbility,
   LitAccessControlConditionResource,
@@ -13,10 +9,7 @@ import {
 import { startAuthentication } from "@simplewebauthn/browser";
 import { ethers } from "ethers";
 import base64url from "base64url";
-import {
-  PublicKeyCredentialRequestOptionsJSON,
-  AuthenticationResponseJSON,
-} from "@simplewebauthn/typescript-types";
+import { PublicKeyCredentialRequestOptionsJSON } from "@simplewebauthn/typescript-types";
 
 const relayServerUrl = "https://relay-server-staging.herokuapp.com";
 const rpId = "iglootools.xyz";
@@ -34,11 +27,11 @@ const litAuthClient = new LitAuthClient({
 
 litAuthClient.initProvider(ProviderType.WebAuthn);
 
-const provider = litAuthClient.getProvider(
-  ProviderType.WebAuthn
-) as WebAuthnProvider;
-
 export async function registerWithWebAuthn(username: string) {
+  const provider = litAuthClient.getProvider(
+    ProviderType.WebAuthn
+  ) as WebAuthnProvider;
+
   const options = await provider.register(username);
 
   const txHash = await provider.verifyAndMintPKPThroughRelayer(options);
@@ -48,62 +41,26 @@ export async function registerWithWebAuthn(username: string) {
 }
 
 export async function authenticateWithWebAuthn() {
+  const provider = litAuthClient.getProvider(
+    ProviderType.WebAuthn
+  ) as WebAuthnProvider;
+
   const authMethod = await provider.authenticate();
   return authMethod as AuthMethod;
 }
 
-// todo: write tests
-export async function fetchPKPs(authData: AuthMethod) {
-  const fetchRes = await fetch(`${relayServerUrl}/auth/webauthn/userinfo`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "api-key": "{{ LIT_RELAY_API_KEY }}",
-    },
-    body: JSON.stringify({ credential: authData }),
-  });
-  if (fetchRes.status < 200 || fetchRes.status >= 400) {
-    const errorJson = await fetchRes.json();
-    const errorMsg = errorJson.error || "Unknown error";
-    const relayErr = new Error(`Unable to fetch PKPs: ${errorMsg}`);
-    throw relayErr;
-  }
-  const fetchJSON = await fetchRes.json();
-  return fetchJSON.pkps;
-}
+export async function fetchPkps(authMethod: AuthMethod) {
+  const provider = litAuthClient.getProvider(
+    ProviderType.WebAuthn
+  ) as WebAuthnProvider;
 
-export async function authenticate() {
-  const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-
-  const block = await provider.getBlock("latest");
-  const blockHash = block.hash;
-
-  const blockHashBytes = ethers.utils.arrayify(blockHash);
-  const authenticationOptions: PublicKeyCredentialRequestOptionsJSON = {
-    challenge: base64url(Buffer.from(blockHashBytes)),
-    timeout: 60000,
-    userVerification: "preferred",
-    rpId,
-  };
-
-  const authenticationResponse = (await startAuthentication(
-    authenticationOptions
-  )) as WebAuthnAuthenticationVerificationParams;
-
-  const actualAuthenticationResponse: WebAuthnAuthenticationVerificationParams =
-    JSON.parse(JSON.stringify(authenticationResponse));
-
-  // todo: pull request to ensure userHandle is base64url encoded / check
-  actualAuthenticationResponse.response.userHandle = base64url.encode(
-    authenticationResponse.response.userHandle as string
-  );
-
-  return authenticationResponse;
+  const pkp = provider.fetchPKPsThroughRelayer(authMethod);
+  return pkp;
 }
 
 export async function getSessionSigsForWebAuthn(
   pkpPublicKey: string,
-  authData: WebAuthnAuthenticationVerificationParams
+  authData: AuthMethod
 ) {
   const litNodeClient = new LitNodeClient({
     litNetwork: "serrano",
@@ -111,11 +68,9 @@ export async function getSessionSigsForWebAuthn(
   });
   await litNodeClient.connect();
 
-  const authMethod = litNodeClient.generateAuthMethodForWebAuthn(authData);
-
   const authNeededCallback = async (params: AuthCallbackParams) => {
     const resp = await litNodeClient.signSessionKey({
-      authMethods: [authMethod],
+      authMethods: [authData],
       pkpPublicKey,
       expiration: params.expiration,
       resources: params.resources,
