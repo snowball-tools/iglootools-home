@@ -23,7 +23,7 @@ const rpId = "iglootools.xyz";
 const rpcUrl = "https://chain-rpc.litprotocol.com/http";
 
 export const DEFAULT_EXP = new Date(
-  Date.now() + 1000 * 60 * 60 * 24 * 7,
+  Date.now() + 1000 * 60 * 60 * 24 * 7
 ).toISOString();
 
 const litAuthClient = new LitAuthClient({
@@ -35,7 +35,7 @@ const litAuthClient = new LitAuthClient({
 litAuthClient.initProvider(ProviderType.WebAuthn);
 
 const provider = litAuthClient.getProvider(
-  ProviderType.WebAuthn,
+  ProviderType.WebAuthn
 ) as WebAuthnProvider;
 
 export async function registerWithWebAuthn(username: string) {
@@ -87,7 +87,7 @@ export async function authenticate() {
   };
 
   const authenticationResponse = (await startAuthentication(
-    authenticationOptions,
+    authenticationOptions
   )) as WebAuthnAuthenticationVerificationParams;
 
   const actualAuthenticationResponse: WebAuthnAuthenticationVerificationParams =
@@ -95,7 +95,7 @@ export async function authenticate() {
 
   // todo: pull request to ensure userHandle is base64url encoded / check
   actualAuthenticationResponse.response.userHandle = base64url.encode(
-    authenticationResponse.response.userHandle as string,
+    authenticationResponse.response.userHandle as string
   );
 
   return authenticationResponse;
@@ -103,7 +103,7 @@ export async function authenticate() {
 
 export async function getSessionSigsForWebAuthn(
   pkpPublicKey: string,
-  authData: WebAuthnAuthenticationVerificationParams,
+  authData: WebAuthnAuthenticationVerificationParams
 ) {
   const litNodeClient = new LitNodeClient({
     litNetwork: "serrano",

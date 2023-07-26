@@ -14,6 +14,7 @@ import { AUTHENTICATED } from "./actions";
 import { initialState } from "./constants";
 import RetroTextbox from "@/components/RetroTextbox";
 import "../styles/styles.css";
+import AnimatedComponent from "@/components/AnimatedComponent";
 
 const LoginViews = {
   SIGN_UP: "sign_up",
@@ -37,9 +38,7 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [pkp, setPKP] = useState(currentPKP);
 
-  async function createPKPWithWebAuthn(event: React.MouseEvent) {
-    event.preventDefault();
-
+  async function createPKPWithWebAuthn(username: string) {
     setView(LoginViews.REGISTERING);
 
     const publicKey = await registerWithWebAuthn(username);
@@ -112,74 +111,80 @@ export default function Login() {
     }
   }
 
-  switch (view) {
-    case LoginViews.SIGN_UP:
-      return (
-        <>
-          <RetroTextbox />
-        </>
-      );
-    case LoginViews.SIGN_IN:
-      return (
-        <>
-          <h1 className="text-4xl font-bold text-white">Sign In</h1>
-          <button
-            className="w-full border border-indigo-500 bg-indigo-600 bg-opacity-20 px-6 py-3 text-base text-indigo-300 hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            onClick={authenticateWithWebAuthn}
-          >
-            Sign In with WebAuthn
-          </button>
-        </>
-      );
-    case LoginViews.REGISTERING:
-      return (
-        <>
-          <h1 className="text-4xl font-bold text-white">Registering</h1>
-        </>
-      );
-    case LoginViews.AUTHENTICATING:
-      return (
-        <>
-          <h1 className="text-4xl font-bold text-white">Authenticating</h1>
-        </>
-      );
-    case LoginViews.MINTING:
-      return (
-        <>
-          <h1 className="text-4xl font-bold text-white">Minting</h1>
-        </>
-      );
-    case LoginViews.MINTED:
-      return (
-        <>
-          <h1 className="text-4xl font-bold text-white">Minted</h1>
-          <h2 className="text-1xl font-bold text-white">${pkp}</h2>
-          <button
-            className="w-full border border-indigo-500 bg-indigo-600 bg-opacity-20 px-6 py-3 text-base text-indigo-300 hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            onClick={authThenGetSessionSigs}
-          >
-            Get SessionSig
-          </button>
-        </>
-      );
-    case LoginViews.CREATING_SESSION:
-      return (
-        <>
-          <h1 className="text-4xl font-bold text-white">Creating Session</h1>
-        </>
-      );
-    case LoginViews.SESSION_CREATED:
-      return (
-        <>
-          <h1 className="text-4xl font-bold text-white">Session Created</h1>
-        </>
-      );
-    case LoginViews.ERROR:
-      return (
-        <>
-          <h1 className="text-4xl font-bold text-white">Error</h1>
-          <p className="text-white">{errorMsg}</p>
-        </>
-      );
-  }
+  const renderView = () => {
+    switch (view) {
+      case LoginViews.SIGN_IN:
+        return (
+          <>
+            <h1 className="text-4xl font-bold text-white">Sign In</h1>
+            <button
+              className="w-full border border-indigo-500 bg-indigo-600 bg-opacity-20 px-6 py-3 text-base text-indigo-300 hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              onClick={authenticateWithWebAuthn}
+            >
+              Sign In with WebAuthn
+            </button>
+          </>
+        );
+      case LoginViews.REGISTERING:
+        return (
+          <>
+            <h1 className="text-4xl font-bold text-white">Registering</h1>
+          </>
+        );
+      case LoginViews.AUTHENTICATING:
+        return (
+          <>
+            <h1 className="text-4xl font-bold text-white">Authenticating</h1>
+          </>
+        );
+      case LoginViews.MINTING:
+        return (
+          <>
+            <h1 className="text-4xl font-bold text-white">Minting</h1>
+          </>
+        );
+      case LoginViews.MINTED:
+        return (
+          <>
+            <h1 className="text-4xl font-bold text-white">Minted</h1>
+            <h2 className="text-1xl font-bold text-white">${pkp}</h2>
+            <button
+              type="submit"
+              className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
+              onClick={authThenGetSessionSigs}
+            >
+              Get SessionSig
+            </button>
+          </>
+        );
+      case LoginViews.CREATING_SESSION:
+        return (
+          <>
+            <h1 className="text-4xl font-bold text-white">Creating Session</h1>
+          </>
+        );
+      case LoginViews.SESSION_CREATED:
+        return (
+          <>
+            <h1 className="text-4xl font-bold text-white">Session Created</h1>
+          </>
+        );
+      case LoginViews.ERROR:
+        return (
+          <>
+            <h1 className="text-4xl font-bold text-white">Error</h1>
+            <p className="text-white">{errorMsg}</p>
+          </>
+        );
+      case LoginViews.SIGN_UP:
+      default:
+        return <RetroTextbox onSubmit={(e) => createPKPWithWebAuthn(e)} />;
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen bg-black">
+      <AnimatedComponent key={view}>{renderView()}</AnimatedComponent>
+    </div>
+  );
 }
