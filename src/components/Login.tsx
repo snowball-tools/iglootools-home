@@ -250,13 +250,13 @@ export default function Login() {
                   className="w-full h-full text-lg bg-transparent text-white outline-none"
                   style={{ caretColor: "white" }}
                   value={username}
-                  placeholder="Passkey Name"
+                  placeholder="Name (ie. Taylor Swift)"
                   onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               <button
                 type="submit"
-                className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
+                className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400 disabled:opacity-20"
                 disabled={username.length === 0}
                 onClick={() => createPKPWithWebAuthn(username)}
               >
