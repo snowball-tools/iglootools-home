@@ -7,7 +7,6 @@ import { AUTHENTICATED } from "../helpers/actions";
 import { initialState } from "../helpers/constants";
 import "../styles/styles.css";
 import AnimatedComponent from "@/components/AnimatedComponent";
-import { AuthMethod, type SessionSigsMap } from "@lit-protocol/types";
 
 const LoginViews = {
   SIGN_UP: "sign_up",
