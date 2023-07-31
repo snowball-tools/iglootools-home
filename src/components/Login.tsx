@@ -2,19 +2,12 @@
 
 import React, { useState } from "react";
 import { useAppDispatch, useAppState } from "../context/context";
-import {
-  DEFAULT_EXP,
-  fetchPkps,
-  authenticateWithWebAuthn,
-  getSessionSigsForWebAuthn,
-  registerWithWebAuthn,
-  sendTransaction,
-} from "../helpers/webauthn";
+import { DEFAULT_EXP, PasskeyClient } from "../helpers/webauthn";
 import { AUTHENTICATED } from "../helpers/actions";
 import { initialState } from "../helpers/constants";
 import "../styles/styles.css";
 import AnimatedComponent from "@/components/AnimatedComponent";
-import { type SessionSigsMap } from "@lit-protocol/types";
+import { AuthMethod, type SessionSigsMap } from "@lit-protocol/types";
 
 const LoginViews = {
   SIGN_UP: "sign_up",
@@ -40,10 +33,12 @@ export default function Login() {
   const [ethAddress, setEthAddress] = useState("");
   const [sessionSigsStored, setSessionSigs] = useState({} as SessionSigsMap);
 
+  const passkeyClient = new PasskeyClient();
+
   async function createPKPWithWebAuthn(username: string) {
     setView(LoginViews.REGISTERING);
 
-    const response = await registerWithWebAuthn(username);
+    const response = await passkeyClient.registerWithWebAuthn(username);
 
     if (response.pkpPublicKey) {
       setPKP(response.pkpPublicKey);
@@ -55,25 +50,24 @@ export default function Login() {
 
     setView(LoginViews.AUTHENTICATING);
 
-    const auth = await authenticateWithWebAuthn();
+    const auth = await passkeyClient.authenticateWithWebAuthn();
 
     if (auth) {
       setView(LoginViews.MINTED);
     }
   }
 
-  // todo:
   async function authThenGetSessionSigs(event: React.MouseEvent) {
     event.preventDefault();
 
     setView(LoginViews.AUTHENTICATING);
 
     try {
-      const authData = await authenticateWithWebAuthn();
+      const authData = await passkeyClient.authenticateWithWebAuthn();
 
       let pkpToAuthWith = pkp;
       if (!pkpToAuthWith) {
-        const pkps = await fetchPkps(authData);
+        const pkps = await passkeyClient.fetchPkps(authData);
 
         console.log("pkps", pkps);
         if (pkps.length === 0) {
@@ -92,7 +86,7 @@ export default function Login() {
       setView(LoginViews.CREATING_SESSION);
 
       if (pkpToAuthWith) {
-        const sessionSigs = await getSessionSigsForWebAuthn(
+        const sessionSigs = await passkeyClient.getSessionSigs(
           pkpToAuthWith,
           authData
         );
@@ -128,11 +122,10 @@ export default function Login() {
     if (sessionSigsStored && pkp) {
       console.log("sessionSigsStored", sessionSigsStored);
 
-      const authData = await authenticateWithWebAuthn();
+      const authData = await passkeyClient.authenticateWithWebAuthn();
 
-      const tx = await sendTransaction(
+      const tx = await passkeyClient.sendTransaction(
         pkp,
-        authData,
         ethAddress,
         "0x669E4aCd20Aa30ABA80483fc8B82aeD626e60B60" // testing
       );
@@ -153,7 +146,7 @@ export default function Login() {
             </h1>
             <button
               className="w-full border border-indigo-500 bg-indigo-600 bg-opacity-20 px-6 py-3 text-base text-indigo-300 hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              onClick={authenticateWithWebAuthn}
+              onClick={passkeyClient.authenticateWithWebAuthn}
             >
               Sign In with WebAuthn
             </button>
@@ -223,7 +216,7 @@ export default function Login() {
             </h2>
             <button
               type="submit"
-              className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
+              className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400 disabled:opacity-20"
               onClick={sendTranaction}
               disabled={true}
             >

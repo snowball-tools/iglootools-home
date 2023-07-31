@@ -1,165 +1,156 @@
 import { LitAuthClient, WebAuthnProvider } from "@lit-protocol/lit-auth-client";
 import { LitNodeClient } from "@lit-protocol/lit-node-client";
 import { ProviderType } from "@lit-protocol/constants";
-import { AuthMethod, AuthCallbackParams } from "@lit-protocol/types";
+import {
+  AuthMethod,
+  AuthCallbackParams,
+  IRelayPollStatusResponse,
+  IRelayPKP,
+  SessionSigsMap,
+} from "@lit-protocol/types";
 import { LitAbility, LitActionResource } from "@lit-protocol/auth-helpers";
 import { PKPEthersWallet, ethRequestHandler } from "@lit-protocol/pkp-ethers";
 import { BigNumber } from "ethers";
-
-// to do: "static" func -> ts object
 
 export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
 ).toISOString();
 
-const litAuthClient = new LitAuthClient({
-  litRelayConfig: {
-    relayApiKey: "{{ LIT_RELAY_API_KEY }}",
-  },
-});
+export class PasskeyClient {
+  private litAuthClient: LitAuthClient;
+  private webAuthnProvider: WebAuthnProvider;
+  private litNodeClient: LitNodeClient;
+  private sessionSig: SessionSigsMap | undefined;
 
-litAuthClient.initProvider(ProviderType.WebAuthn);
-
-export async function registerWithWebAuthn(username: string) {
-  const provider = litAuthClient.getProvider(
-    ProviderType.WebAuthn
-  ) as WebAuthnProvider;
-
-  const options = await provider.register(username);
-
-  const txHash = await provider.verifyAndMintPKPThroughRelayer(options);
-  const response = await provider.relay.pollRequestUntilTerminalState(txHash);
-
-  return response;
-}
-
-export async function authenticateWithWebAuthn() {
-  const provider = litAuthClient.getProvider(
-    ProviderType.WebAuthn
-  ) as WebAuthnProvider;
-
-  const authMethod = await provider.authenticate();
-  return authMethod as AuthMethod;
-}
-
-export async function fetchPkps(authMethod: AuthMethod) {
-  const provider = litAuthClient.getProvider(
-    ProviderType.WebAuthn
-  ) as WebAuthnProvider;
-
-  const pkp = provider.fetchPKPsThroughRelayer(authMethod);
-  return pkp;
-}
-
-export async function getSessionSigsForWebAuthn(
-  pkpPublicKey: string,
-  authData: AuthMethod
-) {
-  const litNodeClient = new LitNodeClient({
-    litNetwork: "serrano",
-    debug: false,
-  });
-  await litNodeClient.connect();
-
-  const authNeededCallback = async (params: AuthCallbackParams) => {
-    const resp = await litNodeClient.signSessionKey({
-      authMethods: [authData],
-      pkpPublicKey,
-      expiration: params.expiration,
-      resources: params.resources,
-      chainId: 1,
+  constructor() {
+    this.litAuthClient = new LitAuthClient({
+      litRelayConfig: {
+        relayApiKey: "{{ LIT_RELAY_API_KEY }}",
+      },
     });
-    return resp.authSig;
-  };
+    this.litAuthClient.initProvider(ProviderType.WebAuthn);
 
-  const sessionSigs = await litNodeClient.getSessionSigs({
-    expiration: DEFAULT_EXP,
-    chain: "ethereum",
-    resourceAbilityRequests: [
-      {
-        resource: new LitActionResource("*"),
-        ability: LitAbility.LitActionExecution,
+    this.webAuthnProvider = this.litAuthClient.getProvider(
+      ProviderType.WebAuthn
+    ) as WebAuthnProvider;
+
+    this.litNodeClient = new LitNodeClient({
+      litNetwork: "serrano",
+      debug: false,
+    });
+  }
+
+  public async registerWithWebAuthn(
+    username: string
+  ): Promise<IRelayPollStatusResponse> {
+    const options = await this.webAuthnProvider.register(username);
+
+    const txHash = await this.webAuthnProvider.verifyAndMintPKPThroughRelayer(
+      options
+    );
+    const response =
+      await this.webAuthnProvider.relay.pollRequestUntilTerminalState(txHash);
+
+    return response;
+  }
+
+  public async authenticateWithWebAuthn(): Promise<AuthMethod> {
+    const authMethod = await this.webAuthnProvider.authenticate();
+    return authMethod;
+  }
+
+  public async fetchPkps(authMethod: AuthMethod): Promise<IRelayPKP[]> {
+    const pkps = await this.webAuthnProvider.fetchPKPsThroughRelayer(
+      authMethod
+    );
+    return pkps;
+  }
+
+  public async getSessionSigs(
+    pkpPublicKey: string,
+    authData: AuthMethod
+  ): Promise<SessionSigsMap> {
+    await this.litNodeClient.connect();
+
+    const authNeededCallback = async (params: AuthCallbackParams) => {
+      const resp = await this.litNodeClient.signSessionKey({
+        authMethods: [authData],
+        pkpPublicKey,
+        expiration: params.expiration,
+        resources: params.resources,
+        chainId: 1,
+      });
+      return resp.authSig;
+    };
+
+    const sessionSigs = await this.litNodeClient.getSessionSigs({
+      expiration: DEFAULT_EXP,
+      chain: "ethereum",
+      resourceAbilityRequests: [
+        {
+          resource: new LitActionResource("*"),
+          ability: LitAbility.LitActionExecution,
+        },
+      ],
+      switchChain: false,
+      authNeededCallback: authNeededCallback,
+    });
+
+    return sessionSigs;
+  }
+
+  public async createPkpEthersWallet(
+    pkpPublicKey: string
+  ): Promise<PKPEthersWallet> {
+    if (this.sessionSig === undefined) {
+      throw new Error("sessionSig is undefined");
+    }
+
+    const pkpWallet = new PKPEthersWallet({
+      controllerSessionSigs: this.sessionSig,
+      pkpPubKey: pkpPublicKey,
+      rpc: "https://chain-rpc.litprotocol.com/http",
+    });
+    await pkpWallet.init();
+
+    return pkpWallet;
+  }
+
+  public async sendTransaction(
+    pkpPublicKey: string,
+    ethAddress: string,
+    toEthAddress: string
+  ): Promise<string> {
+    const pkpWallet = (await this.createPkpEthersWallet(
+      pkpPublicKey
+    )) as PKPEthersWallet;
+
+    const from = ethAddress;
+    const to = toEthAddress;
+    const gasLimit = BigNumber.from("21000");
+    const value = BigNumber.from("10");
+    const data = "0x";
+
+    const transactionRequest = {
+      from,
+      to,
+      gasLimit,
+      value,
+      data,
+    };
+
+    const signedTransactionRequest = await pkpWallet.signTransaction(
+      transactionRequest
+    );
+
+    const result = await ethRequestHandler({
+      signer: pkpWallet,
+      payload: {
+        method: "eth_sendTransaction",
+        params: [signedTransactionRequest],
       },
-    ],
-    switchChain: false,
-    authNeededCallback: authNeededCallback,
-  });
+    });
 
-  return sessionSigs;
-}
-
-// to do
-export async function createPkpEthersWallet(
-  pkpPublicKey: string,
-  authData: AuthMethod
-) {
-  const litNodeClient = new LitNodeClient({
-    litNetwork: "serrano",
-    debug: false,
-  });
-  await litNodeClient.connect();
-
-  const signSessionKeyResponse = await litNodeClient.signSessionKey({
-    authMethods: [authData],
-    pkpPublicKey,
-    expiration: DEFAULT_EXP,
-    resources: [
-      {
-        resource: new LitActionResource("*"),
-        ability: LitAbility.LitActionExecution,
-      },
-    ],
-    chainId: 1,
-  });
-
-  const pkpWallet = new PKPEthersWallet({
-    controllerAuthSig: signSessionKeyResponse.authSig,
-    // Or you can also pass in controllerSessionSigs
-    pkpPubKey: pkpPublicKey,
-    rpc: "https://chain-rpc.litprotocol.com/http",
-  });
-  await pkpWallet.init();
-
-  return pkpWallet;
-}
-
-// to do
-export async function sendTransaction(
-  pkpPublicKey: string,
-  authData: AuthMethod,
-  ethAddress: string,
-  toEthAddress: string
-) {
-  const pkpWallet = (await createPkpEthersWallet(
-    pkpPublicKey,
-    authData
-  )) as PKPEthersWallet;
-
-  const from = ethAddress;
-  const to = toEthAddress;
-  const gasLimit = BigNumber.from("21000");
-  const value = BigNumber.from("10");
-  const data = "0x";
-
-  const transactionRequest = {
-    from,
-    to,
-    gasLimit,
-    value,
-    data,
-  };
-
-  const signedTransactionRequest = await pkpWallet.signTransaction(
-    transactionRequest
-  );
-
-  const result = await ethRequestHandler({
-    signer: pkpWallet,
-    payload: {
-      method: "eth_sendTransaction",
-      params: [signedTransactionRequest],
-    },
-  });
-
-  return result;
+    return result;
+  }
 }
