@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useAppDispatch, useAppState } from "../context/context";
-import { DEFAULT_EXP, PasskeyClient } from "../helpers/webauthn";
+import { DEFAULT_EXP, Passkey } from "../helpers/webauthn";
 import { AUTHENTICATED } from "../helpers/actions";
 import { initialState } from "../helpers/constants";
 import "../styles/styles.css";
@@ -33,12 +33,12 @@ export default function Login() {
   const [ethAddress, setEthAddress] = useState("");
   const [sessionSigsStored, setSessionSigs] = useState({} as SessionSigsMap);
 
-  const passkeyClient = new PasskeyClient();
+  const passkeyClient = new Passkey();
 
   async function createPKPWithWebAuthn(username: string) {
     setView(LoginViews.REGISTERING);
 
-    const response = await passkeyClient.registerWithWebAuthn(username);
+    const response = await passkeyClient.register(username);
 
     if (response.pkpPublicKey) {
       setPKP(response.pkpPublicKey);
@@ -50,7 +50,7 @@ export default function Login() {
 
     setView(LoginViews.AUTHENTICATING);
 
-    const auth = await passkeyClient.authenticateWithWebAuthn();
+    const auth = await passkeyClient.authenticate();
 
     if (auth) {
       setView(LoginViews.MINTED);
@@ -63,7 +63,7 @@ export default function Login() {
     setView(LoginViews.AUTHENTICATING);
 
     try {
-      const authData = await passkeyClient.authenticateWithWebAuthn();
+      const authData = await passkeyClient.authenticate();
 
       let pkpToAuthWith = pkp;
       if (!pkpToAuthWith) {
@@ -122,7 +122,7 @@ export default function Login() {
     if (sessionSigsStored && pkp) {
       console.log("sessionSigsStored", sessionSigsStored);
 
-      const authData = await passkeyClient.authenticateWithWebAuthn();
+      const authData = await passkeyClient.authenticate();
 
       const tx = await passkeyClient.sendTransaction(
         pkp,
@@ -146,7 +146,7 @@ export default function Login() {
             </h1>
             <button
               className="w-full border border-indigo-500 bg-indigo-600 bg-opacity-20 px-6 py-3 text-base text-indigo-300 hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              onClick={passkeyClient.authenticateWithWebAuthn}
+              onClick={passkeyClient.authenticate}
             >
               Sign In with WebAuthn
             </button>

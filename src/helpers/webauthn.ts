@@ -16,7 +16,7 @@ export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
 ).toISOString();
 
-export class PasskeyClient {
+export class Passkey {
   private litAuthClient: LitAuthClient;
   private webAuthnProvider: WebAuthnProvider;
   private litNodeClient: LitNodeClient;
@@ -40,9 +40,7 @@ export class PasskeyClient {
     });
   }
 
-  public async registerWithWebAuthn(
-    username: string
-  ): Promise<IRelayPollStatusResponse> {
+  public async register(username: string): Promise<IRelayPollStatusResponse> {
     const options = await this.webAuthnProvider.register(username);
 
     const txHash = await this.webAuthnProvider.verifyAndMintPKPThroughRelayer(
@@ -54,16 +52,12 @@ export class PasskeyClient {
     return response;
   }
 
-  public async authenticateWithWebAuthn(): Promise<AuthMethod> {
-    const authMethod = await this.webAuthnProvider.authenticate();
-    return authMethod;
+  public async authenticate(): Promise<AuthMethod> {
+    return await this.webAuthnProvider.authenticate();
   }
 
   public async fetchPkps(authMethod: AuthMethod): Promise<IRelayPKP[]> {
-    const pkps = await this.webAuthnProvider.fetchPKPsThroughRelayer(
-      authMethod
-    );
-    return pkps;
+    return await this.webAuthnProvider.fetchPKPsThroughRelayer(authMethod);
   }
 
   public async getSessionSigs(
