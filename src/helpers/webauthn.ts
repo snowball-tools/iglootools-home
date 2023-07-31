@@ -20,7 +20,10 @@ export class Passkey {
   private litAuthClient: LitAuthClient;
   private webAuthnProvider: WebAuthnProvider;
   private litNodeClient: LitNodeClient;
-  private sessionSig: SessionSigsMap | undefined;
+
+  public pkpPublicKey: string | undefined;
+  public pkpEthAddress: string | undefined;
+  public sessionSig: SessionSigsMap | undefined;
 
   constructor() {
     this.litAuthClient = new LitAuthClient({
@@ -49,6 +52,8 @@ export class Passkey {
     const response =
       await this.webAuthnProvider.relay.pollRequestUntilTerminalState(txHash);
 
+    this.pkpPublicKey = response.pkpPublicKey;
+    this.pkpEthAddress = response.pkpEthAddress;
     return response;
   }
 
@@ -57,7 +62,14 @@ export class Passkey {
   }
 
   public async fetchPkps(authMethod: AuthMethod): Promise<IRelayPKP[]> {
-    return await this.webAuthnProvider.fetchPKPsThroughRelayer(authMethod);
+    const pkps = await this.webAuthnProvider.fetchPKPsThroughRelayer(
+      authMethod
+    );
+
+    // todo: handle multiple pkps / eth addresses
+    this.pkpPublicKey = pkps[0].publicKey;
+    this.pkpEthAddress = pkps[0].ethAddress;
+    return pkps;
   }
 
   public async getSessionSigs(
@@ -110,16 +122,19 @@ export class Passkey {
     return pkpWallet;
   }
 
-  public async sendTransaction(
-    pkpPublicKey: string,
-    ethAddress: string,
-    toEthAddress: string
-  ): Promise<string> {
+  public async sendTransaction(toEthAddress: string): Promise<string> {
+    // to do: handle clientside
+    if (this.pkpPublicKey == undefined || this.pkpEthAddress == undefined) {
+      throw new Error(
+        "authenticatedResponse is undefined or has no eth address"
+      );
+    }
+
     const pkpWallet = (await this.createPkpEthersWallet(
-      pkpPublicKey
+      this.pkpPublicKey
     )) as PKPEthersWallet;
 
-    const from = ethAddress;
+    const from = this.pkpEthAddress;
     const to = toEthAddress;
     const gasLimit = BigNumber.from("21000");
     const value = BigNumber.from("10");
@@ -146,5 +161,13 @@ export class Passkey {
     });
 
     return result;
+  }
+
+  public getEthAddress(): string {
+    if (this.pkpEthAddress !== undefined) {
+      return this.pkpEthAddress;
+    } else {
+      throw new Error("pkpEthAddress is undefined");
+    }
   }
 }
