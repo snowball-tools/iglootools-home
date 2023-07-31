@@ -226,7 +226,7 @@ export default function Login() {
                 disabled={username.length === 0}
                 onClick={() => createPKPWithWebAuthn(username)}
               >
-                Submit
+                Create Passkey
               </button>
               <button
                 type="submit"
