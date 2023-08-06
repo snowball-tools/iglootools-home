@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface AnimatedComponentProps {

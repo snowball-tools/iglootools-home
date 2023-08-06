@@ -11,6 +11,22 @@ import {
 import { LitAbility, LitActionResource } from "@lit-protocol/auth-helpers";
 import { PKPEthersWallet, ethRequestHandler } from "@lit-protocol/pkp-ethers";
 import { BigNumber } from "ethers";
+import {
+  SimpleSmartContractAccount,
+  SmartAccountProvider,
+  type SimpleSmartAccountOwner,
+  Address,
+  SignTypedDataParams,
+} from "@alchemy/aa-core";
+import { goerli } from "viem/chains";
+import { encodeFunctionData } from "viem";
+import { IglooNFTABI } from "./IglooNFTABI";
+
+const SIMPLE_ACCOUNT_FACTORY_ADDRESS =
+  "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17";
+const ENTRY_POINT_ADDRESS = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
+const IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS =
+  "0x9541b98f2339dec2675f5ff3ea96b69a35aae71a";
 
 export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
@@ -74,7 +90,8 @@ export class Passkey {
 
   public async getSessionSigs(
     pkpPublicKey: string,
-    authData: AuthMethod
+    authData: AuthMethod,
+    chain: string
   ): Promise<SessionSigsMap> {
     await this.litNodeClient.connect();
 
@@ -91,7 +108,7 @@ export class Passkey {
 
     const sessionSigs = await this.litNodeClient.getSessionSigs({
       expiration: DEFAULT_EXP,
-      chain: "ethereum",
+      chain: chain,
       resourceAbilityRequests: [
         {
           resource: new LitActionResource("*"),
@@ -101,6 +118,8 @@ export class Passkey {
       switchChain: false,
       authNeededCallback: authNeededCallback,
     });
+
+    this.sessionSig = sessionSigs;
 
     return sessionSigs;
   }
@@ -161,6 +180,72 @@ export class Passkey {
     });
 
     return result;
+  }
+
+  public async sendUserOperation(): Promise<string> {
+    if (
+      this.pkpPublicKey == undefined ||
+      this.pkpEthAddress == undefined ||
+      this.sessionSig == undefined
+    ) {
+      console.log("pkpPublicKey", this.pkpPublicKey);
+      console.log("pkpEthAddress", this.pkpEthAddress);
+      console.log("sessionSig", this.sessionSig);
+
+      throw new Error(
+        "authenticatedResponse is undefined or has no eth address"
+      );
+    }
+
+    const pkpWallet = (await this.createPkpEthersWallet(
+      this.pkpPublicKey
+    )) as PKPEthersWallet;
+
+    const owner: SimpleSmartAccountOwner = {
+      signMessage: async (msg) => {
+        return (await pkpWallet.signMessage(msg)) as Address;
+      },
+      getAddress: async () => {
+        return this.pkpEthAddress as Address;
+      },
+      signTypedData: function (
+        params: SignTypedDataParams
+      ): Promise<`0x${string}`> {
+        throw new Error("Function not implemented.");
+      },
+    };
+
+    const provider = new SmartAccountProvider(
+      "https://eth-goerli.g.alchemy.com/v2/" + "{{ ALCHEMY_GOERLI_API_KEY }}",
+      ENTRY_POINT_ADDRESS,
+      goerli
+    ).connect(
+      (rpcClient) =>
+        new SimpleSmartContractAccount({
+          owner,
+          entryPointAddress: ENTRY_POINT_ADDRESS,
+          chain: goerli,
+          factoryAddress: SIMPLE_ACCOUNT_FACTORY_ADDRESS,
+          rpcClient,
+          accountAddress: this.pkpEthAddress as Address,
+        })
+    );
+
+    const { hash } = await provider.sendUserOperation({
+      target: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS,
+      data: encodeFunctionData({
+        abi: IglooNFTABI.abi,
+        functionName: "mint",
+        args: [
+          this.pkpEthAddress,
+          BigNumber.from("1"),
+          BigNumber.from("1"),
+          "0x0",
+        ],
+      }),
+    });
+
+    return hash;
   }
 
   public getEthAddress(): string {

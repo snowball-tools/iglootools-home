@@ -1,8 +1,19 @@
-import { SessionSigsMap } from "@lit-protocol/types";
-
 export const STATE_KEY = "igloo-state";
 
-export const DEFAULT_CHAIN_ID = 5001;
+export const DEFAULT_CHAIN_ID = 5;
+
+export interface Chain {
+  chainId: number;
+  name: string;
+  symbol: string;
+  decimals: number;
+  type: string;
+  rpcUrls: string[];
+  blockExplorerUrls: string[];
+  vmType: string;
+  testNetwork: boolean;
+}
+
 export const LIT_CHAINS: Chain[] = [
   {
     chainId: 5001,
@@ -123,35 +134,3 @@ export const LIT_CHAINS: Chain[] = [
     testNetwork: false,
   },
 ];
-
-interface Chain {
-  chainId: number;
-  name: string;
-  symbol: string;
-  decimals: number;
-  type: string;
-  rpcUrls: string[];
-  blockExplorerUrls: string[];
-  vmType: string;
-  testNetwork: boolean;
-}
-
-export interface CredentialState {
-  isAuthenticated: boolean;
-  currentUsername: string | null;
-  currentPKP: string | null;
-  sessionSigs: SessionSigsMap;
-  sessionExpiration: string | null;
-  appChainId: number;
-  appChains: Chain[];
-}
-
-export const initialState: CredentialState = {
-  isAuthenticated: false,
-  currentUsername: null,
-  currentPKP: null,
-  sessionSigs: {},
-  sessionExpiration: null,
-  appChainId: DEFAULT_CHAIN_ID,
-  appChains: LIT_CHAINS,
-};

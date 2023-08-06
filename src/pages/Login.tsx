@@ -1,54 +1,47 @@
-"use client";
-
-import React, { useState } from "react";
-import { useAppDispatch, useAppState } from "../context/context";
-import { DEFAULT_EXP, Passkey } from "../helpers/webauthn";
-import { AUTHENTICATED } from "../helpers/actions";
-import { initialState } from "../helpers/constants";
-import "../styles/styles.css";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import {
+  setView,
+  setUsername,
+  setErrorMsg,
+  LoginViews,
+} from "@/store/loginSlice";
 import AnimatedComponent from "@/components/AnimatedComponent";
-
-const LoginViews = {
-  SIGN_UP: "sign_up",
-  SIGN_IN: "sign_in",
-  REGISTERING: "registering",
-  AUTHENTICATING: "authenticating",
-  MINTING: "minting",
-  MINTED: "minted",
-  CREATING_SESSION: "creating_session",
-  SESSION_CREATED: "session_created",
-  ERROR: "error",
-};
+import { DEFAULT_EXP, Passkey } from "@/helpers/webauthn";
+import { authenticated, initialState } from "@/store/credentialsSlice";
 
 const passkey = new Passkey();
 
 export default function Login() {
-  const { currentPKP } = useAppState();
-  const dispatch = useAppDispatch();
+  const { view, username, errorMsg } = useSelector(
+    (state: RootState) => state.login
+  );
+  const dispatch = useDispatch();
 
-  const [view, setView] = useState(LoginViews.SIGN_UP);
-  const [errorMsg, setErrorMsg] = useState("");
-
-  const [username, setUsername] = useState("");
-
-  async function createPKPWithWebAuthn(username: string) {
-    setView(LoginViews.REGISTERING);
+  async function createPKPWithWebAuthn() {
+    dispatch(setView(LoginViews.REGISTERING));
 
     const response = await passkey.register(username);
 
-    setView(LoginViews.AUTHENTICATING);
+    if (response === null) {
+      dispatch(setErrorMsg("Error creating passkey"));
+      dispatch(setView(LoginViews.ERROR));
+    } else {
+      dispatch(setView(LoginViews.AUTHENTICATING));
 
-    const auth = await passkey.authenticate();
+      const auth = await passkey.authenticate();
 
-    if (auth) {
-      setView(LoginViews.MINTED);
+      if (auth) {
+        dispatch(setView(LoginViews.MINTED));
+      }
     }
   }
 
   async function authThenGetSessionSigs(event: React.MouseEvent) {
     event.preventDefault();
 
-    setView(LoginViews.AUTHENTICATING);
+    dispatch(setView(LoginViews.AUTHENTICATING));
 
     try {
       const authData = await passkey.authenticate();
@@ -69,39 +62,40 @@ export default function Login() {
 
       console.log("creating session", pkpToAuthWith);
 
-      setView(LoginViews.CREATING_SESSION);
+      dispatch(setView(LoginViews.CREATING_SESSION));
 
       if (pkpToAuthWith) {
         const sessionSigs = await passkey.getSessionSigs(
           pkpToAuthWith,
-          authData
+          authData,
+          "goerli"
         );
 
         console.log("sessionSigs", sessionSigs);
 
-        setView(LoginViews.SESSION_CREATED);
+        dispatch(setView(LoginViews.SESSION_CREATED));
 
-        dispatch({
-          type: AUTHENTICATED,
-          payload: {
+        dispatch(
+          authenticated({
             ...initialState,
             isAuthenticated: true,
             currentUsername: username,
             currentPKP: pkpToAuthWith,
             sessionSigs: sessionSigs,
             sessionExpiration: DEFAULT_EXP,
-          },
-        });
+          })
+        );
       }
     } catch (e: Error | any) {
       console.error(e);
-      setErrorMsg(e.message);
-      setView(LoginViews.ERROR);
+      dispatch(setErrorMsg(e.message));
+      dispatch(setView(LoginViews.ERROR));
     }
   }
 
-  async function sendTranaction(toAddress: string) {
-    const tx = await passkey.sendTransaction(toAddress);
+  async function sendUserOperation() {
+    const tx = await passkey.sendUserOperation();
+    console.log("tx: ", tx);
     return tx;
   }
 
@@ -187,12 +181,10 @@ export default function Login() {
             <button
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400 disabled:opacity-20"
-              onClick={() =>
-                sendTranaction("0x669E4aCd20Aa30ABA80483fc8B82aeD626e60B60")
-              }
+              onClick={sendUserOperation}
               disabled={true}
             >
-              [WIP] Send Transaction via ethersjs
+              [WIP] Send User Operation
             </button>
           </>
         );
@@ -216,14 +208,14 @@ export default function Login() {
                   style={{ caretColor: "white" }}
                   value={username}
                   placeholder="Name (ie. Taylor Swift)"
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => dispatch(setUsername(e.target.value))}
                 />
               </div>
               <button
                 type="submit"
                 className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400 disabled:opacity-20"
                 disabled={username.length === 0}
-                onClick={() => createPKPWithWebAuthn(username)}
+                onClick={createPKPWithWebAuthn}
               >
                 Create Passkey
               </button>
