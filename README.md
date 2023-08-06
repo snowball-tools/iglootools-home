@@ -1,21 +1,13 @@
-# Next.js Redux Template Typescript
+# Igloo Home
 
 ## Getting Started
 
-### Install Dependencies
-
-```bash
+```
 yarn install
 ```
 
-### Run Development Server
+## Development
 
-```bash
-yarn dev
 ```
-
-### Build for Production
-
-```bash
-yarn build
+yarn dev
 ```
