@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": ["xyz.parisbeepboop.LeSnacks"],
+    "details": [
+      {
+        "appID": ["xyz.parisbeepboop.LeSnacks"],
+        "paths": ["*"]
+      }
+    ],
+    "webcredentials": {
+      "apps": ["xyz.parisbeepboop.LeSnacks"]
+   }
+  }
+}
