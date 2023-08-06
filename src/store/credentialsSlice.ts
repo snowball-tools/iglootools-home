@@ -1,6 +1,6 @@
 import { SessionSigsMap } from "@lit-protocol/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { Chain, DEFAULT_CHAIN_ID, LIT_CHAINS } from "./constants";
+import { Chain, DEFAULT_CHAIN_ID, LIT_CHAINS } from "../helpers/constants";
 
 export interface CredentialState {
   isAuthenticated: boolean;
