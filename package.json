@@ -1,7 +1,7 @@
 {
   "name": "igloo-home",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,11 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@alchemy/aa-core": "^0.1.0-alpha.18",
+    "@alchemy/aa-ethers": "^0.1.0-alpha.18",
     "@ethersproject/bytes": "^5.7.0",
     "@ethersproject/contracts": "^5.2.0",
     "@ethersproject/hash": "^5.4.0",
     "@ethersproject/providers": "^5.2.0",
-    "@ethersproject/wallet": "^5.2.0",
+    "@ethersproject/wallet": "^5.7.0",
     "@lit-protocol/auth-browser": "^2.2.47",
     "@lit-protocol/auth-helpers": "^2.2.47",
     "@lit-protocol/constants": "^2.2.47",
@@ -28,6 +30,8 @@
     "@types/node": "20.4.5",
     "@types/react": "18.2.16",
     "@types/react-dom": "18.2.7",
+    "abitype": "^0.9.6",
+    "alchemy-sdk": "^2.9.2",
     "autoprefixer": "10.4.14",
     "base64url": "^3.0.1",
     "eslint": "8.45.0",
@@ -42,6 +46,7 @@
     "react-dom": "18.2.0",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.6",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "viem": "^1.5.2"
   }
 }

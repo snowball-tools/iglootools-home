@@ -190,7 +190,6 @@ export default function Login() {
               onClick={() =>
                 sendTranaction("0x669E4aCd20Aa30ABA80483fc8B82aeD626e60B60")
               }
-              disabled={true}
             >
               [WIP] Send Transaction via ethersjs
             </button>
