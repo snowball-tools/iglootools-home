@@ -1,5 +1,10 @@
 {
   "name": "igloo-home",
+  "description": "A Next.js template with Redux and TypeScript",
+  "author": {
+    "name": "Snowball Tools Inc.",
+    "email": "viv@snowballtools.xyz"
+  },
   "version": "0.1.0",
   "private": false,
   "scripts": {
@@ -9,44 +14,19 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@alchemy/aa-core": "^0.1.0-alpha.18",
-    "@alchemy/aa-ethers": "^0.1.0-alpha.18",
-    "@ethersproject/bytes": "^5.7.0",
-    "@ethersproject/contracts": "^5.2.0",
-    "@ethersproject/hash": "^5.4.0",
-    "@ethersproject/providers": "^5.2.0",
-    "@ethersproject/wallet": "^5.7.0",
-    "@lit-protocol/auth-browser": "^2.2.47",
-    "@lit-protocol/auth-helpers": "^2.2.47",
-    "@lit-protocol/constants": "^2.2.47",
-    "@lit-protocol/ecdsa-sdk": "^2.2.41",
-    "@lit-protocol/encryption": "^2.2.47",
-    "@lit-protocol/lit-auth-client": "^2.2.47",
-    "@lit-protocol/lit-node-client": "^2.2.47",
-    "@lit-protocol/pkp-ethers": "^2.2.47",
-    "@lit-protocol/types": "^2.2.47",
-    "@simplewebauthn/browser": "^7.1.0",
-    "@simplewebauthn/typescript-types": "^7.0.0",
-    "@types/node": "20.4.5",
-    "@types/react": "18.2.16",
+    "@reduxjs/toolkit": "^1.9.5",
+    "@types/node": "20.4.8",
+    "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
-    "abitype": "^0.9.6",
-    "alchemy-sdk": "^2.9.2",
-    "autoprefixer": "10.4.14",
-    "base64url": "^3.0.1",
-    "eslint": "8.45.0",
-    "eslint-config-next": "13.4.12",
-    "ethers": "^5.5.1",
-    "framer-motion": "^10.13.1",
-    "hex2dec": "^1.1.2",
     "next": "13.4.12",
-    "pino-pretty": "^10.2.0",
-    "postcss": "8.4.27",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "3.3.3",
-    "tailwindcss-animate": "^1.0.6",
-    "typescript": "5.1.6",
-    "viem": "^1.5.2"
+    "react-redux": "^8.1.2",
+    "redux": "^4.2.1",
+    "typescript": "5.1.6"
+  },
+  "devDependencies": {
+    "eslint": "8.46.0",
+    "eslint-config-next": "13.4.12"
   }
 }
