@@ -1,0 +1,8 @@
+{
+  "name": "IglooNFT",
+  "description": "Welcome to the world of passkeys",
+  "image": "https://raw.githubusercontent.com/snowball-tools/SnowballDjango/fae7d4fb89a47cf0fb6c43309dea9dee9d773506/staticfiles/snowball_main/svg/snowball_icon_blue.svg",
+  "properties": {
+    "simple_property": "hello world"
+  }
+}

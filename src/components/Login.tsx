@@ -7,6 +7,7 @@ import { AUTHENTICATED } from "../helpers/actions";
 import { initialState } from "../helpers/constants";
 import "../styles/styles.css";
 import AnimatedComponent from "@/components/AnimatedComponent";
+import { Address } from "viem";
 
 const LoginViews = {
   SIGN_UP: "sign_up",
@@ -74,7 +75,8 @@ export default function Login() {
       if (pkpToAuthWith) {
         const sessionSigs = await passkey.getSessionSigs(
           pkpToAuthWith,
-          authData
+          authData,
+          "goerli"
         );
 
         console.log("sessionSigs", sessionSigs);
@@ -100,8 +102,9 @@ export default function Login() {
     }
   }
 
-  async function sendTranaction(toAddress: string) {
-    const tx = await passkey.sendTransaction(toAddress);
+  async function sendUserOperation() {
+    const tx = await passkey.sendUserOperation();
+    console.log("tx: ", tx);
     return tx;
   }
 
@@ -187,11 +190,9 @@ export default function Login() {
             <button
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400 disabled:opacity-20"
-              onClick={() =>
-                sendTranaction("0x669E4aCd20Aa30ABA80483fc8B82aeD626e60B60")
-              }
+              onClick={() => sendUserOperation()}
             >
-              [WIP] Send Transaction via ethersjs
+              [WIP] Send User Operation
             </button>
           </>
         );
