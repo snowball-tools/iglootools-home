@@ -1,14 +1,13 @@
 {
   "applinks": {
-    "apps": ["xyz.parisbeepboop.LeSnacks"],
     "details": [
       {
-        "appID": ["xyz.parisbeepboop.LeSnacks"],
+        "appID": ["9SAQ42S589.xyz.parisbeepboop.LeSnacks", "9SAQ42S589.xyz.iglootools.examplepasskeyapp"],
         "paths": ["*"]
       }
     ],
     "webcredentials": {
-      "apps": ["xyz.parisbeepboop.LeSnacks"]
+      "apps": ["9SAQ42S589.xyz.parisbeepboop.LeSnacks", "9SAQ42S589.xyz.iglootools.examplepasskeyapp"]
    }
   }
 }
