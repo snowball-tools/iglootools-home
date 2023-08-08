@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/push-service-worker.")
+        .register("/push-service-worker.ts")
         .then((registration) => {
           console.log(
             "Service Worker registered with scope:",
