@@ -14,7 +14,7 @@ export interface Chain {
   testNetwork: boolean;
 }
 
-export const LIT_CHAINS: Chain[] = [
+export const CHAINS: Chain[] = [
   {
     chainId: 5001,
     name: "Mantle Testnet",

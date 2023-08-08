@@ -10,17 +10,18 @@ import {
 } from "@lit-protocol/types";
 import { LitAbility, LitActionResource } from "@lit-protocol/auth-helpers";
 import { PKPEthersWallet, ethRequestHandler } from "@lit-protocol/pkp-ethers";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import {
   SimpleSmartContractAccount,
   SmartAccountProvider,
-  type SimpleSmartAccountOwner,
+  SimpleSmartAccountOwner,
   Address,
   SignTypedDataParams,
 } from "@alchemy/aa-core";
 import { goerli } from "viem/chains";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, toHex } from "viem";
 import { IglooNFTABI } from "./IglooNFTABI";
+import { TypedDataField } from "@ethersproject/abstract-signer";
 
 const SIMPLE_ACCOUNT_FACTORY_ADDRESS =
   "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17";
@@ -44,7 +45,7 @@ export class Passkey {
   constructor() {
     this.litAuthClient = new LitAuthClient({
       litRelayConfig: {
-        relayApiKey: "{{ LIT_RELAY_API_KEY }}",
+        relayApiKey: process.env.LIT_RELAY_API_KEY,
       },
     });
     this.litAuthClient.initProvider(ProviderType.WebAuthn);
@@ -95,13 +96,20 @@ export class Passkey {
   ): Promise<SessionSigsMap> {
     await this.litNodeClient.connect();
 
+    if (this.pkpPublicKey == undefined || this.pkpEthAddress == undefined) {
+      const pkp = await this.fetchPkps(authData);
+      if (pkp.length === 0) {
+        throw new Error("no pkp found");
+      }
+    }
+
     const authNeededCallback = async (params: AuthCallbackParams) => {
       const resp = await this.litNodeClient.signSessionKey({
         authMethods: [authData],
         pkpPublicKey,
         expiration: params.expiration,
         resources: params.resources,
-        chainId: 1,
+        chainId: 5,
       });
       return resp.authSig;
     };
@@ -141,47 +149,6 @@ export class Passkey {
     return pkpWallet;
   }
 
-  public async sendTransaction(toEthAddress: string): Promise<string> {
-    // to do: handle clientside
-    if (this.pkpPublicKey == undefined || this.pkpEthAddress == undefined) {
-      throw new Error(
-        "authenticatedResponse is undefined or has no eth address"
-      );
-    }
-
-    const pkpWallet = (await this.createPkpEthersWallet(
-      this.pkpPublicKey
-    )) as PKPEthersWallet;
-
-    const from = this.pkpEthAddress;
-    const to = toEthAddress;
-    const gasLimit = BigNumber.from("21000");
-    const value = BigNumber.from("10");
-    const data = "0x";
-
-    const transactionRequest = {
-      from,
-      to,
-      gasLimit,
-      value,
-      data,
-    };
-
-    const signedTransactionRequest = await pkpWallet.signTransaction(
-      transactionRequest
-    );
-
-    const result = await ethRequestHandler({
-      signer: pkpWallet,
-      payload: {
-        method: "eth_sendTransaction",
-        params: [signedTransactionRequest],
-      },
-    });
-
-    return result;
-  }
-
   public async sendUserOperation(): Promise<string> {
     if (
       this.pkpPublicKey == undefined ||
@@ -201,22 +168,39 @@ export class Passkey {
       this.pkpPublicKey
     )) as PKPEthersWallet;
 
+    if (pkpWallet === undefined) {
+      throw new Error("pkpWallet is undefined");
+    }
+
     const owner: SimpleSmartAccountOwner = {
-      signMessage: async (msg) => {
+      signMessage: async (msg: Uint8Array) => {
         return (await pkpWallet.signMessage(msg)) as Address;
       },
       getAddress: async () => {
         return this.pkpEthAddress as Address;
       },
-      signTypedData: function (
-        params: SignTypedDataParams
-      ): Promise<`0x${string}`> {
-        throw new Error("Function not implemented.");
+      signTypedData: async (params: SignTypedDataParams) => {
+        const types: Record<string, Array<TypedDataField>> = {
+          [params.primaryType]: params.types["x"].map(
+            (value) =>
+              ({
+                name: value.name,
+                type: value.type,
+              } as TypedDataField)
+          ),
+        };
+
+        return (await pkpWallet._signTypedData(
+          params.domain ? params.domain : {},
+          types,
+          params.message
+        )) as Address;
       },
     };
 
     const provider = new SmartAccountProvider(
-      "https://eth-goerli.g.alchemy.com/v2/" + "{{ ALCHEMY_GOERLI_API_KEY }}",
+      "https://eth-goerli.g.alchemy.com/v2/" +
+        process.env.ALCHEMY_GOERLI_API_KEY,
       ENTRY_POINT_ADDRESS,
       goerli
     ).connect(
@@ -227,24 +211,21 @@ export class Passkey {
           chain: goerli,
           factoryAddress: SIMPLE_ACCOUNT_FACTORY_ADDRESS,
           rpcClient,
-          accountAddress: this.pkpEthAddress as Address,
         })
     );
+
+    const address = await provider.getAddress();
 
     const { hash } = await provider.sendUserOperation({
       target: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS,
       data: encodeFunctionData({
         abi: IglooNFTABI.abi,
         functionName: "mint",
-        args: [
-          this.pkpEthAddress,
-          BigNumber.from("1"),
-          BigNumber.from("1"),
-          "0x0",
-        ],
+        args: [address, BigNumber.from("1"), BigNumber.from("1"), "0x0"],
       }),
     });
 
+    console.log("hash: ", hash);
     return hash;
   }
 

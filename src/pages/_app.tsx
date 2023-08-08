@@ -6,10 +6,11 @@ import { Analytics } from "@vercel/analytics/react";
 import "@/styles/styles.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  // todo: push
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/push-service-worker.")
+        .register("/push-service-worker.ts")
         .then((registration) => {
           console.log(
             "Service Worker registered with scope:",
@@ -17,7 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           );
         })
         .catch((error) => {
-          console.log("Service Worker registration failed:", error);
+          console.log("Service Worker registration failed: ", error);
         });
     }
   }, []);

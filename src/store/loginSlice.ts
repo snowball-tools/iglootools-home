@@ -16,7 +16,6 @@ export interface LoginState {
   view: string;
   username: string;
   errorMsg: string;
-  // You can add other states if necessary
 }
 
 export const initialState: LoginState = {
