@@ -44,7 +44,7 @@ export class Passkey {
   constructor() {
     this.litAuthClient = new LitAuthClient({
       litRelayConfig: {
-        relayApiKey: "{{ LIT_RELAY_API_KEY }}",
+        relayApiKey: process.env.LIT_RELAY_API_KEY,
       },
     });
     this.litAuthClient.initProvider(ProviderType.WebAuthn);
@@ -216,7 +216,8 @@ export class Passkey {
     };
 
     const provider = new SmartAccountProvider(
-      "https://eth-goerli.g.alchemy.com/v2/" + "{{ ALCHEMY_GOERLI_API_KEY }}",
+      "https://eth-goerli.g.alchemy.com/v2/" +
+        process.env.ALCHEMY_GOERLI_API_KEY,
       ENTRY_POINT_ADDRESS,
       goerli
     ).connect(
