@@ -228,7 +228,6 @@ export class Passkey {
           chain: goerli,
           factoryAddress: SIMPLE_ACCOUNT_FACTORY_ADDRESS,
           rpcClient,
-          accountAddress: this.pkpEthAddress as Address,
         })
     );
 
@@ -238,7 +237,7 @@ export class Passkey {
         abi: IglooNFTABI.abi,
         functionName: "mint",
         args: [
-          this.pkpEthAddress,
+          provider.getAddress(),
           BigNumber.from("1"),
           BigNumber.from("1"),
           "0x0",
