@@ -1,3 +1,4 @@
+import { SendUserOperationResult } from "@alchemy/aa-core";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const LoginViews = {
@@ -10,18 +11,21 @@ export const LoginViews = {
   CREATING_SESSION: "creating_session",
   SESSION_CREATED: "session_created",
   ERROR: "error",
+  IGLOO_NFT_MINTED: "igloo_nft_minted",
 };
 
 export interface LoginState {
   view: string;
   username: string;
   errorMsg: string;
+  userOpResult: SendUserOperationResult | undefined;
 }
 
 export const initialState: LoginState = {
   view: LoginViews.SIGN_UP,
   username: "",
   errorMsg: "",
+  userOpResult: undefined,
 };
 
 const loginSlice = createSlice({
@@ -34,12 +38,18 @@ const loginSlice = createSlice({
     setUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload;
     },
+    setMintedNFT: (state, action: PayloadAction<SendUserOperationResult>) => {
+      state.userOpResult = action.payload;
+      state.view = LoginViews.IGLOO_NFT_MINTED;
+    },
     setErrorMsg: (state, action: PayloadAction<string>) => {
       state.errorMsg = action.payload;
+      state.view = LoginViews.ERROR;
     },
   },
 });
 
-export const { setView, setUsername, setErrorMsg } = loginSlice.actions;
+export const { setView, setUsername, setErrorMsg, setMintedNFT } =
+  loginSlice.actions;
 
 export default loginSlice.reducer;

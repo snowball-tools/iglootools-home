@@ -10,18 +10,18 @@ import {
 } from "@lit-protocol/types";
 import { LitAbility, LitActionResource } from "@lit-protocol/auth-helpers";
 import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
-import { BigNumber } from "ethers";
 import {
   SimpleSmartContractAccount,
-  SmartAccountProvider,
   SimpleSmartAccountOwner,
   Address,
   SignTypedDataParams,
+  SendUserOperationResult,
 } from "@alchemy/aa-core";
 import { goerli } from "viem/chains";
 import { encodeFunctionData } from "viem";
 import { IglooNFTABI } from "./IglooNFTABI";
 import { TypedDataField } from "@ethersproject/abstract-signer";
+import { AlchemyProvider } from "@alchemy/aa-alchemy";
 
 const SIMPLE_ACCOUNT_FACTORY_ADDRESS =
   "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17";
@@ -121,7 +121,7 @@ export class Passkey {
       resourceAbilityRequests: [
         {
           resource: new LitActionResource("*"),
-          ability: LitAbility.PKPSigning,
+          ability: LitAbility.LitActionExecution,
         },
       ],
       switchChain: false,
@@ -150,7 +150,8 @@ export class Passkey {
     return pkpWallet;
   }
 
-  public async sendUserOperation(): Promise<string> {
+  public async sendUserOperation(): Promise<SendUserOperationResult> {
+    // to do error states
     if (
       this.pkpPublicKey == undefined ||
       this.pkpEthAddress == undefined ||
@@ -163,6 +164,13 @@ export class Passkey {
       throw new Error(
         "authenticatedResponse is undefined or has no eth address"
       );
+    }
+
+    if (
+      process.env.ALCHEMY_GOERLI_GAS_POLICY_ID === undefined ||
+      process.env.ALCHEMY_GOERLI_API_KEY === undefined
+    ) {
+      throw new Error("env var undefined");
     }
 
     const pkpWallet = (await this.createPkpEthersWallet(
@@ -199,12 +207,14 @@ export class Passkey {
       },
     };
 
-    const provider = new SmartAccountProvider(
-      "https://eth-goerli.g.alchemy.com/v2/" +
-        process.env.ALCHEMY_GOERLI_API_KEY,
-      ENTRY_POINT_ADDRESS,
-      goerli
-    ).connect(
+    let provider = new AlchemyProvider({
+      chain: goerli,
+      entryPointAddress: ENTRY_POINT_ADDRESS,
+      apiKey: process.env.ALCHEMY_GOERLI_API_KEY
+        ? process.env.ALCHEMY_GOERLI_API_KEY
+        : "",
+      rpcUrl: undefined,
+    }).connect(
       (rpcClient) =>
         new SimpleSmartContractAccount({
           owner,
@@ -215,9 +225,15 @@ export class Passkey {
         })
     );
 
+    provider = provider.withAlchemyGasManager({
+      provider: provider.rpcClient,
+      policyId: process.env.ALCHEMY_GOERLI_GAS_POLICY_ID,
+      entryPoint: ENTRY_POINT_ADDRESS,
+    });
+
     const address = await provider.getAddress();
 
-    const { hash } = await provider.sendUserOperation({
+    const result: SendUserOperationResult = await provider.sendUserOperation({
       target: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS,
       data: encodeFunctionData({
         abi: IglooNFTABI.abi,
@@ -226,8 +242,7 @@ export class Passkey {
       }),
     });
 
-    console.log("hash: ", hash);
-    return hash;
+    return result;
   }
 
   public getEthAddress(): string {

@@ -5,6 +5,7 @@ import {
   setView,
   setUsername,
   setErrorMsg,
+  setMintedNFT,
   LoginViews,
 } from "@/store/loginSlice";
 import AnimatedComponent from "@/components/AnimatedComponent";
@@ -14,7 +15,7 @@ import { authenticated, initialState } from "@/store/credentialsSlice";
 const passkey = new Passkey();
 
 export default function Login() {
-  const { view, username, errorMsg } = useSelector(
+  const { view, username, errorMsg, userOpResult } = useSelector(
     (state: RootState) => state.login
   );
   const dispatch = useDispatch();
@@ -26,7 +27,6 @@ export default function Login() {
 
     if (response === null) {
       dispatch(setErrorMsg("Error creating passkey"));
-      dispatch(setView(LoginViews.ERROR));
     } else {
       dispatch(setView(LoginViews.AUTHENTICATING));
 
@@ -89,14 +89,13 @@ export default function Login() {
     } catch (e: Error | any) {
       console.error(e);
       dispatch(setErrorMsg(e.message));
-      dispatch(setView(LoginViews.ERROR));
     }
   }
 
   async function sendUserOperation() {
-    const tx = await passkey.sendUserOperation();
-    console.log("tx: ", tx);
-    return tx;
+    const result = await passkey.sendUserOperation();
+    dispatch(setMintedNFT(result));
+    return result;
   }
 
   const renderView = () => {
@@ -195,6 +194,28 @@ export default function Login() {
               Error
             </h1>
             <p className="text-white">{errorMsg}</p>
+          </>
+        );
+      case LoginViews.IGLOO_NFT_MINTED:
+        return (
+          <>
+            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              Igloo NFT Minted
+            </h1>
+            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              user operation hash:
+              <a
+                href={
+                  "https://www.jiffyscan.xyz/userOpHash/" +
+                  userOpResult?.hash +
+                  "?network=goerli"
+                }
+              >
+                {userOpResult?.hash}
+              </a>
+              <br></br>
+              {userOpResult?.request.sender}
+            </h2>
           </>
         );
       case LoginViews.SIGN_UP:
