@@ -9,8 +9,8 @@ import {
   SessionSigsMap,
 } from "@lit-protocol/types";
 import { LitAbility, LitActionResource } from "@lit-protocol/auth-helpers";
-import { PKPEthersWallet, ethRequestHandler } from "@lit-protocol/pkp-ethers";
-import { BigNumber, ethers } from "ethers";
+import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
+import { BigNumber } from "ethers";
 import {
   SimpleSmartContractAccount,
   SmartAccountProvider,
@@ -19,7 +19,7 @@ import {
   SignTypedDataParams,
 } from "@alchemy/aa-core";
 import { goerli } from "viem/chains";
-import { encodeFunctionData, toHex } from "viem";
+import { encodeFunctionData } from "viem";
 import { IglooNFTABI } from "./IglooNFTABI";
 import { TypedDataField } from "@ethersproject/abstract-signer";
 
@@ -27,7 +27,7 @@ const SIMPLE_ACCOUNT_FACTORY_ADDRESS =
   "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17";
 const ENTRY_POINT_ADDRESS = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
 const IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS =
-  "0x9541b98f2339dec2675f5ff3ea96b69a35aae71a";
+  "0x799e75059126E6DA27A164d1315b1963Fb82c44F";
 
 export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
@@ -105,8 +105,9 @@ export class Passkey {
 
     const authNeededCallback = async (params: AuthCallbackParams) => {
       const resp = await this.litNodeClient.signSessionKey({
+        statement: params.statement,
         authMethods: [authData],
-        pkpPublicKey,
+        pkpPublicKey: pkpPublicKey,
         expiration: params.expiration,
         resources: params.resources,
         chainId: 5,
@@ -120,7 +121,7 @@ export class Passkey {
       resourceAbilityRequests: [
         {
           resource: new LitActionResource("*"),
-          ability: LitAbility.LitActionExecution,
+          ability: LitAbility.PKPSigning,
         },
       ],
       switchChain: false,
@@ -220,8 +221,8 @@ export class Passkey {
       target: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS,
       data: encodeFunctionData({
         abi: IglooNFTABI.abi,
-        functionName: "mint",
-        args: [address, BigNumber.from("1"), BigNumber.from("1"), "0x0"],
+        functionName: "safeMint",
+        args: [address],
       }),
     });
 
