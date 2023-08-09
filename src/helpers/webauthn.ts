@@ -137,7 +137,7 @@ export class Passkey {
     const config: GlobalEnvOption = {
       chain: "5",
       gasSponsor: undefined,
-      apiKey: "MYny3w7xJh6PRlRgkJ9604sHouY2MTke6lCPpSHq",
+      apiKey: "fdCYRuB0QxXIzAsdSQVm5dryxfs0KAra0xZyqUX3",
     };
     await configureEnvironment(config);
     const pkpWallet = new PKPEthersWallet({
@@ -173,9 +173,7 @@ export class Passkey {
       throw new Error("pkpWallet is undefined");
     }
 
-    console.log(pkpWallet, pkpWallet.provider);
-
-    const auth = new Auth({ provider: pkpWallet });
+    const auth = new Auth({ signer: pkpWallet });
     const authId = await auth.getUserId();
     const funWallet = new FunWallet({
       users: [{ userId: await auth.getUserId() }],
