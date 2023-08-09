@@ -41,7 +41,7 @@ export class Passkey {
   constructor() {
     this.litAuthClient = new LitAuthClient({
       litRelayConfig: {
-        relayApiKey: "15DDD969-E75F-404D-AAD9-58A37C4FD354_snowball",
+        relayApiKey: "LIT_API_KEY",
       },
     });
     this.litAuthClient.initProvider(ProviderType.WebAuthn);
