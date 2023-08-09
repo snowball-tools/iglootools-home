@@ -274,6 +274,13 @@ export const IglooNFTABI = {
       type: "function",
     },
     {
+      inputs: [{ internalType: "address", name: "to", type: "address" }],
+      name: "safeMint",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
       inputs: [
         { internalType: "address", name: "from", type: "address" },
         { internalType: "address", name: "to", type: "address" },

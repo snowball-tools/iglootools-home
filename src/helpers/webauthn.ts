@@ -136,7 +136,9 @@ export class Passkey {
     }
     const config: GlobalEnvOption = {
       chain: "5",
-      gasSponsor: undefined,
+      gasSponsor: {
+        sponsorAddress: "0x175C5611402815Eba550Dad16abd2ac366a63329",
+      },
       apiKey: "fdCYRuB0QxXIzAsdSQVm5dryxfs0KAra0xZyqUX3",
     };
     await configureEnvironment(config);
@@ -183,8 +185,8 @@ export class Passkey {
 
     const data = encodeFunctionData({
       abi: IglooNFTABI.abi,
-      functionName: "mint",
-      args: [address, BigNumber.from("1"), BigNumber.from("1"), "0x0"],
+      functionName: "safeMint",
+      args: [address],
     });
     const op = await funWallet.createOperation(auth, authId, {
       to: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS,
