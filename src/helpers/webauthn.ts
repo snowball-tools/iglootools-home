@@ -12,22 +12,18 @@ import { LitAbility, LitActionResource } from "@lit-protocol/auth-helpers";
 import { PKPEthersWallet, ethRequestHandler } from "@lit-protocol/pkp-ethers";
 import { BigNumber, ethers } from "ethers";
 import {
-  SimpleSmartContractAccount,
-  SmartAccountProvider,
-  SimpleSmartAccountOwner,
-  Address,
-  SignTypedDataParams,
-} from "@alchemy/aa-core";
+  FunWallet,
+  Auth,
+  GlobalEnvOption,
+  configureEnvironment,
+} from "@fun-xyz/core";
 import { goerli } from "viem/chains";
 import { encodeFunctionData, toHex } from "viem";
 import { IglooNFTABI } from "./IglooNFTABI";
 import { TypedDataField } from "@ethersproject/abstract-signer";
 
-const SIMPLE_ACCOUNT_FACTORY_ADDRESS =
-  "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17";
-const ENTRY_POINT_ADDRESS = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
 const IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS =
-  "0x9541b98f2339dec2675f5ff3ea96b69a35aae71a";
+  "0x799e75059126E6DA27A164d1315b1963Fb82c44F";
 
 export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
@@ -45,7 +41,7 @@ export class Passkey {
   constructor() {
     this.litAuthClient = new LitAuthClient({
       litRelayConfig: {
-        relayApiKey: process.env.LIT_RELAY_API_KEY,
+        relayApiKey: "15DDD969-E75F-404D-AAD9-58A37C4FD354_snowball",
       },
     });
     this.litAuthClient.initProvider(ProviderType.WebAuthn);
@@ -138,7 +134,12 @@ export class Passkey {
     if (this.sessionSig === undefined) {
       throw new Error("sessionSig is undefined");
     }
-
+    const config: GlobalEnvOption = {
+      chain: "5",
+      gasSponsor: undefined,
+      apiKey: "MYny3w7xJh6PRlRgkJ9604sHouY2MTke6lCPpSHq",
+    };
+    await configureEnvironment(config);
     const pkpWallet = new PKPEthersWallet({
       controllerSessionSigs: this.sessionSig,
       pkpPubKey: pkpPublicKey,
@@ -172,61 +173,29 @@ export class Passkey {
       throw new Error("pkpWallet is undefined");
     }
 
-    const owner: SimpleSmartAccountOwner = {
-      signMessage: async (msg: Uint8Array) => {
-        return (await pkpWallet.signMessage(msg)) as Address;
-      },
-      getAddress: async () => {
-        return this.pkpEthAddress as Address;
-      },
-      signTypedData: async (params: SignTypedDataParams) => {
-        const types: Record<string, Array<TypedDataField>> = {
-          [params.primaryType]: params.types["x"].map(
-            (value) =>
-              ({
-                name: value.name,
-                type: value.type,
-              } as TypedDataField)
-          ),
-        };
+    console.log(pkpWallet, pkpWallet.provider);
 
-        return (await pkpWallet._signTypedData(
-          params.domain ? params.domain : {},
-          types,
-          params.message
-        )) as Address;
-      },
-    };
-
-    const provider = new SmartAccountProvider(
-      "https://eth-goerli.g.alchemy.com/v2/" +
-        process.env.ALCHEMY_GOERLI_API_KEY,
-      ENTRY_POINT_ADDRESS,
-      goerli
-    ).connect(
-      (rpcClient) =>
-        new SimpleSmartContractAccount({
-          owner,
-          entryPointAddress: ENTRY_POINT_ADDRESS,
-          chain: goerli,
-          factoryAddress: SIMPLE_ACCOUNT_FACTORY_ADDRESS,
-          rpcClient,
-        })
-    );
-
-    const address = await provider.getAddress();
-
-    const { hash } = await provider.sendUserOperation({
-      target: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS,
-      data: encodeFunctionData({
-        abi: IglooNFTABI.abi,
-        functionName: "mint",
-        args: [address, BigNumber.from("1"), BigNumber.from("1"), "0x0"],
-      }),
+    const auth = new Auth({ provider: pkpWallet });
+    const authId = await auth.getUserId();
+    const funWallet = new FunWallet({
+      users: [{ userId: await auth.getUserId() }],
+      uniqueId: await auth.getWalletUniqueId("5"),
     });
+    const address = await funWallet.getAddress();
 
-    console.log("hash: ", hash);
-    return hash;
+    const data = encodeFunctionData({
+      abi: IglooNFTABI.abi,
+      functionName: "mint",
+      args: [address, BigNumber.from("1"), BigNumber.from("1"), "0x0"],
+    });
+    const op = await funWallet.createOperation(auth, authId, {
+      to: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS,
+      data: data,
+    });
+    const receipt = await funWallet.executeOperation(auth, op);
+
+    console.log("hash: ", receipt.txId);
+    return receipt.txId ?? "";
   }
 
   public getEthAddress(): string {
