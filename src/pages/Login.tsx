@@ -139,7 +139,16 @@ export default function Login() {
               Minting
             </h1>
             <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              passkey eth address: {passkey.getEthAddress()}
+              passkey eth address:{" "}
+              <a
+                className="text-blue-500 hover:underline"
+                href={
+                  "https://goerli.etherscan.io/address/" +
+                  passkey.getEthAddress()
+                }
+              >
+                {passkey.getEthAddress()}
+              </a>
             </h2>
           </>
         );
@@ -165,7 +174,16 @@ export default function Login() {
               Creating Session
             </h1>
             <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              passkey eth address: {passkey.getEthAddress()}
+              passkey eth address:{" "}
+              <a
+                className="text-blue-500 hover:underline"
+                href={
+                  "https://goerli.etherscan.io/address/" +
+                  passkey.getEthAddress()
+                }
+              >
+                {passkey.getEthAddress()}
+              </a>
             </h2>
           </>
         );
@@ -176,7 +194,16 @@ export default function Login() {
               Session Created
             </h1>
             <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              passkey eth address: {passkey.getEthAddress()}
+              passkey eth address:{" "}
+              <a
+                className="text-blue-500 hover:underline"
+                href={
+                  "https://goerli.etherscan.io/address/" +
+                  passkey.getEthAddress()
+                }
+              >
+                {passkey.getEthAddress()}
+              </a>
             </h2>
             <button
               type="submit"
@@ -204,11 +231,21 @@ export default function Login() {
               Igloo NFT Minted
             </h1>
             <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              address: {userOpResult?.request.sender}
+              eth address:{" "}
+              <a
+                className="text-blue-500 hover:underline"
+                href={
+                  "https://goerli.etherscan.io/address/" +
+                  userOpResult?.request.sender
+                }
+              >
+                {userOpResult?.request.sender}
+              </a>
             </h3>
             <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
               user operation hash:{" "}
               <a
+                className="text-blue-500 hover:underline"
                 href={
                   "https://www.jiffyscan.xyz/userOpHash/" +
                   userOpResult?.hash +
@@ -217,7 +254,6 @@ export default function Login() {
               >
                 {userOpResult?.hash}
               </a>
-              <br></br>
             </h2>
           </>
         );
