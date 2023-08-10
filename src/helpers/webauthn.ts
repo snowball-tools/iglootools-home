@@ -17,21 +17,14 @@ import {
   SignTypedDataParams,
   SendUserOperationResult,
 } from "@alchemy/aa-core";
-import { goerli } from "viem/chains";
 import { encodeFunctionData } from "viem";
 import { IglooNFTABI } from "./IglooNFTABI";
 import { TypedDataField } from "@ethersproject/abstract-signer";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { sendInitGas } from "./initGas";
-import {
-  LIT_RELAY_API_KEY,
-  ALCHEMY_GOERLI_GAS_POLICY_ID,
-  ALCHEMY_GOERLI_API_KEY,
-} from "@/helpers/env";
+import { LIT_RELAY_API_KEY } from "@/helpers/env";
+import { CHAINS, Chain } from "./constants";
 
-const SIMPLE_ACCOUNT_FACTORY_ADDRESS =
-  "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17";
-const ENTRY_POINT_ADDRESS = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
 const IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS =
   "0x799e75059126E6DA27A164d1315b1963Fb82c44F";
 
@@ -40,13 +33,14 @@ export const DEFAULT_EXP = new Date(
 ).toISOString();
 
 export class Passkey {
-  private litAuthClient: LitAuthClient;
-  private webAuthnProvider: WebAuthnProvider;
-  private litNodeClient: LitNodeClient;
-
+  public chain: Chain = CHAINS.goerli;
   public pkpPublicKey: string | undefined;
   public pkpEthAddress: string | undefined;
   public sessionSig: SessionSigsMap | undefined;
+
+  private litAuthClient: LitAuthClient;
+  private webAuthnProvider: WebAuthnProvider;
+  private litNodeClient: LitNodeClient;
 
   constructor() {
     this.litAuthClient = new LitAuthClient({
@@ -98,7 +92,7 @@ export class Passkey {
   public async getSessionSigs(
     pkpPublicKey: string,
     authData: AuthMethod,
-    chain: string
+    chain: Chain
   ): Promise<SessionSigsMap> {
     await this.litNodeClient.connect();
 
@@ -116,21 +110,25 @@ export class Passkey {
         pkpPublicKey: pkpPublicKey,
         expiration: params.expiration,
         resources: params.resources,
-        chainId: 5,
+        chainId: chain.chainId,
       });
       return resp.authSig;
     };
 
+    const changeChain = this.chain != chain;
+    console.log("changeChain: ", changeChain);
+    this.chain = chain;
+
     const sessionSigs = await this.litNodeClient.getSessionSigs({
       expiration: DEFAULT_EXP,
-      chain: chain,
+      chain: chain.name,
       resourceAbilityRequests: [
         {
           resource: new LitActionResource("*"),
           ability: LitAbility.PKPSigning,
         },
       ],
-      switchChain: false,
+      switchChain: changeChain,
       authNeededCallback: authNeededCallback,
     });
 
@@ -146,7 +144,7 @@ export class Passkey {
       throw new Error("sessionSig or ethaddress is undefined");
     }
 
-    await sendInitGas(this.getEthAddress() as Address);
+    await sendInitGas(this.getEthAddress() as Address, CHAINS.goerli);
 
     const pkpWallet = new PKPEthersWallet({
       controllerSessionSigs: this.sessionSig,
@@ -158,7 +156,9 @@ export class Passkey {
     return pkpWallet;
   }
 
-  public async sendUserOperation(): Promise<SendUserOperationResult> {
+  public async sendUserOperation(
+    chain: Chain
+  ): Promise<SendUserOperationResult> {
     // to do error states
     if (
       this.pkpPublicKey == undefined ||
@@ -209,31 +209,31 @@ export class Passkey {
     };
 
     let provider = new AlchemyProvider({
-      chain: goerli,
-      entryPointAddress: ENTRY_POINT_ADDRESS,
-      apiKey: ALCHEMY_GOERLI_API_KEY,
+      chain: chain.viemChain,
+      entryPointAddress: chain.entryPointAddress,
+      apiKey: chain.alchemyAPIKey,
       rpcUrl: undefined,
     }).connect(
       (rpcClient) =>
         new SimpleSmartContractAccount({
           owner,
-          entryPointAddress: ENTRY_POINT_ADDRESS,
-          chain: goerli,
-          factoryAddress: SIMPLE_ACCOUNT_FACTORY_ADDRESS,
+          entryPointAddress: chain.entryPointAddress,
+          chain: chain.viemChain,
+          factoryAddress: chain.factoryAddress,
           rpcClient,
         })
     );
 
     provider = provider.withAlchemyGasManager({
       provider: provider.rpcClient,
-      policyId: ALCHEMY_GOERLI_GAS_POLICY_ID,
-      entryPoint: ENTRY_POINT_ADDRESS,
+      policyId: chain.alchemyGasPolicyId,
+      entryPoint: chain.entryPointAddress,
     });
 
     const address = await provider.getAddress();
 
     const result: SendUserOperationResult = await provider.sendUserOperation({
-      target: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS,
+      target: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS, // to do based on chain
       data: encodeFunctionData({
         abi: IglooNFTABI.abi,
         functionName: "safeMint",

@@ -1,16 +1,16 @@
-import { Address, Hex, createWalletClient, http, custom } from "viem";
+import { Address, createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { ETH_PRIVATE_KEY, ALCHEMY_GOERLI_API_KEY } from "@/helpers/env";
-import { goerli } from "viem/chains";
+import { ETH_PRIVATE_KEY } from "@/helpers/env";
+import { Chain } from "./constants";
 
-export async function sendInitGas(toAddress: Address) {
+export async function sendInitGas(toAddress: Address, chain: Chain) {
   const account = privateKeyToAccount(("0x" + ETH_PRIVATE_KEY) as Address);
 
   const client = createWalletClient({
     account: account,
-    chain: goerli,
+    chain: chain.viemChain,
     transport: http(
-      "https://eth-goerli.g.alchemy.com/v2/" + ALCHEMY_GOERLI_API_KEY
+      "https://eth-" + chain.name + ".g.alchemy.com/v2/" + chain.alchemyAPIKey
     ),
   });
 
@@ -18,7 +18,9 @@ export async function sendInitGas(toAddress: Address) {
     const transactionReceipt = await client.sendTransaction({
       to: toAddress,
       value: BigInt(10000),
+      chain: chain.viemChain,
     });
+
     console.log("Transaction successful:", transactionReceipt);
   } catch (error) {
     console.error("Transaction failed:", error);
