@@ -21,10 +21,7 @@ curl -v https://app-site-association.cdn-apple.com/a/v1/<url>
 ```
 
 ## Resources
-<<<<<<< HEAD
-=======
 
->>>>>>> main
 - [Goerli Etherscan](https://goerli.etherscan.io)
 - [Deployed Goerli AA Factory](https://goerli.etherscan.io/address/0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17)
 - [Deployed Goerli IglooNFT (needs work shouldve made it upgradble via proxy)](https://goerli.etherscan.io/address/0x9541b98f2339dec2675f5ff3ea96b69a35aae71a)
