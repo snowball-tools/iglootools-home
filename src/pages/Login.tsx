@@ -93,6 +93,7 @@ export default function Login() {
   }
 
   async function sendUserOperation() {
+    dispatch(setView(LoginViews.MINTING));
     const result = await passkey.sendUserOperation();
     dispatch(setMintedNFT(result));
     return result;
@@ -181,7 +182,7 @@ export default function Login() {
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400 disabled:opacity-20"
               onClick={sendUserOperation}
-              disabled={false}
+              disabled={true}
             >
               [WIP] Send User Operation
             </button>
@@ -202,8 +203,11 @@ export default function Login() {
             <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
               Igloo NFT Minted
             </h1>
+            <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
+              address: {userOpResult?.request.sender}
+            </h3>
             <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              user operation hash:
+              user operation hash:{" "}
               <a
                 href={
                   "https://www.jiffyscan.xyz/userOpHash/" +
@@ -214,7 +218,6 @@ export default function Login() {
                 {userOpResult?.hash}
               </a>
               <br></br>
-              {userOpResult?.request.sender}
             </h2>
           </>
         );
