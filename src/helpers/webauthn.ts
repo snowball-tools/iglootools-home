@@ -43,6 +43,10 @@ export class Passkey {
   public sessionSig: SessionSigsMap | undefined;
 
   constructor() {
+    if (process.env.LIT_RELAY_API_KEY === undefined) {
+      throw new Error("LIT_RELAY_API_KEY is undefined");
+    }
+
     this.litAuthClient = new LitAuthClient({
       litRelayConfig: {
         relayApiKey: process.env.LIT_RELAY_API_KEY,
