@@ -22,6 +22,12 @@ import { encodeFunctionData } from "viem";
 import { IglooNFTABI } from "./IglooNFTABI";
 import { TypedDataField } from "@ethersproject/abstract-signer";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
+import { sendInitGas } from "./initGas";
+import {
+  LIT_RELAY_API_KEY,
+  ALCHEMY_GOERLI_GAS_POLICY_ID,
+  ALCHEMY_GOERLI_API_KEY,
+} from "@/helpers/env";
 
 const SIMPLE_ACCOUNT_FACTORY_ADDRESS =
   "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17";
@@ -43,13 +49,9 @@ export class Passkey {
   public sessionSig: SessionSigsMap | undefined;
 
   constructor() {
-    if (process.env.LIT_RELAY_API_KEY === undefined) {
-      throw new Error("LIT_RELAY_API_KEY is undefined");
-    }
-
     this.litAuthClient = new LitAuthClient({
       litRelayConfig: {
-        relayApiKey: process.env.LIT_RELAY_API_KEY,
+        relayApiKey: LIT_RELAY_API_KEY,
       },
     });
     this.litAuthClient.initProvider(ProviderType.WebAuthn);
@@ -125,7 +127,7 @@ export class Passkey {
       resourceAbilityRequests: [
         {
           resource: new LitActionResource("*"),
-          ability: LitAbility.LitActionExecution,
+          ability: LitAbility.PKPSigning,
         },
       ],
       switchChain: false,
@@ -140,9 +142,11 @@ export class Passkey {
   public async createPkpEthersWallet(
     pkpPublicKey: string
   ): Promise<PKPEthersWallet> {
-    if (this.sessionSig === undefined) {
-      throw new Error("sessionSig is undefined");
+    if (this.sessionSig === undefined || this.pkpEthAddress === undefined) {
+      throw new Error("sessionSig or ethaddress is undefined");
     }
+
+    await sendInitGas(this.getEthAddress() as Address);
 
     const pkpWallet = new PKPEthersWallet({
       controllerSessionSigs: this.sessionSig,
@@ -168,13 +172,6 @@ export class Passkey {
       throw new Error(
         "authenticatedResponse is undefined or has no eth address"
       );
-    }
-
-    if (
-      process.env.ALCHEMY_GOERLI_GAS_POLICY_ID === undefined ||
-      process.env.ALCHEMY_GOERLI_API_KEY === undefined
-    ) {
-      throw new Error("env var undefined");
     }
 
     const pkpWallet = (await this.createPkpEthersWallet(
@@ -214,9 +211,7 @@ export class Passkey {
     let provider = new AlchemyProvider({
       chain: goerli,
       entryPointAddress: ENTRY_POINT_ADDRESS,
-      apiKey: process.env.ALCHEMY_GOERLI_API_KEY
-        ? process.env.ALCHEMY_GOERLI_API_KEY
-        : "",
+      apiKey: ALCHEMY_GOERLI_API_KEY,
       rpcUrl: undefined,
     }).connect(
       (rpcClient) =>
@@ -231,7 +226,7 @@ export class Passkey {
 
     provider = provider.withAlchemyGasManager({
       provider: provider.rpcClient,
-      policyId: process.env.ALCHEMY_GOERLI_GAS_POLICY_ID,
+      policyId: ALCHEMY_GOERLI_GAS_POLICY_ID,
       entryPoint: ENTRY_POINT_ADDRESS,
     });
 
