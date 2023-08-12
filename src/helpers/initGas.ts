@@ -1,7 +1,7 @@
 import { Address, createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { ETH_PRIVATE_KEY } from "@/helpers/env";
-import { Chain } from "./constants";
+import { Chain, alchemyGasPolicyId } from "./chains";
 
 export async function sendInitGas(toAddress: Address, chain: Chain) {
   const account = privateKeyToAccount(("0x" + ETH_PRIVATE_KEY) as Address);
@@ -9,9 +9,7 @@ export async function sendInitGas(toAddress: Address, chain: Chain) {
   const client = createWalletClient({
     account: account,
     chain: chain.viemChain,
-    transport: http(
-      "https://eth-" + chain.name + ".g.alchemy.com/v2/" + chain.alchemyAPIKey
-    ),
+    transport: http(chain.rpcUrls[0] + alchemyGasPolicyId(chain)),
   });
 
   try {

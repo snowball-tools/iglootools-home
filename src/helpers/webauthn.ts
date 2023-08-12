@@ -23,7 +23,7 @@ import { TypedDataField } from "@ethersproject/abstract-signer";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { sendInitGas } from "./initGas";
 import { LIT_RELAY_API_KEY } from "@/helpers/env";
-import { CHAINS, Chain } from "./constants";
+import { CHAINS, Chain, alchemyAPIKey, alchemyGasPolicyId } from "./chains";
 
 const IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS =
   "0x799e75059126E6DA27A164d1315b1963Fb82c44F";
@@ -211,7 +211,7 @@ export class Passkey {
     let provider = new AlchemyProvider({
       chain: chain.viemChain,
       entryPointAddress: chain.entryPointAddress,
-      apiKey: chain.alchemyAPIKey,
+      apiKey: alchemyAPIKey(chain),
       rpcUrl: undefined,
     }).connect(
       (rpcClient) =>
@@ -226,7 +226,7 @@ export class Passkey {
 
     provider = provider.withAlchemyGasManager({
       provider: provider.rpcClient,
-      policyId: chain.alchemyGasPolicyId,
+      policyId: alchemyGasPolicyId(chain),
       entryPoint: chain.entryPointAddress,
     });
 

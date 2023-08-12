@@ -20,8 +20,6 @@ export interface Chain {
   vmType: string;
   testNetwork: boolean;
   viemChain: ViemChain;
-  alchemyAPIKey: string;
-  alchemyGasPolicyId: string;
   factoryAddress: Address;
   entryPointAddress: Address;
 }
@@ -38,8 +36,6 @@ export const CHAINS = {
     vmType: "EVM",
     testNetwork: false,
     viemChain: mainnet,
-    alchemyAPIKey: ALCHEMY_MAINNET_API_KEY,
-    alchemyGasPolicyId: ALCHEMY_MAINNET_GAS_POLICY_ID,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
   },
@@ -54,8 +50,6 @@ export const CHAINS = {
     vmType: "EVM",
     testNetwork: true,
     viemChain: goerli,
-    alchemyAPIKey: ALCHEMY_GOERLI_API_KEY,
-    alchemyGasPolicyId: ALCHEMY_GOERLI_GAS_POLICY_ID,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
   },
@@ -70,12 +64,36 @@ export const CHAINS = {
     vmType: "EVM",
     testNetwork: true,
     viemChain: sepolia,
-    alchemyAPIKey: ALCHEMY_SEPOLIA_API_KEY,
-    alchemyGasPolicyId: ALCHEMY_SEPOLIA_GAS_POLICY_ID,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
   },
 };
+
+export function alchemyAPIKey(chain: Chain) {
+  switch (chain) {
+    case CHAINS.ethereum:
+      return ALCHEMY_MAINNET_API_KEY;
+    case CHAINS.goerli:
+      return ALCHEMY_GOERLI_API_KEY;
+    case CHAINS.sepolia:
+      return ALCHEMY_SEPOLIA_API_KEY;
+    default:
+      throw new Error("Unknown chain");
+  }
+}
+
+export function alchemyGasPolicyId(chain: Chain) {
+  switch (chain) {
+    case CHAINS.ethereum:
+      return ALCHEMY_MAINNET_GAS_POLICY_ID;
+    case CHAINS.goerli:
+      return ALCHEMY_GOERLI_GAS_POLICY_ID;
+    case CHAINS.sepolia:
+      return ALCHEMY_SEPOLIA_GAS_POLICY_ID;
+    default:
+      throw new Error("Unknown chain");
+  }
+}
 
 // export const CHAINS: Chain[] = [
 //   {
