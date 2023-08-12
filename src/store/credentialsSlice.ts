@@ -1,6 +1,6 @@
 import { SessionSigsMap } from "@lit-protocol/types";
 import { createSlice } from "@reduxjs/toolkit";
-import { Chain, DEFAULT_CHAIN_ID, CHAINS } from "../helpers/chains";
+import { Chain, CHAINS } from "../helpers/chains";
 
 export interface CredentialState {
   isAuthenticated: boolean;
@@ -9,7 +9,7 @@ export interface CredentialState {
   sessionSigs: SessionSigsMap;
   sessionExpiration: string | null;
   appChainId: number;
-  appChains: Chain[];
+  appChains: { [key: string]: Chain };
 }
 
 export const initialState: CredentialState = {
@@ -18,7 +18,7 @@ export const initialState: CredentialState = {
   currentPKP: null,
   sessionSigs: {},
   sessionExpiration: null,
-  appChainId: DEFAULT_CHAIN_ID,
+  appChainId: CHAINS.goerli.chainId,
   appChains: CHAINS,
 };
 
