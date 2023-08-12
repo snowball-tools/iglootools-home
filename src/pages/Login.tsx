@@ -11,6 +11,7 @@ import {
 import AnimatedComponent from "@/components/AnimatedComponent";
 import { DEFAULT_EXP, Passkey } from "@/helpers/webauthn";
 import { authenticated, initialState } from "@/store/credentialsSlice";
+import { CHAINS } from "@/helpers/chains";
 
 const passkey = new Passkey();
 
@@ -68,7 +69,7 @@ export default function Login() {
         const sessionSigs = await passkey.getSessionSigs(
           pkpToAuthWith,
           authData,
-          "goerli"
+          CHAINS.goerli
         );
 
         console.log("sessionSigs", sessionSigs);
@@ -94,7 +95,7 @@ export default function Login() {
 
   async function sendUserOperation() {
     dispatch(setView(LoginViews.MINTING));
-    const result = await passkey.sendUserOperation();
+    const result = await passkey.sendUserOperation(CHAINS.goerli);
     dispatch(setMintedNFT(result));
     return result;
   }
