@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 
 const NavBar: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <nav className="absolute items-center justify-between p-4 h-30">
+    <div className="fixed top-0 left-0 w-full bg-gray-800 p-4 flex items-center">
       <a href="https://iglootools.xyz">
         <svg
           width="40"
@@ -121,7 +123,49 @@ const NavBar: React.FC = () => {
           </defs>
         </svg>
       </a>
-    </nav>
+      <div className="flex flex-grow justify-end">
+        <div className="relative inline-block text-left">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-white focus:outline-none"
+          >
+            Menu
+          </button>
+          {isOpen && (
+            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white">
+              <div
+                className="py-1"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="options-menu"
+              >
+                <a
+                  href="#"
+                  className="text-gray-700 block px-4 py-2 text-sm"
+                  role="menuitem"
+                >
+                  Option 1
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-700 block px-4 py-2 text-sm"
+                  role="menuitem"
+                >
+                  Option 2
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-700 block px-4 py-2 text-sm"
+                  role="menuitem"
+                >
+                  Option 3
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
