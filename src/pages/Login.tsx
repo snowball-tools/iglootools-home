@@ -76,16 +76,7 @@ export default function Login() {
 
         dispatch(setView(LoginViews.SESSION_CREATED));
 
-        dispatch(
-          authenticated({
-            ...initialState,
-            isAuthenticated: true,
-            currentUsername: username,
-            currentPKP: pkpToAuthWith,
-            sessionSigs: sessionSigs,
-            sessionExpiration: DEFAULT_EXP,
-          })
-        );
+        dispatch(authenticated(username));
       }
     } catch (e: Error | any) {
       console.error(e);
