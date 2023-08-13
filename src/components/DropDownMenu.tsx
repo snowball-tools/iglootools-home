@@ -13,7 +13,7 @@ const DropDownMenu: React.FC = () => {
   const dispatch = useDispatch();
 
   async function selectChain(chain: Chain) {
-    dispatch(switchChain(chain.name));
+    dispatch(switchChain(chain));
     setIsOpen(false);
   }
 
@@ -23,7 +23,7 @@ const DropDownMenu: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="text-white focus:outline-none"
       >
-        {currentAppChain}
+        {currentAppChain.name}
       </button>
       {isOpen && (
         <div className="origin-top-right absolute right-0 mt-2 rounded-md shadow-lg bg-white">

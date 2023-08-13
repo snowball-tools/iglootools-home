@@ -9,5 +9,6 @@ declare namespace NodeJS {
     ETH_PRIVATE_KEY: string;
     LIT_RELAY_API_KEY: string;
     VERCEL_WEB_ANALYTICS_ID: string;
+    NEXT_PUBLIC_DEBUG: string;
   }
 }

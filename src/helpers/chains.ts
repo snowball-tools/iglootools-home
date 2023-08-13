@@ -19,7 +19,6 @@ export interface Chain {
   blockExplorerUrls: string[];
   vmType: string;
   testNetwork: boolean;
-  viemChain: ViemChain;
   factoryAddress: Address;
   entryPointAddress: Address;
 }
@@ -35,7 +34,6 @@ export const CHAINS = {
     blockExplorerUrls: ["https://etherscan.io"],
     vmType: "EVM",
     testNetwork: false,
-    viemChain: mainnet,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
   },
@@ -49,7 +47,6 @@ export const CHAINS = {
     type: "ERC1155",
     vmType: "EVM",
     testNetwork: true,
-    viemChain: goerli,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
   },
@@ -63,7 +60,6 @@ export const CHAINS = {
     type: "ERC1155",
     vmType: "EVM",
     testNetwork: true,
-    viemChain: sepolia,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
   },
@@ -94,6 +90,21 @@ export function alchemyGasPolicyId(chain: Chain) {
       throw new Error("Unknown chain");
   }
 }
+
+export function viemChain(chain: Chain): ViemChain {
+  switch (chain) {
+    case CHAINS.ethereum:
+      return mainnet;
+    case CHAINS.goerli:
+      return goerli;
+    case CHAINS.sepolia:
+      return sepolia;
+    default:
+      throw new Error("Unknown chain");
+  }
+}
+
+export const DEFAULT_CHAIN = CHAINS.goerli;
 
 // export const CHAINS: Chain[] = [
 //   {

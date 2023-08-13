@@ -18,12 +18,19 @@ import {
   SendUserOperationResult,
 } from "@alchemy/aa-core";
 import { encodeFunctionData } from "viem";
-import { IglooNFTABI } from "./IglooNFTABI";
+import { IglooNFTABI } from "./abis/IglooNFTABI";
 import { TypedDataField } from "@ethersproject/abstract-signer";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { sendInitGas } from "./initGas";
 import { LIT_RELAY_API_KEY } from "@/helpers/env";
-import { CHAINS, Chain, alchemyAPIKey, alchemyGasPolicyId } from "./chains";
+import {
+  CHAINS,
+  Chain,
+  DEFAULT_CHAIN,
+  alchemyAPIKey,
+  alchemyGasPolicyId,
+  viemChain,
+} from "./chains";
 
 const IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS =
   "0x799e75059126E6DA27A164d1315b1963Fb82c44F";
@@ -33,7 +40,7 @@ export const DEFAULT_EXP = new Date(
 ).toISOString();
 
 export class Passkey {
-  public chain: Chain = CHAINS.goerli;
+  public chain: Chain = DEFAULT_CHAIN;
   public pkpPublicKey: string | undefined;
   public pkpEthAddress: string | undefined;
   public sessionSig: SessionSigsMap | undefined;
@@ -209,7 +216,7 @@ export class Passkey {
     };
 
     let provider = new AlchemyProvider({
-      chain: chain.viemChain,
+      chain: viemChain(chain),
       entryPointAddress: chain.entryPointAddress,
       apiKey: alchemyAPIKey(chain),
       rpcUrl: undefined,
@@ -218,7 +225,7 @@ export class Passkey {
         new SimpleSmartContractAccount({
           owner,
           entryPointAddress: chain.entryPointAddress,
-          chain: chain.viemChain,
+          chain: viemChain(chain),
           factoryAddress: chain.factoryAddress,
           rpcClient,
         })

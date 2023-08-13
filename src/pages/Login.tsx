@@ -7,7 +7,7 @@ import {
   setErrorMsg,
   setMintedNFT,
   LoginViews,
-} from "@/store/loginSlice";
+} from "@/store/credentialsSlice";
 import AnimatedComponent from "@/components/AnimatedComponent";
 import { DEFAULT_EXP, Passkey } from "@/helpers/webauthn";
 import { authenticated, initialState } from "@/store/credentialsSlice";
@@ -16,9 +16,8 @@ import { CHAINS } from "@/helpers/chains";
 const passkey = new Passkey();
 
 export default function Login() {
-  const { view, username, errorMsg, userOpResult } = useSelector(
-    (state: RootState) => state.login
-  );
+  const { view, username, errorMsg, userOpResult, currentAppChain } =
+    useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
 
   async function createPKPWithWebAuthn() {
@@ -35,6 +34,8 @@ export default function Login() {
 
       if (auth) {
         dispatch(setView(LoginViews.MINTED));
+      } else {
+        dispatch(setErrorMsg("Error authenticating passkey"));
       }
     }
   }
@@ -51,11 +52,13 @@ export default function Login() {
       if (!pkpToAuthWith) {
         const pkps = await passkey.fetchPkps(authData);
 
-        console.log("pkps", pkps);
         if (pkps.length === 0) {
-          throw new Error(
-            "No PKPs found for this passkey. Please register a new passkey to mint a new PKP."
+          dispatch(
+            setErrorMsg(
+              "No PKPs found for this passkey. Please register a new passkey to mint a new PKP."
+            )
           );
+          return;
         } else {
           pkpToAuthWith = pkps[0].publicKey;
         }
