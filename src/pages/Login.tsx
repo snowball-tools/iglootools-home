@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store/store";
+import { RootState } from "../store/store";
 import {
   setView,
   setUsername,
@@ -9,19 +9,17 @@ import {
   setCurrentPKP,
   LoginViews,
   setSessionSig,
-} from "@/store/credentialsSlice";
-import AnimatedComponent from "@/components/AnimatedComponent";
+} from "../store/credentialsSlice";
+import AnimatedComponent from "../components/AnimatedComponent";
 import {
-  DEFAULT_EXP,
   authenticatePasskey,
   createPkpEthersWallet,
   fetchPkpsForAuthMethod,
   getSessionSigs,
   registerPasskey,
   sendUserOperation,
-} from "@/helpers/webauthn";
-import { authenticated, initialState } from "@/store/credentialsSlice";
-import { CHAINS } from "@/helpers/chains";
+} from "../helpers/webauthn";
+import { authenticated } from "../store/credentialsSlice";
 
 export default function Login() {
   const {
@@ -335,7 +333,7 @@ export default function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-black">
-      <AnimatedComponent key={view}>{renderView()}</AnimatedComponent>
+      <AnimatedComponent animKey={view}>{renderView()}</AnimatedComponent>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { Address, createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { ETH_PRIVATE_KEY } from "@/helpers/env";
+import { ETH_PRIVATE_KEY } from "../helpers/env";
 import { Chain, alchemyAPIKey, viemChain } from "./chains";
 
 export async function sendInitGas(toAddress: Address, chain: Chain) {

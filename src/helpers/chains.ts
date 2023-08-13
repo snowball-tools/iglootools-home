@@ -5,10 +5,9 @@ import {
   ALCHEMY_GOERLI_GAS_POLICY_ID,
   ALCHEMY_MAINNET_GAS_POLICY_ID,
   ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-} from "@/helpers/env";
+} from "../helpers/env";
 import { Address } from "viem";
 import { mainnet, sepolia, goerli, Chain as ViemChain } from "viem/chains";
-import { IglooNFTABI } from "./abis/IglooNFTABI";
 
 export interface Chain {
   chainId: number;

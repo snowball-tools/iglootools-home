@@ -22,7 +22,7 @@ import { IglooNFTABI } from "./abis/IglooNFTABI";
 import { TypedDataField } from "@ethersproject/abstract-signer";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { sendInitGas } from "./initGas";
-import { LIT_RELAY_API_KEY } from "@/helpers/env";
+import { LIT_RELAY_API_KEY } from "../helpers/env";
 import { Chain, alchemyAPIKey, alchemyGasPolicyId, viemChain } from "./chains";
 
 export const DEFAULT_EXP = new Date(

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store/store";
-import { switchChain } from "@/store/credentialsSlice";
-import { Chain } from "@/helpers/chains";
+import { RootState } from "../store/store";
+import { switchChain } from "../store/credentialsSlice";
+import { Chain } from "../helpers/chains";
 
 // todo: make generic
 const DropDownMenu: React.FC = () => {
@@ -31,6 +31,7 @@ const DropDownMenu: React.FC = () => {
             {Object.values(appChains).map((chain: Chain) => {
               return (
                 <button
+                  key={chain.name}
                   onClick={() => selectChain(chain)}
                   className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-right"
                 >

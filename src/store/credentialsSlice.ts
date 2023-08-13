@@ -1,12 +1,7 @@
-import {
-  AuthMethod,
-  IRelayPollStatusResponse,
-  SessionSigsMap,
-} from "@lit-protocol/types";
+import { AuthMethod, SessionSigsMap } from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chain, CHAINS } from "../helpers/chains";
 import { SendUserOperationResult } from "@alchemy/aa-core";
-import { Log } from "viem";
 
 export const LoginViews = {
   SIGN_UP: "sign_up",
