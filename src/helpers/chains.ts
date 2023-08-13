@@ -8,6 +8,7 @@ import {
 } from "@/helpers/env";
 import { Address } from "viem";
 import { mainnet, sepolia, goerli, Chain as ViemChain } from "viem/chains";
+import { IglooNFTABI } from "./abis/IglooNFTABI";
 
 export interface Chain {
   chainId: number;
@@ -21,6 +22,7 @@ export interface Chain {
   testNetwork: boolean;
   factoryAddress: Address;
   entryPointAddress: Address;
+  iglooNFTAddress: Address;
 }
 
 export const CHAINS = {
@@ -36,6 +38,7 @@ export const CHAINS = {
     testNetwork: false,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
     entryPointAddress: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as Address,
+    iglooNFTAddress: "0x799e75059126E6DA27A164d1315b1963Fb82c44F" as Address,
   },
   goerli: {
     chainId: 5,
@@ -49,6 +52,7 @@ export const CHAINS = {
     testNetwork: true,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
     entryPointAddress: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as Address,
+    iglooNFTAddress: "0x799e75059126E6DA27A164d1315b1963Fb82c44F" as Address,
   },
   sepolia: {
     chainId: 11155111,
@@ -61,7 +65,8 @@ export const CHAINS = {
     vmType: "EVM",
     testNetwork: true,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-    entryPointAddress: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as Address,
+    entryPointAddress: "0x0576a174D229E3cFA37253523E645A78A0C91B57" as Address,
+    iglooNFTAddress: "0x98AdA10fC1EAf5d21DB0f91d09fAa6165e427106" as Address,
   },
 };
 

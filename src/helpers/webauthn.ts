@@ -25,9 +25,6 @@ import { sendInitGas } from "./initGas";
 import { LIT_RELAY_API_KEY } from "@/helpers/env";
 import { Chain, alchemyAPIKey, alchemyGasPolicyId, viemChain } from "./chains";
 
-const IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS =
-  "0x799e75059126E6DA27A164d1315b1963Fb82c44F";
-
 export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
 ).toISOString();
@@ -213,7 +210,7 @@ export async function sendUserOperation(
     const address = await provider.getAddress();
 
     const result: SendUserOperationResult = await provider.sendUserOperation({
-      target: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS, // to do based on chain
+      target: chain.iglooNFTAddress,
       data: encodeFunctionData({
         abi: IglooNFTABI.abi,
         functionName: "safeMint",
