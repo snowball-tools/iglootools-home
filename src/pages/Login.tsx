@@ -6,92 +6,141 @@ import {
   setUsername,
   setErrorMsg,
   setMintedNFT,
+  setCurrentPKP,
   LoginViews,
+  setSessionSig,
 } from "@/store/credentialsSlice";
 import AnimatedComponent from "@/components/AnimatedComponent";
-import { DEFAULT_EXP, Passkey } from "@/helpers/webauthn";
+import {
+  DEFAULT_EXP,
+  authenticatePasskey,
+  createPkpEthersWallet,
+  fetchPkpsForAuthMethod,
+  getSessionSigs,
+  registerPasskey,
+  sendUserOperation,
+} from "@/helpers/webauthn";
 import { authenticated, initialState } from "@/store/credentialsSlice";
 import { CHAINS } from "@/helpers/chains";
 
-const passkey = new Passkey();
-
 export default function Login() {
-  const { view, username, errorMsg, userOpResult, currentAppChain } =
-    useSelector((state: RootState) => state.credentials);
+  const {
+    view,
+    username,
+    errorMsg,
+    userOpResult,
+    currentAppChain,
+    currentAuthMethod,
+    currentPKP,
+    currentPKPEthAddress,
+    sessionSigs,
+  } = useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
 
   async function createPKPWithWebAuthn() {
     dispatch(setView(LoginViews.REGISTERING));
 
-    const response = await passkey.register(username);
+    const response = await registerPasskey(username);
 
-    if (response === null) {
-      dispatch(setErrorMsg("Error creating passkey"));
-    } else {
-      dispatch(setView(LoginViews.AUTHENTICATING));
+    if (response && response.pkpEthAddress && response.pkpPublicKey) {
+      dispatch(
+        setCurrentPKP({
+          currentPKP: response.pkpPublicKey,
+          currentPKPEthAddress: response.pkpEthAddress,
+        })
+      );
 
-      const auth = await passkey.authenticate();
+      const auth = await authenticatePasskey();
 
       if (auth) {
+        dispatch(authenticated(auth));
         dispatch(setView(LoginViews.MINTED));
       } else {
         dispatch(setErrorMsg("Error authenticating passkey"));
       }
+    } else {
+      dispatch(setErrorMsg("Error creating passkey"));
     }
   }
 
-  async function authThenGetSessionSigs(event: React.MouseEvent) {
-    event.preventDefault();
+  async function authThenGetSessionSigs() {
+    let pkp: string | undefined = currentPKP;
+    let ethAddress: string | undefined = currentPKPEthAddress;
 
     dispatch(setView(LoginViews.AUTHENTICATING));
 
     try {
-      const authData = await passkey.authenticate();
+      const auth = await authenticatePasskey();
 
-      let pkpToAuthWith = passkey.pkpPublicKey;
-      if (!pkpToAuthWith) {
-        const pkps = await passkey.fetchPkps(authData);
+      if (pkp === undefined || ethAddress === undefined) {
+        const pkps = await fetchPkpsForAuthMethod(auth);
 
         if (pkps.length === 0) {
-          dispatch(
-            setErrorMsg(
-              "No PKPs found for this passkey. Please register a new passkey to mint a new PKP."
-            )
-          );
+          dispatch(setErrorMsg("Error authenticating passkey"));
           return;
-        } else {
-          pkpToAuthWith = pkps[0].publicKey;
         }
-      }
 
-      console.log("creating session", pkpToAuthWith);
+        pkp = pkps[0].publicKey;
+        ethAddress = pkps[0].ethAddress;
+      }
 
       dispatch(setView(LoginViews.CREATING_SESSION));
 
-      if (pkpToAuthWith) {
-        const sessionSigs = await passkey.getSessionSigs(
-          pkpToAuthWith,
-          authData,
-          CHAINS.goerli
+      const sessionSigs = await getSessionSigs(
+        pkp,
+        ethAddress,
+        auth,
+        currentAppChain
+      );
+
+      if (sessionSigs) {
+        dispatch(
+          setSessionSig({
+            currentPKP: pkp,
+            currentPKPEthAddress: ethAddress,
+            currentAuthMethod: auth,
+            sessionSigs: sessionSigs,
+            view: LoginViews.SESSION_CREATED,
+          })
         );
-
-        console.log("sessionSigs", sessionSigs);
-
-        dispatch(setView(LoginViews.SESSION_CREATED));
-
-        dispatch(authenticated(username));
+      } else {
+        dispatch(setErrorMsg("Error creating session"));
       }
-    } catch (e: Error | any) {
-      console.error(e);
-      dispatch(setErrorMsg(e.message));
+    } catch (e) {
+      console.log(e);
+      dispatch(setErrorMsg("Error authenticating passkey"));
     }
   }
 
-  async function sendUserOperation() {
+  async function sendUserOp() {
     dispatch(setView(LoginViews.MINTING));
-    const result = await passkey.sendUserOperation(CHAINS.goerli);
-    dispatch(setMintedNFT(result));
-    return result;
+
+    if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
+      const pkpEthWallet = await createPkpEthersWallet(
+        currentPKP,
+        currentPKPEthAddress,
+        sessionSigs,
+        currentAppChain
+      );
+
+      if (pkpEthWallet) {
+        const result = await sendUserOperation(
+          currentPKPEthAddress,
+          pkpEthWallet,
+          currentAppChain
+        );
+        if (result) {
+          dispatch(setMintedNFT(result));
+        } else {
+          dispatch(setErrorMsg("Error minting NFT"));
+        }
+        return result;
+      } else {
+        dispatch(setErrorMsg("Error sending user operation"));
+      }
+    } else {
+      dispatch(setErrorMsg("Error creating pkp eth wallet"));
+    }
   }
 
   const renderView = () => {
@@ -138,11 +187,10 @@ export default function Login() {
               <a
                 className="text-blue-500 hover:underline"
                 href={
-                  "https://goerli.etherscan.io/address/" +
-                  passkey.getEthAddress()
+                  "https://goerli.etherscan.io/address/" + currentPKPEthAddress
                 }
               >
-                {passkey.getEthAddress()}
+                {currentPKPEthAddress}
               </a>
             </h2>
           </>
@@ -173,11 +221,10 @@ export default function Login() {
               <a
                 className="text-blue-500 hover:underline"
                 href={
-                  "https://goerli.etherscan.io/address/" +
-                  passkey.getEthAddress()
+                  "https://goerli.etherscan.io/address/" + currentPKPEthAddress
                 }
               >
-                {passkey.getEthAddress()}
+                {currentPKPEthAddress}
               </a>
             </h2>
           </>
@@ -193,18 +240,17 @@ export default function Login() {
               <a
                 className="text-blue-500 hover:underline"
                 href={
-                  "https://goerli.etherscan.io/address/" +
-                  passkey.getEthAddress()
+                  "https://goerli.etherscan.io/address/" + currentPKPEthAddress
                 }
               >
-                {passkey.getEthAddress()}
+                {currentPKPEthAddress}
               </a>
             </h2>
             <button
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400 disabled:opacity-20"
-              onClick={sendUserOperation}
-              disabled={true}
+              onClick={sendUserOp}
+              disabled={false}
             >
               [WIP] Send User Operation
             </button>

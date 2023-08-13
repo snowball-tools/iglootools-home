@@ -1,7 +1,12 @@
-import { SessionSigsMap } from "@lit-protocol/types";
+import {
+  AuthMethod,
+  IRelayPollStatusResponse,
+  SessionSigsMap,
+} from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chain, CHAINS } from "../helpers/chains";
 import { SendUserOperationResult } from "@alchemy/aa-core";
+import { Log } from "viem";
 
 export const LoginViews = {
   SIGN_UP: "sign_up",
@@ -20,7 +25,9 @@ export interface CredentialState {
   view: string;
   isAuthenticated: boolean;
   username: string;
-  currentPKP: string | null;
+  currentPKP: string | undefined;
+  currentPKPEthAddress: string | undefined;
+  currentAuthMethod: AuthMethod | undefined;
   sessionSigs: SessionSigsMap;
   sessionExpiration: string | null;
   currentAppChain: Chain;
@@ -33,7 +40,9 @@ export const initialState: CredentialState = {
   view: LoginViews.SIGN_UP,
   isAuthenticated: false,
   username: "",
-  currentPKP: null,
+  currentPKP: undefined,
+  currentPKPEthAddress: undefined,
+  currentAuthMethod: undefined,
   sessionSigs: {},
   sessionExpiration: null,
   currentAppChain: CHAINS.goerli,
@@ -46,10 +55,9 @@ const credentialsSlice = createSlice({
   name: "credentials",
   initialState,
   reducers: {
-    restoreState: () => initialState,
-    authenticated: (state, action: PayloadAction<string>) => {
+    authenticated: (state, action: PayloadAction<AuthMethod>) => {
       state.isAuthenticated = true;
-      state.username = action.payload;
+      state.currentAuthMethod = action.payload;
     },
     disconnect: () => initialState,
     switchChain: (state, action: PayloadAction<Chain>) => {
@@ -69,11 +77,36 @@ const credentialsSlice = createSlice({
       state.errorMsg = action.payload;
       state.view = LoginViews.ERROR;
     },
+    setCurrentPKP: (
+      state,
+      action: PayloadAction<{
+        currentPKP: string;
+        currentPKPEthAddress: string;
+      }>
+    ) => {
+      state.currentPKP = action.payload.currentPKP;
+      state.currentPKPEthAddress = action.payload.currentPKPEthAddress;
+    },
+    setSessionSig: (
+      state,
+      action: PayloadAction<{
+        currentPKP: string;
+        currentPKPEthAddress: string;
+        currentAuthMethod: AuthMethod;
+        sessionSigs: SessionSigsMap;
+        view: string;
+      }>
+    ) => {
+      state.currentPKP = action.payload.currentPKP;
+      state.currentPKPEthAddress = action.payload.currentPKPEthAddress;
+      state.currentAuthMethod = action.payload.currentAuthMethod;
+      state.sessionSigs = action.payload.sessionSigs;
+      state.view = action.payload.view;
+    },
   },
 });
 
 export const {
-  restoreState,
   authenticated,
   disconnect,
   switchChain,
@@ -81,6 +114,8 @@ export const {
   setUsername,
   setMintedNFT,
   setErrorMsg,
+  setCurrentPKP,
+  setSessionSig,
 } = credentialsSlice.actions;
 
 export default credentialsSlice.reducer;

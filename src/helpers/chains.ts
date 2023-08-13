@@ -35,7 +35,7 @@ export const CHAINS = {
     vmType: "EVM",
     testNetwork: false,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-    entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    entryPointAddress: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as Address,
   },
   goerli: {
     chainId: 5,
@@ -48,7 +48,7 @@ export const CHAINS = {
     vmType: "EVM",
     testNetwork: true,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-    entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    entryPointAddress: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as Address,
   },
   sepolia: {
     chainId: 11155111,
@@ -61,7 +61,7 @@ export const CHAINS = {
     vmType: "EVM",
     testNetwork: true,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-    entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    entryPointAddress: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as Address,
   },
 };
 
