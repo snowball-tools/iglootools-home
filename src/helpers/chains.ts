@@ -15,6 +15,7 @@ export interface Chain {
   symbol: string;
   decimals: number;
   type: string;
+  enabled: boolean;
   rpcUrls: string[];
   blockExplorerUrls: string[];
   vmType: string;
@@ -31,6 +32,7 @@ export const CHAINS = {
     symbol: "ETH",
     decimals: 18,
     type: "ERC1155",
+    enabled: false,
     rpcUrls: ["https://eth-mainnet.alchemyapi.io/v2/"],
     blockExplorerUrls: ["https://etherscan.io"],
     vmType: "EVM",
@@ -47,6 +49,7 @@ export const CHAINS = {
     rpcUrls: ["https://eth-goerli.g.alchemy.com/v2/"],
     blockExplorerUrls: ["https://goerli.etherscan.io"],
     type: "ERC1155",
+    enabled: true,
     vmType: "EVM",
     testNetwork: true,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
@@ -61,13 +64,123 @@ export const CHAINS = {
     rpcUrls: ["https://eth-sepolia.g.alchemy.com/v2/"],
     blockExplorerUrls: ["https://sepolia.etherscan.io"],
     type: "ERC1155",
+    enabled: true,
     vmType: "EVM",
     testNetwork: true,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-    entryPointAddress: "0x0576a174D229E3cFA37253523E645A78A0C91B57" as Address,
+    entryPointAddress: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789" as Address,
+    iglooNFTAddress: "0x98AdA10fC1EAf5d21DB0f91d09fAa6165e427106" as Address,
+  },
+  mantle: {
+    chainId: 5000,
+    name: "Mantle",
+    symbol: "MNT",
+    decimals: 18,
+    type: "ERC1155",
+    enabled: false,
+    rpcUrls: ["https://explorer.mantle.xyz/api/eth-rpc"],
+    blockExplorerUrls: ["https://explorer.mantle.xyz/"],
+    vmType: "EVM",
+    testNetwork: false,
+    factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    iglooNFTAddress: "0x98AdA10fC1EAf5d21DB0f91d09fAa6165e427106" as Address,
+  },
+  mantle_testnet: {
+    chainId: 5001,
+    name: "Mantle Testnet",
+    symbol: "MNT",
+    decimals: 18,
+    type: "ERC1155",
+    enabled: false,
+    rpcUrls: [
+      "https://rpc.ankr.com/mantle_testnet/1a2aec0bfde1e926c21f0f91e0c90d35ec85093c8bbb9435137067b0f6e36056",
+    ],
+    blockExplorerUrls: ["https://explorer.testnet.mantle.xyz/"],
+    vmType: "EVM",
+    testNetwork: true,
+    factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    iglooNFTAddress: "0x98AdA10fC1EAf5d21DB0f91d09fAa6165e427106" as Address,
+  },
+  polygon: {
+    chainId: 137,
+    name: "Polygon",
+    symbol: "MATIC",
+    decimals: 18,
+    rpcUrls: ["https://polygon-rpc.com"],
+    blockExplorerUrls: ["https://explorer.matic.network"],
+    type: "ERC1155",
+    enabled: false,
+    vmType: "EVM",
+    testNetwork: false,
+    factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    iglooNFTAddress: "0x98AdA10fC1EAf5d21DB0f91d09fAa6165e427106" as Address,
+  },
+  mumbai: {
+    chainId: 80001,
+    name: "Mumbai",
+    symbol: "MATIC",
+    decimals: 18,
+    rpcUrls: ["https://rpc-mumbai.maticvigil.com/v1/"],
+    blockExplorerUrls: ["https://mumbai.polygonscan.com"],
+    type: "ERC1155",
+    enabled: false,
+    vmType: "EVM",
+    testNetwork: true,
+    factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    iglooNFTAddress: "0x98AdA10fC1EAf5d21DB0f91d09fAa6165e427106" as Address,
+  },
+  arbitrum: {
+    chainId: 42161,
+    name: "Arbitrum",
+    symbol: "AETH",
+    decimals: 18,
+    type: "ERC1155",
+    enabled: false,
+    rpcUrls: ["https://arb1.arbitrum.io/rpc"],
+    blockExplorerUrls: ["https://arbiscan.io/"],
+    vmType: "EVM",
+    testNetwork: false,
+    factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    iglooNFTAddress: "0x98AdA10fC1EAf5d21DB0f91d09fAa6165e427106" as Address,
+  },
+  optimism: {
+    chainId: 10,
+    name: "Optimism",
+    symbol: "ETH",
+    decimals: 18,
+    rpcUrls: ["https://mainnet.optimism.io"],
+    blockExplorerUrls: ["https://optimistic.etherscan.io"],
+    type: "ERC1155",
+    enabled: false,
+    vmType: "EVM",
+    testNetwork: false,
+    factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    iglooNFTAddress: "0x98AdA10fC1EAf5d21DB0f91d09fAa6165e427106" as Address,
+  },
+  celo: {
+    chainId: 42220,
+    name: "Celo",
+    symbol: "CELO",
+    decimals: 18,
+    rpcUrls: ["https://forno.celo.org"],
+    blockExplorerUrls: ["https://explorer.celo.org"],
+    type: "ERC1155",
+    enabled: false,
+    vmType: "EVM",
+    testNetwork: false,
+    factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
+    entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
     iglooNFTAddress: "0x98AdA10fC1EAf5d21DB0f91d09fAa6165e427106" as Address,
   },
 };
+
+export const DEFAULT_CHAIN = CHAINS.goerli;
 
 export function alchemyAPIKey(chain: Chain) {
   switch (chain) {
@@ -78,7 +191,7 @@ export function alchemyAPIKey(chain: Chain) {
     case CHAINS.sepolia:
       return ALCHEMY_SEPOLIA_API_KEY;
     default:
-      throw new Error("Unknown chain");
+      throw new Error("Unsupported chain");
   }
 }
 
@@ -91,7 +204,7 @@ export function alchemyGasPolicyId(chain: Chain) {
     case CHAINS.sepolia:
       return ALCHEMY_SEPOLIA_GAS_POLICY_ID;
     default:
-      throw new Error("Unknown chain");
+      throw new Error("Unsupported chain");
   }
 }
 
@@ -104,173 +217,25 @@ export function viemChain(chain: Chain): ViemChain {
     case CHAINS.sepolia:
       return sepolia;
     default:
-      throw new Error("Unknown chain");
+      throw new Error("Unsupported chain");
   }
 }
 
-export const DEFAULT_CHAIN = CHAINS.goerli;
-
-// export const CHAINS: Chain[] = [
-//   {
-//     chainId: 5001,
-//     name: "Mantle Testnet",
-//     symbol: "MNT",
-//     decimals: 18,
-//     type: "ERC1155",
-//     rpcUrls: [
-//       "https://rpc.ankr.com/mantle_testnet/1a2aec0bfde1e926c21f0f91e0c90d35ec85093c8bbb9435137067b0f6e36056",
-//     ],
-//     blockExplorerUrls: ["https://explorer.testnet.mantle.xyz/"],
-//     vmType: "EVM",
-//     testNetwork: true,
-//     viemChain: undefined,
-//     alchemyAPIKey: ALCHEMY_SEPOLIA_API_KEY,
-//     alchemyGasPolicyId: ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-//     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//   },
-//   {
-//     chainId: 5000,
-//     name: "Mantle",
-//     symbol: "MNT",
-//     decimals: 18,
-//     type: "ERC1155",
-//     rpcUrls: ["https://explorer.mantle.xyz/api/eth-rpc"],
-//     blockExplorerUrls: ["https://explorer.mantle.xyz/"],
-//     vmType: "EVM",
-//     testNetwork: false,
-//     viemChain: undefined,
-//     alchemyAPIKey: ALCHEMY_SEPOLIA_API_KEY,
-//     alchemyGasPolicyId: ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-//     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//   },
-//   {
-//     chainId: 1,
-//     name: "Ethereum",
-//     symbol: "ETH",
-//     decimals: 18,
-//     type: "ERC1155",
-//     rpcUrls: ["https://eth-mainnet.alchemyapi.io/v2/"],
-//     blockExplorerUrls: ["https://etherscan.io"],
-//     vmType: "EVM",
-//     testNetwork: false,
-//     viemChain: mainnet,
-//     alchemyAPIKey: ALCHEMY_MAINNET_API_KEY,
-//     alchemyGasPolicyId: ALCHEMY_MAINNET_GAS_POLICY_ID,
-//     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//   },
-//   {
-//     chainId: 137,
-//     name: "Polygon",
-//     symbol: "MATIC",
-//     decimals: 18,
-//     rpcUrls: ["https://polygon-rpc.com"],
-//     blockExplorerUrls: ["https://explorer.matic.network"],
-//     type: "ERC1155",
-//     vmType: "EVM",
-//     testNetwork: false,
-//     viemChain: polygon,
-//     alchemyAPIKey: ALCHEMY_SEPOLIA_API_KEY,
-//     alchemyGasPolicyId: ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-//     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//   },
-//   {
-//     chainId: 42161,
-//     name: "Arbitrum",
-//     symbol: "AETH",
-//     decimals: 18,
-//     type: "ERC1155",
-//     rpcUrls: ["https://arb1.arbitrum.io/rpc"],
-//     blockExplorerUrls: ["https://arbiscan.io/"],
-//     vmType: "EVM",
-//     testNetwork: false,
-//     viemChain: arbitrum,
-//     alchemyAPIKey: ALCHEMY_SEPOLIA_API_KEY,
-//     alchemyGasPolicyId: ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-//     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//   },
-//   {
-//     chainId: 80001,
-//     name: "Mumbai",
-//     symbol: "MATIC",
-//     decimals: 18,
-//     rpcUrls: ["https://rpc-mumbai.maticvigil.com/v1/"],
-//     blockExplorerUrls: ["https://mumbai.polygonscan.com"],
-//     type: "ERC1155",
-//     vmType: "EVM",
-//     testNetwork: true,
-//     viemChain: polygonMumbai,
-//     alchemyAPIKey: "96bf5fa6e03d272fbd09de48d03927b95633726c",
-//     alchemyGasPolicyId: ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-//     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//   },
-//   {
-//     chainId: 5,
-//     name: "Goerli",
-//     symbol: "ETH",
-//     decimals: 18,
-//     rpcUrls: ["https://eth-goerli.g.alchemy.com/v2/"],
-//     blockExplorerUrls: ["https://goerli.etherscan.io"],
-//     type: "ERC1155",
-//     vmType: "EVM",
-//     testNetwork: true,
-//     viemChain: goerli,
-//     alchemyAPIKey: ALCHEMY_GOERLI_API_KEY,
-//     alchemyGasPolicyId: ALCHEMY_GOERLI_GAS_POLICY_ID,
-//     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//   },
-//   {
-//     chainId: 11155111,
-//     name: "Sepolia",
-//     symbol: "ETH",
-//     decimals: 18,
-//     rpcUrls: ["https://eth-sepolia.g.alchemy.com/v2/"],
-//     blockExplorerUrls: ["https://sepolia.etherscan.io"],
-//     type: "ERC1155",
-//     vmType: "EVM",
-//     testNetwork: true,
-//     viemChain: sepolia,
-//     alchemyAPIKey: ALCHEMY_SEPOLIA_API_KEY,
-//     alchemyGasPolicyId: ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-//     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//   },
-//   {
-//     chainId: 10,
-//     name: "Optimism",
-//     symbol: "ETH",
-//     decimals: 18,
-//     rpcUrls: ["https://mainnet.optimism.io"],
-//     blockExplorerUrls: ["https://optimistic.etherscan.io"],
-//     type: "ERC1155",
-//     vmType: "EVM",
-//     testNetwork: false,
-//     viemChain: optimism,
-//     alchemyAPIKey: ALCHEMY_SEPOLIA_API_KEY,
-//     alchemyGasPolicyId: ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-//     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//   },
-//   {
-//     chainId: 42220,
-//     name: "Celo",
-//     symbol: "CELO",
-//     decimals: 18,
-//     rpcUrls: ["https://forno.celo.org"],
-//     blockExplorerUrls: ["https://explorer.celo.org"],
-//     type: "ERC1155",
-//     vmType: "EVM",
-//     testNetwork: false,
-//     viemChain: celo,
-//     alchemyAPIKey: ALCHEMY_SEPOLIA_API_KEY,
-//     alchemyGasPolicyId: ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-//     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
-//   },
-// ];
+export function getChainIcon(chain: Chain): string {
+  switch (chain) {
+    case CHAINS.polygon:
+    case CHAINS.mumbai:
+      return "polygon.svg";
+    case CHAINS.mantle:
+    case CHAINS.mantle_testnet:
+      return "mantle_black.svg";
+    case CHAINS.arbitrum:
+      return "arbitrum.svg";
+    case CHAINS.optimism:
+      return "optimism.svg";
+    case CHAINS.celo:
+      return "celo.svg";
+    default:
+      return "ethereum.svg";
+  }
+}

@@ -2,13 +2,13 @@
 
 ## Getting Started
 
-```
+```sh
 yarn install
 ```
 
 ## Development
 
-```
+```sh
 yarn dev
 ```
 
@@ -16,7 +16,7 @@ yarn dev
 
 test via
 
-```bash
+```sh
 curl -v https://app-site-association.cdn-apple.com/a/v1/<url>
 ```
 

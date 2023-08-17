@@ -20,6 +20,7 @@ import {
   sendUserOperation,
 } from "../helpers/webauthn";
 import { authenticated } from "../store/credentialsSlice";
+import { NEXT_PUBLIC_DEBUG } from "../helpers/env";
 
 export default function Login() {
   const {
@@ -180,17 +181,6 @@ export default function Login() {
             <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
               Minting
             </h1>
-            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              passkey eth address:{" "}
-              <a
-                className="text-blue-500 hover:underline"
-                href={
-                  "https://goerli.etherscan.io/address/" + currentPKPEthAddress
-                }
-              >
-                {currentPKPEthAddress}
-              </a>
-            </h2>
           </>
         );
       case LoginViews.MINTED:
@@ -214,17 +204,6 @@ export default function Login() {
             <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
               Creating Session
             </h1>
-            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              passkey eth address:{" "}
-              <a
-                className="text-blue-500 hover:underline"
-                href={
-                  "https://goerli.etherscan.io/address/" + currentPKPEthAddress
-                }
-              >
-                {currentPKPEthAddress}
-              </a>
-            </h2>
           </>
         );
       case LoginViews.SESSION_CREATED:
@@ -233,24 +212,12 @@ export default function Login() {
             <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
               Session Created
             </h1>
-            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              passkey eth address:{" "}
-              <a
-                className="text-blue-500 hover:underline"
-                href={
-                  "https://goerli.etherscan.io/address/" + currentPKPEthAddress
-                }
-              >
-                {currentPKPEthAddress}
-              </a>
-            </h2>
             <button
               type="submit"
               className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400 disabled:opacity-20"
               onClick={sendUserOp}
-              disabled={false}
             >
-              [WIP] Send User Operation
+              Send User Operation
             </button>
           </>
         );

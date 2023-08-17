@@ -5,8 +5,8 @@ import Notice from "../components/Notice";
 const Home = () => {
   return (
     <>
-      <NavBar />
       <Login />
+      <NavBar />
       <Notice />
     </>
   );
