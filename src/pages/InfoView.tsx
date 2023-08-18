@@ -3,7 +3,7 @@ import { LoginViews } from "@/store/credentialsSlice";
 import { SessionSigsMap } from "@lit-protocol/types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { SendUserOperationResult } from "@alchemy/aa-core";
+import { SendUserOperationResult, chains } from "@alchemy/aa-core";
 
 export interface InfoViewConstants {
   titleText: string;
@@ -81,7 +81,7 @@ interface InfoViewProps {
 }
 
 const InfoView = ({ infoView, sendUserOp }: InfoViewProps) => {
-  const { sessionSigs, userOpResult, errorMsg } = useSelector(
+  const { sessionSigs, userOpResult, errorMsg, currentAppChain } = useSelector(
     (state: RootState) => state.credentials
   );
   const { titleText, subtitleText, img } = infoForLoginView(
@@ -102,7 +102,7 @@ const InfoView = ({ infoView, sendUserOp }: InfoViewProps) => {
           <div className="text-sm font-SF_Pro_Rounded tracking-[-0.24] leading-[20px]">
             {infoView === LoginViews.IGLOO_NFT_MINTED ? (
               <a
-                href={`https://explorer.testnet2.maticvigil.com/tx/${subtitleText}`}
+                href={`https://www.jiffyscan.xyz/userOpHash/${subtitleText}?network=${currentAppChain.name}`}
                 target="_blank"
                 rel="noreferrer"
                 className="text-blue-500 break-all"
@@ -115,21 +115,6 @@ const InfoView = ({ infoView, sendUserOp }: InfoViewProps) => {
           </div>
         </div>
       </div>
-
-      {infoView === LoginViews.WALLET_HOME && (
-        <div className="flex flex-col justify-end gap-3 w-full">
-          <button
-            className="bg-black flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-white"
-            onClick={sendUserOp}
-          >
-            Mint Igloo NFT
-          </button>
-          <div className="text-center text-xs font-SF_Pro_Rounded tracking-[-0.24] leading-[20px]">
-            Try out your new smart wallet by minting this NFT. <br />
-            We will cover the gas for this!
-          </div>
-        </div>
-      )}
     </>
   );
 };

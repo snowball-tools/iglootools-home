@@ -28,6 +28,7 @@ export interface CredentialState {
   appChains: { [key: string]: Chain };
   errorMsg: string | null;
   userOpResult: SendUserOperationResult | null;
+  ethAddress: string | null;
 }
 
 export const initialState: CredentialState = {
@@ -43,6 +44,7 @@ export const initialState: CredentialState = {
   appChains: CHAINS,
   errorMsg: null,
   userOpResult: null,
+  ethAddress: null,
 };
 
 const credentialsSlice = createSlice({
@@ -89,6 +91,7 @@ const credentialsSlice = createSlice({
         currentAuthMethod: AuthMethod;
         sessionSigs: SessionSigsMap;
         view: string;
+        ethaddress: string;
       }>
     ) => {
       state.currentPKP = action.payload.currentPKP;
@@ -96,6 +99,7 @@ const credentialsSlice = createSlice({
       state.currentAuthMethod = action.payload.currentAuthMethod;
       state.sessionSigs = action.payload.sessionSigs;
       state.view = action.payload.view;
+      state.ethAddress = action.payload.ethaddress;
     },
   },
 });

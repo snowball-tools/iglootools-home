@@ -151,20 +151,17 @@ export async function createPkpEthersWallet(
   }
 }
 
-export async function sendUserOperation(
-  pkpEthAddress: string,
-  pkpWallet: PKPEthersWallet,
-  chain: Chain
-): Promise<SendUserOperationResult> {
-  console.log("Sending user operation");
-  console.log("chain", chain);
+export async function getSimpleAccountOwner(
+  pkpWallet: PKPEthersWallet
+): Promise<SimpleSmartAccountOwner> {
+  console.log("Getting Simple Account Owner");
   try {
     const owner: SimpleSmartAccountOwner = {
       signMessage: async (msg: Uint8Array) => {
         return (await pkpWallet.signMessage(msg)) as Address;
       },
       getAddress: async () => {
-        return pkpEthAddress as Address;
+        return (await pkpWallet.getAddress()) as Address;
       },
       signTypedData: async (params: SignTypedDataParams) => {
         const types: Record<string, Array<TypedDataField>> = {
@@ -184,6 +181,61 @@ export async function sendUserOperation(
         )) as Address;
       },
     };
+
+    return owner;
+  } catch (error) {
+    console.error("Get Simple Account Owner failed:", error);
+    return Promise.reject("Get Simple Account Owner failed");
+  }
+}
+
+export async function getSmartWalletAddress(
+  pkpEthWallet: PKPEthersWallet,
+  chain: Chain
+): Promise<Address> {
+  console.log("Getting Smart Wallet Address");
+
+  try {
+    const owner: SimpleSmartAccountOwner = await getSimpleAccountOwner(
+      pkpEthWallet
+    );
+
+    const provider = new AlchemyProvider({
+      chain: viemChain(chain),
+      entryPointAddress: chain.entryPointAddress,
+      apiKey: alchemyAPIKey(chain),
+      rpcUrl: undefined,
+    }).connect(
+      (rpcClient) =>
+        new SimpleSmartContractAccount({
+          owner,
+          entryPointAddress: chain.entryPointAddress,
+          chain: viemChain(chain),
+          factoryAddress: chain.factoryAddress,
+          rpcClient,
+        })
+    );
+
+    const address = await provider.getAddress();
+
+    return address;
+  } catch (error) {
+    console.error("Getting Counterfactual Address failed:", error);
+    return Promise.reject("Getting Counterfactual Address failed");
+  }
+}
+
+export async function sendUserOperation(
+  pkpEthAddress: string,
+  pkpWallet: PKPEthersWallet,
+  chain: Chain
+): Promise<SendUserOperationResult> {
+  console.log("Sending user operation");
+  console.log("chain", chain);
+  try {
+    const owner: SimpleSmartAccountOwner = await getSimpleAccountOwner(
+      pkpWallet
+    );
 
     let provider = new AlchemyProvider({
       chain: viemChain(chain),
