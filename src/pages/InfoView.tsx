@@ -64,7 +64,7 @@ function infoForLoginView(
       return {
         titleText: "Error",
         subtitleText: errorMsg ?? "",
-        img: "https://file.rendit.io/n/77wvPNvaNWwIdbQtfqHz.svg",
+        img: null,
       };
     default:
       return {
