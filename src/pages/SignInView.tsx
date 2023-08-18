@@ -28,15 +28,13 @@ const SignInView = ({ signIn, createNewPasskey }: SignInViewProps) => {
               Give your passkey a unique name.
             </div>
           </div>
-          <div className="relative self-stretch flex flex-col">
-            <input
-              type="text"
-              placeholder="ex. Taylor Swift"
-              className="w-[342px] h-12 pl-5 pr-5 rounded-lg border-2 border-[rgba(182,236,226,0.16)] focus:border-[#b6ece2] bg-white text-sm font-sans tracking-wide leading-5"
-              value={username}
-              onChange={(e) => dispatch(setUsername(e.target.value))}
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="ex. Taylor Swift"
+            className="w-[342px] h-12 pl-5 pr-5 rounded-lg border-2 border-[rgba(182,236,226,0.16)] focus:border-[#b6ece2] bg-white text-sm font-sans tracking-wide leading-5"
+            value={username}
+            onChange={(e) => dispatch(setUsername(e.target.value))}
+          />
         </div>
       </div>
       <div className="flex flex-col gap-3 items-center mx-1">
@@ -48,12 +46,10 @@ const SignInView = ({ signIn, createNewPasskey }: SignInViewProps) => {
           Create passkey
         </button>
         <button
-          className="flex flex-col w-1/2 h-8 shrink-0 items-center py-2 rounded-lg"
+          className="flex flex-col w-1/2 h-8 shrink-0 items-center py-2 rounded-lg text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px]"
           onClick={signIn}
         >
-          <div className="text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px]">
-            Sign in with passkey
-          </div>
+          Sign in with passkey
         </button>
       </div>
     </>
