@@ -1,6 +1,4 @@
-import LoadingIgloo from "@/components/LoadingIgloo";
-import { Router } from "next/router";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { LoginViews } from "@/store/credentialsSlice";
 import { SessionSigsMap } from "@lit-protocol/types";
 import { useSelector } from "react-redux";
@@ -101,8 +99,19 @@ const InfoView = ({ infoView, sendUserOp }: InfoViewProps) => {
           <div className="text-xl font-SF_Pro_Rounded font-bold tracking-[0.35] leading-[28px]">
             {titleText}
           </div>
-          <div className="text-sm font-SF_Pro_Rounded tracking-[-0.24] leading-[20px] w-full">
-            {subtitleText}
+          <div className="text-sm font-SF_Pro_Rounded tracking-[-0.24] leading-[20px]">
+            {infoView === LoginViews.IGLOO_NFT_MINTED ? (
+              <a
+                href={`https://explorer.testnet2.maticvigil.com/tx/${subtitleText}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-500 break-all"
+              >
+                {subtitleText}
+              </a>
+            ) : (
+              subtitleText
+            )}
           </div>
         </div>
       </div>

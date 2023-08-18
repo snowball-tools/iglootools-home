@@ -26,10 +26,7 @@ export default function Login() {
   const {
     view,
     username,
-    errorMsg,
-    userOpResult,
     currentAppChain,
-    currentAuthMethod,
     currentPKP,
     currentPKPEthAddress,
     sessionSigs,
