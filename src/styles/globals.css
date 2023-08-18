@@ -1,3 +1,5 @@
+@import "normalize.css";
+
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
@@ -6,6 +8,9 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --vh: calc(
+    100vh - (var(--safe-area-inset-top) + var(--safe-area-inset-bottom))
+  );
 }
 
 @media (prefers-color-scheme: dark) {
