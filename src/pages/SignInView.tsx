@@ -21,7 +21,7 @@ const SignInView = ({ signIn, createNewPasskey }: SignInViewProps) => {
         />
         <div className="self-stretch flex flex-col gap-2 items-start">
           <div className="flex flex-col ml-1 gap-1 w-3/5 items-start">
-            <div className="text-xl font-['SF_Pro_Rounded'] font-bold tracking-[0.35] leading-[28px]">
+            <div className="text-xl font-SF_Pro_Rounded font-bold tracking-[0.35] leading-[28px]">
               Name your passkey
             </div>
             <div className="text-sm font-['SF_Pro_Text'] tracking-[-0.24] leading-[20px]">
@@ -41,7 +41,7 @@ const SignInView = ({ signIn, createNewPasskey }: SignInViewProps) => {
       </div>
       <div className="flex flex-col gap-3 items-center mx-1">
         <button
-          className="bg-black self-stretch flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-['SF_Pro_Rounded'] font-semibold leading-[20px] text-white disabled:bg-disabled-gray"
+          className="bg-black self-stretch flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-white disabled:bg-disabled-gray"
           disabled={username.length === 0}
           onClick={createNewPasskey}
         >
@@ -51,7 +51,7 @@ const SignInView = ({ signIn, createNewPasskey }: SignInViewProps) => {
           className="flex flex-col w-1/2 h-8 shrink-0 items-center py-2 rounded-lg"
           onClick={signIn}
         >
-          <div className="text-center text-sm font-['SF_Pro_Rounded'] font-semibold leading-[20px]">
+          <div className="text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px]">
             Sign in with passkey
           </div>
         </button>

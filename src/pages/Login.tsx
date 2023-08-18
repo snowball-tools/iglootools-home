@@ -195,7 +195,7 @@ export default function Login() {
             <InfoView titleText="Wallet Home" subtitleText="" img="" />
             <div className="flex flex-col justify-between gap-3 w-full">
               <button
-                className="bg-black flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-['SF_Pro_Rounded'] font-semibold leading-[20px] text-white"
+                className="bg-black flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-white"
                 onClick={sendUserOp}
               >
                 Mint Igloo NFT

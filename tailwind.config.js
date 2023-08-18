@@ -15,6 +15,9 @@ module.exports = {
       backgroundColor: {
         "disabled-gray": "rgba(120, 120, 128, 0.2)",
       },
+      fontFamily: {
+        sf_pro_rounded: ["SF_Pro_Rounded", "sans-serif"],
+      },
     },
   },
   plugins: [],

@@ -38,3 +38,18 @@ body {
     animation: blink 1s linear infinite;
   }
 }
+
+@font-face {
+  font-family: "SF_Pro_Rounded";
+  src: url("/fonts/SF-Pro-Rounded-Black.otf") format("otf"),
+    url("/fonts/SF-Pro-Rounded-Bold.otf") format("otf"),
+    url("/fonts/SF-Pro-Rounded-Heavy.otf") format("otf"),
+    url("/fonts/SF-Pro-Rounded-Light.otf") format("otf"),
+    url("/fonts/SF-Pro-Rounded-Medium.otf") format("otf"),
+    url("/fonts/SF-Pro-Rounded-Regular.otf") format("otf"),
+    url("/fonts/SF-Pro-Rounded-Semibold.otf") format("otf"),
+    url("/fonts/SF-Pro-Rounded-Thin.otf") format("otf"),
+    url("/fonts/SF-Pro-Rounded-Ultralight.otf") format("otf");
+  font-weight: normal;
+  font-style: normal;
+}
