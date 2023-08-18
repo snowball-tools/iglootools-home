@@ -51,7 +51,12 @@ export default function Login() {
       const auth = await authenticatePasskey();
 
       if (auth) {
-        dispatch(authenticated(auth));
+        dispatch(
+          authenticated({
+            currentAuthMethod: auth,
+            view: LoginViews.MINTED,
+          })
+        );
         dispatch(setView(LoginViews.MINTED));
       } else {
         dispatch(setErrorMsg("Error authenticating passkey"));
@@ -108,7 +113,7 @@ export default function Login() {
             currentAuthMethod: auth,
             sessionSigs: sessionSigs,
             view: LoginViews.WALLET_HOME,
-            ethaddress: smartWalletEthAddress,
+            
           })
         );
       } else {

@@ -2,6 +2,7 @@ import { AuthMethod, SessionSigsMap } from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chain, CHAINS } from "../helpers/chains";
 import { SendUserOperationResult } from "@alchemy/aa-core";
+import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
 
 export const LoginViews = {
   INITIAL_VIEW: "initial_view",
@@ -29,6 +30,7 @@ export interface CredentialState {
   errorMsg: string | null;
   userOpResult: SendUserOperationResult | null;
   ethAddress: string | null;
+  pkpEthWallet: PKPEthersWallet | null;
 }
 
 export const initialState: CredentialState = {
@@ -45,15 +47,23 @@ export const initialState: CredentialState = {
   errorMsg: null,
   userOpResult: null,
   ethAddress: null,
+  pkpEthWallet: null,
 };
 
 const credentialsSlice = createSlice({
   name: "credentials",
   initialState,
   reducers: {
-    authenticated: (state, action: PayloadAction<AuthMethod>) => {
+    authenticated: (
+      state,
+      action: PayloadAction<{
+        currentAuthMethod: AuthMethod;
+        view: string;
+      }>
+    ) => {
       state.isAuthenticated = true;
-      state.currentAuthMethod = action.payload;
+      state.currentAuthMethod = action.payload.currentAuthMethod;
+      state.view = action.payload.view;
     },
     disconnect: () => initialState,
     switchChain: (state, action: PayloadAction<Chain>) => {
@@ -91,7 +101,6 @@ const credentialsSlice = createSlice({
         currentAuthMethod: AuthMethod;
         sessionSigs: SessionSigsMap;
         view: string;
-        ethaddress: string;
       }>
     ) => {
       state.currentPKP = action.payload.currentPKP;
@@ -99,7 +108,16 @@ const credentialsSlice = createSlice({
       state.currentAuthMethod = action.payload.currentAuthMethod;
       state.sessionSigs = action.payload.sessionSigs;
       state.view = action.payload.view;
-      state.ethAddress = action.payload.ethaddress;
+    },
+    setEthAddressAndPKPWallet: (
+      state,
+      action: PayloadAction<{
+        ethAddress: string;
+        pkpEthWallet: PKPEthersWallet;
+      }>
+    ) => {
+      state.ethAddress = action.payload.ethAddress;
+      state.pkpEthWallet = action.payload.pkpEthWallet;
     },
   },
 });
@@ -114,6 +132,7 @@ export const {
   setErrorMsg,
   setCurrentPKP,
   setSessionSig,
+  setEthAddressAndPKPWallet,
 } = credentialsSlice.actions;
 
 export default credentialsSlice.reducer;

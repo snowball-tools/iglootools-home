@@ -20,6 +20,17 @@ module.exports = {
       },
       fontFamily: {
         sf_pro_rounded: ["SF_Pro_Rounded", "sans-serif"],
+        orelega_one: ["Orelega_One", "sans-serif"],
+        sf_pro_text: ["SF_Pro_Text", "sans-serif"],
+      },
+      animation: {
+        grow: "grow 3s infinite",
+      },
+      keyframes: {
+        grow: {
+          "0%": { transform: "scale(0)" },
+          "100%": { transform: "scale(1)" },
+        },
       },
     },
   },

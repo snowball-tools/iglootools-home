@@ -4,6 +4,7 @@ import { SessionSigsMap } from "@lit-protocol/types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { SendUserOperationResult, chains } from "@alchemy/aa-core";
+import { info } from "console";
 
 export interface InfoViewConstants {
   titleText: string;

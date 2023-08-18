@@ -45,9 +45,10 @@ const litNodeClient = new LitNodeClient({
   debug: false,
 });
 
-export async function registerPasskey(
-  username: string
-): Promise<IRelayPollStatusResponse> {
+export async function registerPasskey(username: string): Promise<{
+  pkpEthAddress: string;
+  pkpPublicKey: string;
+}> {
   try {
     const options = await webAuthnProvider.register(username);
     const txHash = await webAuthnProvider.verifyAndMintPKPThroughRelayer(
@@ -56,7 +57,17 @@ export async function registerPasskey(
     const response = await webAuthnProvider.relay.pollRequestUntilTerminalState(
       txHash
     );
-    return response;
+
+    if (
+      response.pkpEthAddress === undefined ||
+      response.pkpPublicKey === undefined
+    ) {
+      return Promise.reject("Registration failed");
+    }
+    return {
+      pkpEthAddress: response.pkpEthAddress,
+      pkpPublicKey: response.pkpPublicKey,
+    };
   } catch (error) {
     console.error("Registration failed:", error);
     return Promise.reject("Registration failed");
@@ -65,7 +76,13 @@ export async function registerPasskey(
 
 export async function authenticatePasskey(): Promise<AuthMethod> {
   try {
-    return await webAuthnProvider.authenticate();
+    const auth = await webAuthnProvider.authenticate();
+
+    if (auth === undefined) {
+      return Promise.reject("Authentication failed");
+    }
+
+    return auth;
   } catch (error) {
     console.error("Authentication failed:", error);
     return Promise.reject("Authentication failed");
