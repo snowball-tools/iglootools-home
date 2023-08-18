@@ -38,9 +38,9 @@ export default function Login() {
   async function createPKPWithWebAuthn() {
     dispatch(setView(LoginViews.REGISTERING));
 
-    const response = await registerPasskey(username);
+    try {
+      const response = await registerPasskey(username);
 
-    if (response && response.pkpEthAddress && response.pkpPublicKey) {
       dispatch(
         setCurrentPKP({
           currentPKP: response.pkpPublicKey,
@@ -50,18 +50,14 @@ export default function Login() {
 
       const auth = await authenticatePasskey();
 
-      if (auth) {
-        dispatch(
-          authenticated({
-            currentAuthMethod: auth,
-            view: LoginViews.MINTED,
-          })
-        );
-        dispatch(setView(LoginViews.MINTED));
-      } else {
-        dispatch(setErrorMsg("Error authenticating passkey"));
-      }
-    } else {
+      dispatch(
+        authenticated({
+          currentAuthMethod: auth,
+          view: LoginViews.MINTED,
+        })
+      );
+    } catch (e) {
+      console.log(e);
       dispatch(setErrorMsg("Error creating passkey"));
     }
   }
@@ -113,7 +109,6 @@ export default function Login() {
             currentAuthMethod: auth,
             sessionSigs: sessionSigs,
             view: LoginViews.WALLET_HOME,
-            
           })
         );
       } else {
