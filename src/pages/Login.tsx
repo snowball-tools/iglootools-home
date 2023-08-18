@@ -158,8 +158,21 @@ export default function Login() {
       case LoginViews.MINTING:
       case LoginViews.MINTED:
       case LoginViews.IGLOO_NFT_MINTED:
-      case LoginViews.ERROR:
         return <InfoView infoView={view} sendUserOp={sendUserOp} />;
+      case LoginViews.ERROR:
+        return (
+          <>
+            <InfoView infoView={view} sendUserOp={sendUserOp} />;
+            <div className="flex flex-col justify-end gap-3 w-full">
+              <button
+                className="bg-black flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-white"
+                onClick={() => dispatch(setView(LoginViews.INITIAL_VIEW))}
+              >
+                Try again
+              </button>
+            </div>
+          </>
+        );
       case LoginViews.WALLET_HOME:
         return (
           <>
