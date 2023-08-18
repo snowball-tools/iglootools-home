@@ -32,7 +32,7 @@ const SignInView = ({ signIn, createNewPasskey }: SignInViewProps) => {
             <input
               type="text"
               placeholder="ex. Taylor Swift"
-              className="w-[342px] h-12 pl-5 pr-12 rounded-lg border-2 border-[rgba(182,236,226,0.16)] focus:border-[#b6ece2] bg-white text-sm font-sans tracking-wide leading-5"
+              className="w-[342px] h-12 pl-5 pr-5 rounded-lg border-2 border-[rgba(182,236,226,0.16)] focus:border-[#b6ece2] bg-white text-sm font-sans tracking-wide leading-5"
               value={username}
               onChange={(e) => dispatch(setUsername(e.target.value))}
             />
