@@ -74,11 +74,6 @@ export default function Login() {
       if (pkp === undefined || pkpEthAddress === undefined) {
         const pkps = await fetchPkpsForAuthMethod(auth);
 
-        if (pkps.length === 0) {
-          dispatch(setErrorMsg("Error authenticating passkey"));
-          return;
-        }
-
         pkp = pkps[0].publicKey;
         pkpEthAddress = pkps[0].ethAddress;
       }
@@ -90,30 +85,15 @@ export default function Login() {
         currentAppChain
       );
 
-      if (sessionSigs) {
-        const pkpEthWallet = await createPkpEthersWallet(
-          pkp,
-          pkpEthAddress,
-          sessionSigs,
-          currentAppChain
-        );
-        const smartWalletEthAddress = await getSmartWalletAddress(
-          pkpEthWallet,
-          currentAppChain
-        );
-
-        dispatch(
-          setSessionSig({
-            currentPKP: pkp,
-            currentPKPEthAddress: pkpEthAddress,
-            currentAuthMethod: auth,
-            sessionSigs: sessionSigs,
-            view: LoginViews.WALLET_HOME,
-          })
-        );
-      } else {
-        dispatch(setErrorMsg("Error creating session"));
-      }
+      dispatch(
+        setSessionSig({
+          currentPKP: pkp,
+          currentPKPEthAddress: pkpEthAddress,
+          currentAuthMethod: auth,
+          sessionSigs: sessionSigs,
+          view: LoginViews.WALLET_HOME,
+        })
+      );
     } catch (e) {
       console.log(e);
       dispatch(setErrorMsg("Error authenticating passkey"));
@@ -123,31 +103,35 @@ export default function Login() {
   async function sendUserOp() {
     dispatch(setView(LoginViews.MINTING));
 
-    if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
-      const pkpEthWallet = await createPkpEthersWallet(
-        currentPKP,
-        currentPKPEthAddress,
-        sessionSigs,
-        currentAppChain
-      );
+    try {
+      if (
+        currentPKP &&
+        currentPKPEthAddress &&
+        currentAppChain &&
+        sessionSigs
+      ) {
+        const pkpEthWallet = await createPkpEthersWallet(
+          currentPKP,
+          currentPKPEthAddress,
+          sessionSigs,
+          currentAppChain
+        );
 
-      if (pkpEthWallet) {
         const result = await sendUserOperation(
           currentPKPEthAddress,
           pkpEthWallet,
           currentAppChain
         );
-        if (result) {
-          dispatch(setMintedNFT(result));
-        } else {
-          dispatch(setErrorMsg("Error minting NFT"));
-        }
+
+        dispatch(setMintedNFT(result));
+
         return result;
       } else {
         dispatch(setErrorMsg("Error sending user operation"));
       }
-    } else {
-      dispatch(setErrorMsg("Error creating pkp eth wallet"));
+    } catch (e) {
+      console.log(e);
+      dispatch(setErrorMsg("Error sending user operation"));
     }
   }
 

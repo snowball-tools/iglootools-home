@@ -138,6 +138,10 @@ export async function getSessionSigs(
       authNeededCallback: authNeededCallback,
     });
 
+    if (sessionSigs === undefined) {
+      return Promise.reject("Retrieving session sigs failed");
+    }
+
     return sessionSigs;
   } catch (error) {
     console.error("Retrieving session sigs failed:", error);
@@ -160,6 +164,10 @@ export async function createPkpEthersWallet(
       rpc: "https://chain-rpc.litprotocol.com/http",
     });
     await pkpWallet.init();
+
+    if (pkpWallet === undefined) {
+      return Promise.reject("Transaction failed");
+    }
 
     return pkpWallet;
   } catch (error) {
@@ -285,6 +293,10 @@ export async function sendUserOperation(
         args: [address],
       }),
     });
+
+    if (result === undefined) {
+      return Promise.reject("Transaction failed");
+    }
 
     return result;
   } catch (error) {
