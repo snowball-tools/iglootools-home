@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Provider } from "react-redux";
-import { store } from "@/store/store";
+import { store } from "../store/store";
 import type { AppProps } from "next/app";
 import { Analytics } from "@vercel/analytics/react";
-import "@/styles/styles.css";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   // todo: push

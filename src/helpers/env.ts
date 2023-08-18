@@ -14,3 +14,4 @@ export const ETH_PRIVATE_KEY = process.env.ETH_PRIVATE_KEY as string;
 export const LIT_RELAY_API_KEY = process.env.LIT_RELAY_API_KEY as string;
 export const VERCEL_WEB_ANALYTICS_ID = process.env
   .VERCEL_WEB_ANALYTICS_ID as string;
+export const NEXT_PUBLIC_DEBUG = process.env.NEXT_PUBLIC_DEBUG as string;

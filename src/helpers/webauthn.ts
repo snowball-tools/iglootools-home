@@ -18,93 +18,86 @@ import {
   SendUserOperationResult,
 } from "@alchemy/aa-core";
 import { encodeFunctionData } from "viem";
-import { IglooNFTABI } from "./IglooNFTABI";
+import { IglooNFTABI } from "./abis/IglooNFTABI";
 import { TypedDataField } from "@ethersproject/abstract-signer";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { sendInitGas } from "./initGas";
-import { LIT_RELAY_API_KEY } from "@/helpers/env";
-import { CHAINS, Chain, alchemyAPIKey, alchemyGasPolicyId } from "./chains";
-
-const IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS =
-  "0x799e75059126E6DA27A164d1315b1963Fb82c44F";
+import { LIT_RELAY_API_KEY } from "../helpers/env";
+import { Chain, alchemyAPIKey, alchemyGasPolicyId, viemChain } from "./chains";
 
 export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
 ).toISOString();
 
-export class Passkey {
-  public chain: Chain = CHAINS.goerli;
-  public pkpPublicKey: string | undefined;
-  public pkpEthAddress: string | undefined;
-  public sessionSig: SessionSigsMap | undefined;
+const litAuthClient = new LitAuthClient({
+  litRelayConfig: {
+    relayApiKey: LIT_RELAY_API_KEY,
+  },
+});
+litAuthClient.initProvider(ProviderType.WebAuthn);
 
-  private litAuthClient: LitAuthClient;
-  private webAuthnProvider: WebAuthnProvider;
-  private litNodeClient: LitNodeClient;
+const webAuthnProvider = litAuthClient.getProvider(
+  ProviderType.WebAuthn
+) as WebAuthnProvider;
 
-  constructor() {
-    this.litAuthClient = new LitAuthClient({
-      litRelayConfig: {
-        relayApiKey: LIT_RELAY_API_KEY,
-      },
-    });
-    this.litAuthClient.initProvider(ProviderType.WebAuthn);
+const litNodeClient = new LitNodeClient({
+  litNetwork: "serrano",
+  debug: false,
+});
 
-    this.webAuthnProvider = this.litAuthClient.getProvider(
-      ProviderType.WebAuthn
-    ) as WebAuthnProvider;
-
-    this.litNodeClient = new LitNodeClient({
-      litNetwork: "serrano",
-      debug: false,
-    });
-  }
-
-  public async register(username: string): Promise<IRelayPollStatusResponse> {
-    const options = await this.webAuthnProvider.register(username);
-
-    const txHash = await this.webAuthnProvider.verifyAndMintPKPThroughRelayer(
+export async function registerPasskey(
+  username: string
+): Promise<IRelayPollStatusResponse> {
+  try {
+    const options = await webAuthnProvider.register(username);
+    const txHash = await webAuthnProvider.verifyAndMintPKPThroughRelayer(
       options
     );
-    const response =
-      await this.webAuthnProvider.relay.pollRequestUntilTerminalState(txHash);
-
-    this.pkpPublicKey = response.pkpPublicKey;
-    this.pkpEthAddress = response.pkpEthAddress;
-    return response;
-  }
-
-  public async authenticate(): Promise<AuthMethod> {
-    return await this.webAuthnProvider.authenticate();
-  }
-
-  public async fetchPkps(authMethod: AuthMethod): Promise<IRelayPKP[]> {
-    const pkps = await this.webAuthnProvider.fetchPKPsThroughRelayer(
-      authMethod
+    const response = await webAuthnProvider.relay.pollRequestUntilTerminalState(
+      txHash
     );
-
-    // todo: handle multiple pkps / eth addresses
-    this.pkpPublicKey = pkps[0].publicKey;
-    this.pkpEthAddress = pkps[0].ethAddress;
-    return pkps;
+    return response;
+  } catch (error) {
+    console.error("Registration failed:", error);
+    return Promise.reject("Registration failed");
   }
+}
 
-  public async getSessionSigs(
-    pkpPublicKey: string,
-    authData: AuthMethod,
-    chain: Chain
-  ): Promise<SessionSigsMap> {
-    await this.litNodeClient.connect();
+export async function authenticatePasskey(): Promise<AuthMethod> {
+  try {
+    return await webAuthnProvider.authenticate();
+  } catch (error) {
+    console.error("Authentication failed:", error);
+    return Promise.reject("Authentication failed");
+  }
+}
 
-    if (this.pkpPublicKey == undefined || this.pkpEthAddress == undefined) {
-      const pkp = await this.fetchPkps(authData);
-      if (pkp.length === 0) {
-        throw new Error("no pkp found");
-      }
+export async function fetchPkpsForAuthMethod(
+  authMethod: AuthMethod
+): Promise<IRelayPKP[]> {
+  try {
+    const pkps = await webAuthnProvider.fetchPKPsThroughRelayer(authMethod);
+    if (pkps.length === 0) {
+      return Promise.reject("No PKPs found");
     }
+    return pkps;
+  } catch (error) {
+    console.error("Retrieving PKPs failed:", error);
+    return Promise.reject("Retrieving PKPs failed");
+  }
+}
+
+export async function getSessionSigs(
+  pkpPublicKey: string,
+  pkpEthAddress: string,
+  authData: AuthMethod,
+  chain: Chain
+): Promise<SessionSigsMap> {
+  try {
+    await litNodeClient.connect();
 
     const authNeededCallback = async (params: AuthCallbackParams) => {
-      const resp = await this.litNodeClient.signSessionKey({
+      const resp = await litNodeClient.signSessionKey({
         statement: params.statement,
         authMethods: [authData],
         pkpPublicKey: pkpPublicKey,
@@ -115,11 +108,7 @@ export class Passkey {
       return resp.authSig;
     };
 
-    const changeChain = this.chain != chain;
-    console.log("changeChain: ", changeChain);
-    this.chain = chain;
-
-    const sessionSigs = await this.litNodeClient.getSessionSigs({
+    const sessionSigs = await litNodeClient.getSessionSigs({
       expiration: DEFAULT_EXP,
       chain: chain.name,
       resourceAbilityRequests: [
@@ -128,66 +117,54 @@ export class Passkey {
           ability: LitAbility.PKPSigning,
         },
       ],
-      switchChain: changeChain,
+      switchChain: false,
       authNeededCallback: authNeededCallback,
     });
 
-    this.sessionSig = sessionSigs;
-
     return sessionSigs;
+  } catch (error) {
+    console.error("Retrieving session sigs failed:", error);
+    return Promise.reject("Retrieving session sigs failed");
   }
+}
 
-  public async createPkpEthersWallet(
-    pkpPublicKey: string
-  ): Promise<PKPEthersWallet> {
-    if (this.sessionSig === undefined || this.pkpEthAddress === undefined) {
-      throw new Error("sessionSig or ethaddress is undefined");
-    }
-
-    await sendInitGas(this.getEthAddress() as Address, CHAINS.goerli);
+export async function createPkpEthersWallet(
+  pkpPublicKey: string,
+  pkpEthAddress: string,
+  sessionSig: SessionSigsMap,
+  chain: Chain
+): Promise<PKPEthersWallet> {
+  try {
+    await sendInitGas(pkpEthAddress as Address, chain);
 
     const pkpWallet = new PKPEthersWallet({
-      controllerSessionSigs: this.sessionSig,
+      controllerSessionSigs: sessionSig,
       pkpPubKey: pkpPublicKey,
       rpc: "https://chain-rpc.litprotocol.com/http",
     });
     await pkpWallet.init();
 
     return pkpWallet;
+  } catch (error) {
+    console.error("Transaction failed:", error);
+    return Promise.reject("Transaction failed");
   }
+}
 
-  public async sendUserOperation(
-    chain: Chain
-  ): Promise<SendUserOperationResult> {
-    // to do error states
-    if (
-      this.pkpPublicKey == undefined ||
-      this.pkpEthAddress == undefined ||
-      this.sessionSig == undefined
-    ) {
-      console.log("pkpPublicKey", this.pkpPublicKey);
-      console.log("pkpEthAddress", this.pkpEthAddress);
-      console.log("sessionSig", this.sessionSig);
-
-      throw new Error(
-        "authenticatedResponse is undefined or has no eth address"
-      );
-    }
-
-    const pkpWallet = (await this.createPkpEthersWallet(
-      this.pkpPublicKey
-    )) as PKPEthersWallet;
-
-    if (pkpWallet === undefined) {
-      throw new Error("pkpWallet is undefined");
-    }
-
+export async function sendUserOperation(
+  pkpEthAddress: string,
+  pkpWallet: PKPEthersWallet,
+  chain: Chain
+): Promise<SendUserOperationResult> {
+  console.log("Sending user operation");
+  console.log("chain", chain);
+  try {
     const owner: SimpleSmartAccountOwner = {
       signMessage: async (msg: Uint8Array) => {
         return (await pkpWallet.signMessage(msg)) as Address;
       },
       getAddress: async () => {
-        return this.pkpEthAddress as Address;
+        return pkpEthAddress as Address;
       },
       signTypedData: async (params: SignTypedDataParams) => {
         const types: Record<string, Array<TypedDataField>> = {
@@ -209,7 +186,7 @@ export class Passkey {
     };
 
     let provider = new AlchemyProvider({
-      chain: chain.viemChain,
+      chain: viemChain(chain),
       entryPointAddress: chain.entryPointAddress,
       apiKey: alchemyAPIKey(chain),
       rpcUrl: undefined,
@@ -218,14 +195,13 @@ export class Passkey {
         new SimpleSmartContractAccount({
           owner,
           entryPointAddress: chain.entryPointAddress,
-          chain: chain.viemChain,
+          chain: viemChain(chain),
           factoryAddress: chain.factoryAddress,
           rpcClient,
         })
     );
 
     provider = provider.withAlchemyGasManager({
-      provider: provider.rpcClient,
       policyId: alchemyGasPolicyId(chain),
       entryPoint: chain.entryPointAddress,
     });
@@ -233,7 +209,7 @@ export class Passkey {
     const address = await provider.getAddress();
 
     const result: SendUserOperationResult = await provider.sendUserOperation({
-      target: IGLOONFT_TOKEN_GORLI_CONTRACT_ADDRESS, // to do based on chain
+      target: chain.iglooNFTAddress,
       data: encodeFunctionData({
         abi: IglooNFTABI.abi,
         functionName: "safeMint",
@@ -242,13 +218,8 @@ export class Passkey {
     });
 
     return result;
-  }
-
-  public getEthAddress(): string {
-    if (this.pkpEthAddress !== undefined) {
-      return this.pkpEthAddress;
-    } else {
-      throw new Error("pkpEthAddress is undefined");
-    }
+  } catch (error) {
+    console.error("Transaction failed:", error);
+    return Promise.reject("Transaction failed");
   }
 }
