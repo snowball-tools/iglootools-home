@@ -50,10 +50,20 @@ export default function Login() {
 
       const auth = await authenticatePasskey();
 
+      const sessionSigs = await getSessionSigs(
+        response.pkpPublicKey,
+        response.pkpEthAddress,
+        auth,
+        currentAppChain
+      );
+
       dispatch(
-        authenticated({
+        setSessionSig({
+          currentPKP: response.pkpPublicKey,
+          currentPKPEthAddress: response.pkpEthAddress,
           currentAuthMethod: auth,
-          view: LoginViews.MINTED,
+          sessionSigs: sessionSigs,
+          view: LoginViews.WALLET_HOME,
         })
       );
     } catch (e) {
