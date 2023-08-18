@@ -1,13 +1,11 @@
 import NavBar from "../components/NavBar";
-import Login from "./Login";
 import Notice from "../components/Notice";
+import Login from "./Login";
 
 const Home = () => {
   return (
     <>
       <Login />
-      <NavBar />
-      <Notice />
     </>
   );
 };

@@ -4,14 +4,13 @@ import { Chain, CHAINS } from "../helpers/chains";
 import { SendUserOperationResult } from "@alchemy/aa-core";
 
 export const LoginViews = {
+  INITIAL_VIEW: "initial_view",
   SIGN_UP: "sign_up",
-  SIGN_IN: "sign_in",
   REGISTERING: "registering",
   AUTHENTICATING: "authenticating",
   MINTING: "minting",
   MINTED: "minted",
-  CREATING_SESSION: "creating_session",
-  SESSION_CREATED: "session_created",
+  WALLET_HOME: "wallet_home",
   ERROR: "error",
   IGLOO_NFT_MINTED: "igloo_nft_minted",
 };
@@ -32,7 +31,7 @@ export interface CredentialState {
 }
 
 export const initialState: CredentialState = {
-  view: LoginViews.SIGN_UP,
+  view: LoginViews.INITIAL_VIEW,
   isAuthenticated: false,
   username: "",
   currentPKP: undefined,

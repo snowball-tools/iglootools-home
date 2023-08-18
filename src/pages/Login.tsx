@@ -3,14 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import {
   setView,
-  setUsername,
   setErrorMsg,
   setMintedNFT,
   setCurrentPKP,
   LoginViews,
   setSessionSig,
 } from "../store/credentialsSlice";
-import AnimatedComponent from "../components/AnimatedComponent";
 import {
   authenticatePasskey,
   createPkpEthersWallet,
@@ -20,7 +18,9 @@ import {
   sendUserOperation,
 } from "../helpers/webauthn";
 import { authenticated } from "../store/credentialsSlice";
-import { NEXT_PUBLIC_DEBUG } from "../helpers/env";
+import InitialView from "./InitialView";
+import SignInView from "./SignInView";
+import InfoView from "./InfoView";
 
 export default function Login() {
   const {
@@ -83,8 +83,6 @@ export default function Login() {
         ethAddress = pkps[0].ethAddress;
       }
 
-      dispatch(setView(LoginViews.CREATING_SESSION));
-
       const sessionSigs = await getSessionSigs(
         pkp,
         ethAddress,
@@ -99,7 +97,7 @@ export default function Login() {
             currentPKPEthAddress: ethAddress,
             currentAuthMethod: auth,
             sessionSigs: sessionSigs,
-            view: LoginViews.SESSION_CREATED,
+            view: LoginViews.WALLET_HOME,
           })
         );
       } else {
@@ -144,163 +142,102 @@ export default function Login() {
 
   const renderView = () => {
     switch (view) {
-      case LoginViews.SIGN_IN:
-        return (
-          <>
-            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              Sign In
-            </h1>
-            <button
-              type="submit"
-              className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
-              onClick={authThenGetSessionSigs}
-            >
-              Sign In
-            </button>
-          </>
-        );
       case LoginViews.REGISTERING:
         return (
-          <>
-            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              Registering
-            </h1>
-          </>
+          <InfoView
+            titleText="Registering your passkey..."
+            subtitleText="Follow your browser's prompts to create a passkey."
+            img="https://file.rendit.io/n/Y7s8UgkX9ncEJGAHPyXo.svg"
+          />
         );
       case LoginViews.AUTHENTICATING:
         return (
-          <>
-            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              Authenticating
-            </h1>
-          </>
+          <InfoView
+            titleText="Authenticate with your passkey"
+            subtitleText=" To start using your new cloud wallet, you'll need to authenticate with your newly registered passkey. Follow your browser's prompts to authenticate."
+            img=""
+          />
         );
       case LoginViews.MINTING:
         return (
-          <>
-            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              Minting
-            </h1>
-          </>
+          <InfoView
+            titleText={`Minting your ${
+              sessionSigs ? "Igloo NFT" : "Wallet"
+            }...`}
+            subtitleText={`Stay with us on this page as your ${
+              sessionSigs ? "Igloo NFT" : "cloud wallet"
+            } is being minted on-chain.`}
+            img={
+              sessionSigs
+                ? ""
+                : "https://file.rendit.io/n/uK7Vgn7ggxm17IS9sIKy.svg"
+            }
+          />
         );
       case LoginViews.MINTED:
         return (
-          <>
-            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              Minted
-            </h1>
-            <button
-              type="submit"
-              className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
-              onClick={authThenGetSessionSigs}
-            >
-              Get SessionSig
-            </button>
-          </>
+          <InfoView
+            titleText="Wallet created"
+            subtitleText="Creating a secured session so you can use your new cloud wallet."
+            img="https://file.rendit.io/n/77wvPNvaNWwIdbQtfqHz.svg"
+          />
         );
-      case LoginViews.CREATING_SESSION:
+      case LoginViews.SIGN_UP:
+        return (
+          <SignInView
+            signIn={authThenGetSessionSigs}
+            createNewPasskey={createPKPWithWebAuthn}
+          />
+        );
+      case LoginViews.WALLET_HOME:
         return (
           <>
-            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              Creating Session
-            </h1>
-          </>
-        );
-      case LoginViews.SESSION_CREATED:
-        return (
-          <>
-            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              Session Created
-            </h1>
-            <button
-              type="submit"
-              className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400 disabled:opacity-20"
-              onClick={sendUserOp}
-            >
-              Send User Operation
-            </button>
-          </>
-        );
-      case LoginViews.ERROR:
-        return (
-          <>
-            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              Error
-            </h1>
-            <p className="text-white">{errorMsg}</p>
+            <InfoView titleText="Wallet Home" subtitleText="" img="" />
+            <div className="flex flex-col justify-between gap-3 w-full">
+              <button
+                className="bg-black flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-['SF_Pro_Rounded'] font-semibold leading-[20px] text-white"
+                onClick={sendUserOp}
+              >
+                Mint Igloo NFT
+              </button>
+              <div className="text-center text-xs font-['SF_Pro_Text'] tracking-[-0.24] leading-[20px]">
+                Try out your new smart wallet by minting this NFT. <br />
+                We will cover the gas for this!
+              </div>
+            </div>
           </>
         );
       case LoginViews.IGLOO_NFT_MINTED:
         return (
-          <>
-            <h1 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              Igloo NFT Minted
-            </h1>
-            <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              eth address:{" "}
-              <a
-                className="text-blue-500 hover:underline"
-                href={
-                  "https://goerli.etherscan.io/address/" +
-                  userOpResult?.request.sender
-                }
-              >
-                {userOpResult?.request.sender}
-              </a>
-            </h3>
-            <h2 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white">
-              user operation hash:{" "}
-              <a
-                className="text-blue-500 hover:underline"
-                href={
-                  "https://www.jiffyscan.xyz/userOpHash/" +
-                  userOpResult?.hash +
-                  "?network=goerli"
-                }
-              >
-                {userOpResult?.hash}
-              </a>
-            </h2>
-          </>
+          <InfoView
+            titleText="Igloo NFT Minted"
+            subtitleText={userOpResult?.hash ?? ""}
+            img=""
+          />
         );
-      case LoginViews.SIGN_UP:
+      case LoginViews.ERROR:
+        return (
+          <InfoView
+            titleText="Error"
+            subtitleText={errorMsg ?? ""}
+            img="https://file.rendit.io/n/77wvPNvaNWwIdbQtfqHz.svg"
+          />
+        );
       default:
         return (
-          <>
-            <div className="flex-grow">
-              <div className="relative p-5 bg-gray-700 rounded">
-                <input
-                  className="w-full h-full text-lg bg-transparent text-white outline-none"
-                  style={{ caretColor: "white" }}
-                  value={username}
-                  placeholder="Name (ie. Taylor Swift)"
-                  onChange={(e) => dispatch(setUsername(e.target.value))}
-                />
-              </div>
-              <button
-                type="submit"
-                className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400 disabled:opacity-20"
-                disabled={username.length === 0}
-                onClick={createPKPWithWebAuthn}
-              >
-                Create Passkey
-              </button>
-              <button
-                type="submit"
-                className="mt-4 w-full px-4 py-2 bg-gray-500 text-white font-bold rounded transition-colors duration-200 hover:bg-gray-400"
-                onClick={authThenGetSessionSigs}
-              >
-                Log In
-              </button>
-            </div>
-          </>
+          <InitialView
+            creatNewPasskey={() => dispatch(setView(LoginViews.SIGN_UP))}
+            useExistingPasskey={authThenGetSessionSigs}
+          />
         );
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-black">
-      <AnimatedComponent animKey={view}>{renderView()}</AnimatedComponent>
-    </div>
+    <>
+      <div className="flex flex-col gap-1 w-full py-6 px-6 h-screen justify-between lg:max-w-md mx-auto">
+        {renderView()}
+      </div>
+    </>
   );
 }
