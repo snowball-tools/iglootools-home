@@ -17,7 +17,7 @@ const InitialView = ({
       <div className="text-center text-xl font-SF_Pro_Rounded font-bold tracking-[0.35] leading-[28px] mb-2 w-full">
         The most secure and customizable wallet that is 100% yours
       </div>
-      <div className="text-center font-['SF_Pro_Text'] tracking-[-0.41] leading-[24px] mb-16 w-3/4">
+      <div className="text-center font-SF_Pro_Rounded tracking-[-0.41] leading-[24px] mb-16 w-3/4">
         Create a self-custody wallet in just a few taps using the latest auth
         flow—passkeys. <br />
         <br />

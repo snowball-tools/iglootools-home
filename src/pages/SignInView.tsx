@@ -24,7 +24,7 @@ const SignInView = ({ signIn, createNewPasskey }: SignInViewProps) => {
             <div className="text-xl font-SF_Pro_Rounded font-bold tracking-[0.35] leading-[28px]">
               Name your passkey
             </div>
-            <div className="text-sm font-['SF_Pro_Text'] tracking-[-0.24] leading-[20px]">
+            <div className="text-sm font-SF_Pro_Rounded tracking-[-0.24] leading-[20px]">
               Give your passkey a unique name.
             </div>
           </div>

@@ -143,84 +143,18 @@ export default function Login() {
   const renderView = () => {
     switch (view) {
       case LoginViews.REGISTERING:
-        return (
-          <InfoView
-            titleText="Registering your passkey..."
-            subtitleText="Follow your browser's prompts to create a passkey."
-            img="https://file.rendit.io/n/Y7s8UgkX9ncEJGAHPyXo.svg"
-          />
-        );
       case LoginViews.AUTHENTICATING:
-        return (
-          <InfoView
-            titleText="Authenticate with your passkey"
-            subtitleText=" To start using your new cloud wallet, you'll need to authenticate with your newly registered passkey. Follow your browser's prompts to authenticate."
-            img=""
-          />
-        );
       case LoginViews.MINTING:
-        return (
-          <InfoView
-            titleText={`Minting your ${
-              sessionSigs ? "Igloo NFT" : "Wallet"
-            }...`}
-            subtitleText={`Stay with us on this page as your ${
-              sessionSigs ? "Igloo NFT" : "cloud wallet"
-            } is being minted on-chain.`}
-            img={
-              sessionSigs
-                ? ""
-                : "https://file.rendit.io/n/uK7Vgn7ggxm17IS9sIKy.svg"
-            }
-          />
-        );
       case LoginViews.MINTED:
-        return (
-          <InfoView
-            titleText="Wallet created"
-            subtitleText="Creating a secured session so you can use your new cloud wallet."
-            img="https://file.rendit.io/n/77wvPNvaNWwIdbQtfqHz.svg"
-          />
-        );
+      case LoginViews.IGLOO_NFT_MINTED:
+      case LoginViews.ERROR:
+      case LoginViews.WALLET_HOME:
+        return <InfoView infoView={view} sendUserOp={sendUserOp} />;
       case LoginViews.SIGN_UP:
         return (
           <SignInView
             signIn={authThenGetSessionSigs}
             createNewPasskey={createPKPWithWebAuthn}
-          />
-        );
-      case LoginViews.WALLET_HOME:
-        return (
-          <>
-            <InfoView titleText="Wallet Home" subtitleText="" img="" />
-            <div className="flex flex-col justify-between gap-3 w-full">
-              <button
-                className="bg-black flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-white"
-                onClick={sendUserOp}
-              >
-                Mint Igloo NFT
-              </button>
-              <div className="text-center text-xs font-['SF_Pro_Text'] tracking-[-0.24] leading-[20px]">
-                Try out your new smart wallet by minting this NFT. <br />
-                We will cover the gas for this!
-              </div>
-            </div>
-          </>
-        );
-      case LoginViews.IGLOO_NFT_MINTED:
-        return (
-          <InfoView
-            titleText="Igloo NFT Minted"
-            subtitleText={userOpResult?.hash ?? ""}
-            img=""
-          />
-        );
-      case LoginViews.ERROR:
-        return (
-          <InfoView
-            titleText="Error"
-            subtitleText={errorMsg ?? ""}
-            img="https://file.rendit.io/n/77wvPNvaNWwIdbQtfqHz.svg"
           />
         );
       default:
