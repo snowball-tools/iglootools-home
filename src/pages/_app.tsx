@@ -23,6 +23,24 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, []);
 
+  const setVHVariable = () => {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  };
+
+  useEffect(() => {
+    setVHVariable(); // Initial set
+
+    window.addEventListener("resize", setVHVariable);
+    window.addEventListener("orientationchange", setVHVariable);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", setVHVariable);
+      window.removeEventListener("orientationchange", setVHVariable);
+    };
+  }, []);
+
   return (
     <Provider store={store}>
       <Component {...pageProps} />

@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      height: {
+        screen: "calc(var(--vh, 1vh) * 100)",
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
