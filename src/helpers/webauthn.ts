@@ -4,7 +4,6 @@ import { ProviderType } from "@lit-protocol/constants";
 import {
   AuthMethod,
   AuthCallbackParams,
-  IRelayPollStatusResponse,
   IRelayPKP,
   SessionSigsMap,
 } from "@lit-protocol/types";
