@@ -5,11 +5,12 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { SendUserOperationResult, chains } from "@alchemy/aa-core";
 import { info } from "console";
+import StatusBar from "@/components/StatusBar";
 
 export interface InfoViewConstants {
   titleText: string;
   subtitleText: string;
-  img: string | null;
+  step: number;
 }
 
 function infoForLoginView(
@@ -23,14 +24,14 @@ function infoForLoginView(
       return {
         titleText: "Registering your passkey...",
         subtitleText: "Follow your browser's prompts to create a passkey.",
-        img: "https://file.rendit.io/n/Y7s8UgkX9ncEJGAHPyXo.svg",
+        step: 2,
       };
     case LoginViews.AUTHENTICATING:
       return {
         titleText: "Authenticate with your passkey",
         subtitleText:
           " To start using your new cloud wallet, you'll need to authenticate with your newly registered passkey. Follow your browser's prompts to authenticate.",
-        img: null,
+        step: 0,
       };
     case LoginViews.MINTING:
       return {
@@ -38,40 +39,38 @@ function infoForLoginView(
         subtitleText: `Stay with us on this page as your ${
           sessionSigs ? "Igloo NFT" : "cloud wallet"
         } is being minted on-chain.`,
-        img: sessionSigs
-          ? null
-          : "https://file.rendit.io/n/uK7Vgn7ggxm17IS9sIKy.svg",
+        step: sessionSigs ? 0 : 3,
       };
     case LoginViews.MINTED:
       return {
         titleText: "Wallet created",
         subtitleText:
           "Creating a secured session so you can use your new cloud wallet.",
-        img: "https://file.rendit.io/n/77wvPNvaNWwIdbQtfqHz.svg",
+        step: 4,
       };
     case LoginViews.IGLOO_NFT_MINTED:
       return {
         titleText: "Igloo NFT Minted",
         subtitleText: userOpResult?.hash ?? "",
-        img: null,
+        step: 0,
       };
     case LoginViews.WALLET_HOME:
       return {
         titleText: "Wallet Home",
         subtitleText: "",
-        img: null,
+        step: 0,
       };
     case LoginViews.ERROR:
       return {
         titleText: "Error",
         subtitleText: errorMsg ?? "",
-        img: null,
+        step: 0,
       };
     default:
       return {
         titleText: "Welcome to Igloo!",
         subtitleText: "Please sign in to continue",
-        img: null,
+        step: 0,
       };
   }
 }
@@ -85,7 +84,7 @@ const InfoView = ({ infoView, sendUserOp }: InfoViewProps) => {
   const { sessionSigs, userOpResult, errorMsg, currentAppChain } = useSelector(
     (state: RootState) => state.credentials
   );
-  const { titleText, subtitleText, img } = infoForLoginView(
+  const { titleText, subtitleText, step } = infoForLoginView(
     infoView,
     sessionSigs,
     userOpResult,
@@ -95,7 +94,7 @@ const InfoView = ({ infoView, sendUserOp }: InfoViewProps) => {
   return (
     <>
       <div className="flex flex-col gap-10 items-center">
-        {img && <img src={img} />}
+        <StatusBar step={step} />
         <div className="self-stretch flex flex-col gap-1 items-start">
           <div className="text-xl font-SF_Pro_Rounded font-bold tracking-[0.35] leading-[28px]">
             {titleText}

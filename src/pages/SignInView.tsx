@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUsername } from "../store/credentialsSlice";
 import { RootState } from "../store/store";
+import StatusBar from "@/components/StatusBar";
 
 interface SignInViewProps {
   signIn: () => void;
@@ -15,23 +16,20 @@ const SignInView = ({ signIn, createNewPasskey }: SignInViewProps) => {
   return (
     <>
       <div className="flex flex-col gap-10 items-center">
-        <img
-          src="https://file.rendit.io/n/OhrRTNJD88Xqy50mt6vV.svg"
-          alt="step one in progress bar"
-        />
+        <StatusBar step={1} />
         <div className="self-stretch flex flex-col gap-2 items-start">
           <div className="flex flex-col ml-1 gap-1 items-start">
-            <div className="text-xl font-SF_Pro_Rounded font-bold tracking-[0.35] leading-[28px]">
+            <div className="text-xl font-sf_pro_display font-bold tracking-[0.35] leading-[28px]">
               Name your passkey
             </div>
-            <div className="text-sm font-SF_Pro_Rounded tracking-[-0.24] leading-[20px]">
+            <div className="text-sm font-sf_pro_text tracking-[-0.24] leading-[20px]">
               Give your passkey a unique name.
             </div>
           </div>
           <input
             type="text"
             placeholder="ex. Taylor Swift"
-            className="w-full h-12 pl-5 pr-5 rounded-lg border-2 border-[rgba(182,236,226,0.16)] focus:border-[#b6ece2] bg-white text-sm font-sans tracking-wide leading-5"
+            className="w-full h-12 pl-5 pr-5 rounded-lg border-2 border-[rgba(182,236,226,0.16)] focus:border-[#b6ece2] bg-white text-sm font-sf_pro_text tracking-wide leading-5 text-black"
             value={username}
             onChange={(e) => dispatch(setUsername(e.target.value))}
           />
