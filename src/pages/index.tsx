@@ -1,9 +1,9 @@
-import Login from "./Login";
+import PasskeyMainView from "./PasskeyMainView";
 
 const Home = () => {
   return (
     <>
-      <Login />
+      <PasskeyMainView />
     </>
   );
 };

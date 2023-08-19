@@ -24,7 +24,7 @@ import InfoView from "./InfoView";
 import { AuthMethod } from "@lit-protocol/types";
 import WalletView from "./WalletView";
 
-export default function Login() {
+export default function PasskeyMainView() {
   const {
     view,
     username,
@@ -32,7 +32,6 @@ export default function Login() {
     currentPKP,
     currentPKPEthAddress,
     sessionSigs,
-    ethAddress,
   } = useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
 
