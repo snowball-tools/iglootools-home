@@ -22,6 +22,7 @@ module.exports = {
         sf_pro_rounded: ["SF_Pro_Rounded", "sans-serif"],
         orelega_one: ["Orelega_One", "sans-serif"],
         sf_pro_text: ["SF_Pro_Text", "sans-serif"],
+        sf_pro_display: ["SF_Pro_Display", "sans-serif"],
       },
       animation: {
         grow: "grow 3s infinite",
