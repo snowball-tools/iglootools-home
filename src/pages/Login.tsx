@@ -168,7 +168,7 @@ export default function Login() {
           </>
         );
       case LoginViews.WALLET_HOME:
-        return <WalletView />;
+        return <WalletView mintNftAction={sendUserOp} />;
       case LoginViews.SIGN_UP:
         return (
           <SignInView

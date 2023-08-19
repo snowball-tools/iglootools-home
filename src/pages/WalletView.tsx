@@ -2,7 +2,19 @@ import React from "react";
 import NavBar from "@/components/NavBar";
 import ColumnButton from "@/components/ColumnButton";
 import Card from "@/components/Card";
-export default function WalletView() {
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
+import exp from "constants";
+
+interface WalletViewProps {
+  mintNftAction: () => void;
+}
+
+const WalletView = ({ mintNftAction }: WalletViewProps) => {
+  const { ethAddress, currentAppChain } = useSelector(
+    (state: RootState) => state.credentials
+  );
+
   return (
     <div className="border-solid overflow-hidden flex flex-col gap-2 px-5 py-4">
       <NavBar exitAction={() => console.log("exit action")} />
@@ -17,10 +29,10 @@ export default function WalletView() {
       <Card color="bg-[#9ee7ff]" textColor="text-black" borderColor={undefined}>
         <div className="flex flex-col gap-1 items-start">
           <div className="text-xl font-sf_pro_display font-bold leading-[40px] text-black">
-            Chloe&apos;s special passkey
+            Your Smart Wallet
           </div>
           <div className="text-sm font-sf_mono font-medium leading-[20px] w-full break-all text-black">
-            0xdb6386EF2bC4A559c71e84038156612d3aF9B07c
+            {ethAddress}
           </div>
         </div>
         <div className="flex flex-row mr-1 gap-2 items-start">
@@ -28,13 +40,18 @@ export default function WalletView() {
             text="Copy address"
             color="bg-[#00d4ff]"
             textColor="text-black"
-            onClick={() => console.log("clicked " + "Copy address")}
+            onClick={() => navigator.clipboard.writeText(ethAddress ?? "")}
           />
           <ColumnButton
             text="View on Etherscan"
             color="bg-[#00d4ff]"
             textColor="text-black"
-            onClick={() => console.log("clicked" + "View on Etherscan")}
+            onClick={() =>
+              window.open(
+                `${currentAppChain.blockExplorerUrls[0]}/address/${ethAddress}`,
+                "_blank"
+              )
+            }
           />
         </div>
       </Card>
@@ -48,8 +65,7 @@ export default function WalletView() {
         </div>
         <div className="font-sf_pro_text tracking-[-0.41] leading-[24px] text-white w-full">
           Smart contract wallets using Account Abstraction (ERC-4337) are
-          managed by a smart contract instead of just one private key like
-          regular wallets.
+          managed by a smart contract ....
         </div>
       </Card>
       <Card
@@ -67,7 +83,7 @@ export default function WalletView() {
             </div>
             <button
               className="px-4 py-2 bg-cyan-200 rounded-3xl justify-center items-center gap-1 flex"
-              onClick={() => console.log("clicked mint nft")}
+              onClick={mintNftAction}
             >
               <div className="text-black text-xs font-semibold leading-normal font-sf_pro_text">
                 Mint NFT
@@ -78,4 +94,6 @@ export default function WalletView() {
       </Card>
     </div>
   );
-}
+};
+
+export default WalletView;
