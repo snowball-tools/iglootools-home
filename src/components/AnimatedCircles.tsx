@@ -1,4 +1,3 @@
-// pages/index.tsx or a dedicated component file
 import { useState, useEffect } from "react";
 
 const colors = [

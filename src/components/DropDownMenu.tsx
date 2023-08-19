@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Chain } from "../helpers/chains";
 import ChainMenuItem from "./ChainMenuItem";
+import Image from "next/image";
 
 interface DropDownMenuProps {
   currentChain: Chain;
@@ -25,10 +26,22 @@ const DropDownMenu = ({
       <div className="relative inline-block text-left">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-white focus:outline-none"
+          className="text-white focus:outline-none flex items-center"
         >
           {ChainMenuItem({ chain: currentChain })}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+            />
+          </svg>
         </button>
+
         {isOpen && (
           <div className="origin-top-left absolute left-0 mt-2 rounded-md shadow-lg bg-white">
             <div className="py-1">
