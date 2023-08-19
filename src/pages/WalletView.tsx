@@ -2,8 +2,12 @@ import React from "react";
 import NavBar from "@/components/NavBar";
 import ColumnButton from "@/components/ColumnButton";
 import Card from "@/components/Card";
+import { Chain } from "@/helpers/chains";
 
 interface WalletViewProps {
+  chain: Chain;
+  supportedChains: { [key: string]: Chain };
+  switchChainAction: (chain: Chain) => void;
   ethAddress: string;
   mintNftAction: () => void;
   exitAction: () => void;
@@ -12,6 +16,9 @@ interface WalletViewProps {
 }
 
 const WalletView = ({
+  chain,
+  supportedChains,
+  switchChainAction,
   ethAddress,
   mintNftAction,
   exitAction,
@@ -20,7 +27,12 @@ const WalletView = ({
 }: WalletViewProps) => {
   return (
     <div className="flex flex-col gap-2">
-      <NavBar exitAction={exitAction} />
+      <NavBar
+        exitAction={exitAction}
+        currentChain={chain}
+        supportedChains={supportedChains}
+        switchChainAction={switchChainAction}
+      />
       <div className="border-solid border-white/10 h-px shrink-0 mb-3 ml-px border-t border-b-0 border-x-0" />
       <div className="text-2xl font-sf_pro_display font-bold tracking-[0.35] leading-[26px] text-white self-start ml-px">
         Welcome to your smart wallet

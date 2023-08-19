@@ -3,7 +3,7 @@ import WalletView from "./WalletView";
 import Box from "@/components/Box";
 import SignInView from "./SignInView";
 import MintedIglooNFT from "./MintedIglooNFTView";
-import { CHAINS } from "@/helpers/chains";
+import { CHAINS, Chain } from "@/helpers/chains";
 import InitialView from "./InitialView";
 
 interface TestViewProps {}
@@ -26,6 +26,9 @@ const TestView = ({}: TestViewProps) => {
           exitAction={() => setShowView(undefined)}
           openInBlockExplorerAction={() => setShowView(undefined)}
           copyAddressAction={() => setShowView(undefined)}
+          switchChainAction={() => setShowView(undefined)}
+          chain={CHAINS.goerli}
+          supportedChains={CHAINS}
         />
       ),
     },

@@ -1,14 +1,28 @@
 import React from "react";
 import DropdownMenu from "./DropDownMenu";
 import Image from "next/image";
+import { Chain } from "@/helpers/chains";
+import { current } from "@reduxjs/toolkit";
 
 interface NavBarProps {
+  currentChain: Chain;
+  supportedChains: { [key: string]: Chain };
+  switchChainAction: (chain: Chain) => void;
   exitAction: () => void;
 }
 
-const NavBar = ({ exitAction }: NavBarProps) => (
+const NavBar = ({
+  currentChain,
+  supportedChains,
+  switchChainAction,
+  exitAction,
+}: NavBarProps) => (
   <div className="flex">
-    <DropdownMenu />
+    <DropdownMenu
+      currentChain={currentChain}
+      supportedChains={supportedChains}
+      switchChainAction={switchChainAction}
+    />
     <Image
       src="rectangle_portrait_and_arrow_right.svg"
       alt="exit button"

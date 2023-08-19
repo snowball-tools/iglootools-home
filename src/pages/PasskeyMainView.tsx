@@ -10,6 +10,7 @@ import {
   setSessionSig,
   disconnect,
   setUsername,
+  switchChain,
 } from "../store/credentialsSlice";
 import {
   authenticatePasskey,
@@ -26,12 +27,15 @@ import Header from "../components/Header";
 import { AuthMethod } from "@lit-protocol/types";
 import WalletView from "./WalletView";
 import Box from "@/components/Box";
+import { Chain } from "@/helpers/chains";
+import { chains } from "@alchemy/aa-core";
 
 export default function PasskeyMainView() {
   const {
     view,
     username,
     currentAppChain,
+    appChains,
     currentPKP,
     currentPKPEthAddress,
     sessionSigs,
@@ -191,6 +195,11 @@ export default function PasskeyMainView() {
             copyAddressAction={() =>
               navigator.clipboard.writeText(ethAddress ?? "")
             }
+            chain={currentAppChain}
+            supportedChains={appChains}
+            switchChainAction={(newChain) => {
+              dispatch(switchChain(newChain));
+            }}
           />
         );
       case LoginViews.SIGN_UP:
