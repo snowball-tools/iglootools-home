@@ -9,28 +9,39 @@ const StatusBar = ({ step }: StatusBarProps) => (
     {step === 0 ? (
       <></>
     ) : (
-      <div className="w-60 h-1 relative">
-        <div className="w-60 h-1 left-0 top-0 absolute">
-          <div
-            className={`w-14 h-1 left-0 top-0 absolute rounded-xl bg-cyan-200`}
-          />
-          <div
-            className={`w-14 h-1 left-[64px] top-0 absolute rounded-xl ${
-              step >= 2 ? "bg-cyan-200" : "bg-white bg-opacity-20"
-            }`}
-          />
-          <div
-            className={`w-14 h-1 left-[128px] top-0 absolute rounded-xl ${
-              step >= 3 ? "bg-cyan-200" : "bg-white bg-opacity-20"
-            }`}
-          />
-          <div
-            className={`w-14 h-1 left-[192px] top-0 absolute rounded-xl ${
-              step >= 4 ? "bg-cyan-200" : "bg-white bg-opacity-20"
-            }`}
-          />
-        </div>
-      </div>
+      <svg
+        width="247"
+        height="4"
+        viewBox="0 0 247 4"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect x="0.5" width="54" height="4" rx="2" fill="#9EE7FF" />
+        <rect
+          x="64.5"
+          width="54"
+          height="4"
+          rx="2"
+          fill={step > 1 ? "#9EE7FF" : "white"}
+          fill-opacity="0.2"
+        />
+        <rect
+          x="128.5"
+          width="54"
+          height="4"
+          rx="2"
+          fill={step > 2 ? "#9EE7FF" : "white"}
+          fill-opacity="0.2"
+        />
+        <rect
+          x="192.5"
+          width="54"
+          height="4"
+          rx="2"
+          fill={step > 3 ? "#9EE7FF" : "white"}
+          fill-opacity="0.2"
+        />
+      </svg>
     )}
   </>
 );

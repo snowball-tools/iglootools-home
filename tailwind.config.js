@@ -19,6 +19,14 @@ module.exports = {
         "disabled-gray": "rgba(120, 120, 128, 0.2)",
       },
       fontFamily: {
+        sans: [
+          '"SF Pro Text"',
+          '"SF Pro Display"',
+          '"SF Pro Rounded"',
+          '"SF Mono"',
+          '"Orelega One"',
+          "sans-serif",
+        ],
         sf_pro_rounded: ["SF_Pro_Rounded", "sans-serif"],
         orelega_one: ["Orelega_One", "sans-serif"],
         sf_pro_text: ["SF_Pro_Text", "sans-serif"],

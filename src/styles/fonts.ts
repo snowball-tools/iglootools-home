@@ -20,4 +20,14 @@ export const fonts: FontConfig[] = [
     displayName: "SF Pro Text",
     className: "font-sf_pro_text",
   },
+  {
+    name: "SF_Pro_Display",
+    displayName: "SF Pro Display",
+    className: "font-sf_pro_display",
+  },
+  {
+    name: "SF_Mono",
+    displayName: "SF Mono",
+    className: "font-sf_mono",
+  },
 ];

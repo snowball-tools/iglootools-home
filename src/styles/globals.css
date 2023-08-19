@@ -44,6 +44,10 @@ body {
   .animate-blink {
     animation: blink 1s linear infinite;
   }
+
+  html {
+    font-family: "Orelega_One", "SF_Pro_Text", "SF_Pro_Display";
+  }
 }
 
 @keyframes circleToIgloo {

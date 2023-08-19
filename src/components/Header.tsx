@@ -92,13 +92,13 @@ const Header = ({ infoView, mintingNFT, errorMsg }: InfoViewProps) => {
 
   return (
     <>
-      <div className="flex flex-col gap-6 items-center">
+      <div className="flex flex-col gap-6 items-center w-full">
         <StatusBar step={step} />
         <div className="self-stretch flex flex-col gap-2 items-start w-full">
-          <div className="self-stretch text-white text-2xl font-bold tracking-[0.35] leading-[28px]">
+          <div className="self-stretch text-white text-2xl font-bold tracking-[0.35] leading-[28px] font-sf_pro_display">
             {titleText}&nbsp;&nbsp;{additionalText && additionalText}
           </div>
-          <div className="self-stretch text-white text-opacity-60 text-base font-normal leading-tight">
+          <div className="self-stretch text-white text-opacity-60 text-base font-normal leading-tight font-sf_pro_text">
             {subtitleText}
           </div>
         </div>

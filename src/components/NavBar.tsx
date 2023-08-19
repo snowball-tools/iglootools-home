@@ -2,7 +2,6 @@ import React from "react";
 import DropdownMenu from "./DropDownMenu";
 import Image from "next/image";
 import { Chain } from "@/helpers/chains";
-import { current } from "@reduxjs/toolkit";
 
 interface NavBarProps {
   currentChain: Chain;
