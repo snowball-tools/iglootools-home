@@ -22,6 +22,7 @@ import InitialView from "./InitialView";
 import SignInView from "./SignInView";
 import InfoView from "./InfoView";
 import { AuthMethod } from "@lit-protocol/types";
+import NavBar from "@/components/NavBar";
 
 export default function Login() {
   const {
@@ -169,8 +170,9 @@ export default function Login() {
       case LoginViews.WALLET_HOME:
         return (
           <>
-            <InfoView infoView={view} sendUserOp={sendUserOp} />
             <div className="flex flex-col justify-between items-center">
+              <NavBar />
+
               <div className="text-center text-xl font-['SF_Pro_Rounded'] font-bold leading-[40px] self-center">
                 Your Smart Wallet
               </div>
