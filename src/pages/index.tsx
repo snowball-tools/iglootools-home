@@ -1,13 +1,9 @@
-import NavBar from "../components/NavBar";
-import Login from "./Login";
-import Notice from "../components/Notice";
+import PasskeyMainView from "./PasskeyMainView";
 
 const Home = () => {
   return (
     <>
-      <Login />
-      <NavBar />
-      <Notice />
+      <PasskeyMainView />
     </>
   );
 };

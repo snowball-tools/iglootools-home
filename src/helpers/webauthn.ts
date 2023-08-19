@@ -4,7 +4,6 @@ import { ProviderType } from "@lit-protocol/constants";
 import {
   AuthMethod,
   AuthCallbackParams,
-  IRelayPollStatusResponse,
   IRelayPKP,
   SessionSigsMap,
 } from "@lit-protocol/types";
@@ -21,7 +20,6 @@ import { encodeFunctionData } from "viem";
 import { IglooNFTABI } from "./abis/IglooNFTABI";
 import { TypedDataField } from "@ethersproject/abstract-signer";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
-import { sendInitGas } from "./initGas";
 import { LIT_RELAY_API_KEY } from "../helpers/env";
 import { Chain, alchemyAPIKey, alchemyGasPolicyId, viemChain } from "./chains";
 
@@ -45,9 +43,10 @@ const litNodeClient = new LitNodeClient({
   debug: false,
 });
 
-export async function registerPasskey(
-  username: string
-): Promise<IRelayPollStatusResponse> {
+export async function registerPasskey(username: string): Promise<{
+  pkpEthAddress: string;
+  pkpPublicKey: string;
+}> {
   try {
     const options = await webAuthnProvider.register(username);
     const txHash = await webAuthnProvider.verifyAndMintPKPThroughRelayer(
@@ -56,7 +55,17 @@ export async function registerPasskey(
     const response = await webAuthnProvider.relay.pollRequestUntilTerminalState(
       txHash
     );
-    return response;
+
+    if (
+      response.pkpEthAddress === undefined ||
+      response.pkpPublicKey === undefined
+    ) {
+      return Promise.reject("Registration failed");
+    }
+    return {
+      pkpEthAddress: response.pkpEthAddress,
+      pkpPublicKey: response.pkpPublicKey,
+    };
   } catch (error) {
     console.error("Registration failed:", error);
     return Promise.reject("Registration failed");
@@ -65,7 +74,13 @@ export async function registerPasskey(
 
 export async function authenticatePasskey(): Promise<AuthMethod> {
   try {
-    return await webAuthnProvider.authenticate();
+    const auth = await webAuthnProvider.authenticate();
+
+    if (auth === undefined) {
+      return Promise.reject("Authentication failed");
+    }
+
+    return auth;
   } catch (error) {
     console.error("Authentication failed:", error);
     return Promise.reject("Authentication failed");
@@ -121,6 +136,10 @@ export async function getSessionSigs(
       authNeededCallback: authNeededCallback,
     });
 
+    if (sessionSigs === undefined) {
+      return Promise.reject("Retrieving session sigs failed. undefined");
+    }
+
     return sessionSigs;
   } catch (error) {
     console.error("Retrieving session sigs failed:", error);
@@ -135,14 +154,16 @@ export async function createPkpEthersWallet(
   chain: Chain
 ): Promise<PKPEthersWallet> {
   try {
-    await sendInitGas(pkpEthAddress as Address, chain);
-
     const pkpWallet = new PKPEthersWallet({
       controllerSessionSigs: sessionSig,
       pkpPubKey: pkpPublicKey,
       rpc: "https://chain-rpc.litprotocol.com/http",
     });
     await pkpWallet.init();
+
+    if (pkpWallet === undefined) {
+      return Promise.reject("Transaction failed");
+    }
 
     return pkpWallet;
   } catch (error) {
@@ -151,20 +172,17 @@ export async function createPkpEthersWallet(
   }
 }
 
-export async function sendUserOperation(
-  pkpEthAddress: string,
-  pkpWallet: PKPEthersWallet,
-  chain: Chain
-): Promise<SendUserOperationResult> {
-  console.log("Sending user operation");
-  console.log("chain", chain);
+export async function getSimpleAccountOwner(
+  pkpWallet: PKPEthersWallet
+): Promise<SimpleSmartAccountOwner> {
+  console.log("Getting Simple Account Owner");
   try {
     const owner: SimpleSmartAccountOwner = {
       signMessage: async (msg: Uint8Array) => {
         return (await pkpWallet.signMessage(msg)) as Address;
       },
       getAddress: async () => {
-        return pkpEthAddress as Address;
+        return (await pkpWallet.getAddress()) as Address;
       },
       signTypedData: async (params: SignTypedDataParams) => {
         const types: Record<string, Array<TypedDataField>> = {
@@ -184,6 +202,61 @@ export async function sendUserOperation(
         )) as Address;
       },
     };
+
+    return owner;
+  } catch (error) {
+    console.error("Get Simple Account Owner failed:", error);
+    return Promise.reject("Get Simple Account Owner failed");
+  }
+}
+
+export async function getSmartWalletAddress(
+  pkpEthWallet: PKPEthersWallet,
+  chain: Chain
+): Promise<Address> {
+  console.log("Getting Smart Wallet Address");
+
+  try {
+    const owner: SimpleSmartAccountOwner = await getSimpleAccountOwner(
+      pkpEthWallet
+    );
+
+    const provider = new AlchemyProvider({
+      chain: viemChain(chain),
+      entryPointAddress: chain.entryPointAddress,
+      apiKey: alchemyAPIKey(chain),
+      rpcUrl: undefined,
+    }).connect(
+      (rpcClient) =>
+        new SimpleSmartContractAccount({
+          owner,
+          entryPointAddress: chain.entryPointAddress,
+          chain: viemChain(chain),
+          factoryAddress: chain.factoryAddress,
+          rpcClient,
+        })
+    );
+
+    const address = await provider.getAddress();
+
+    return address;
+  } catch (error) {
+    console.error("Getting Counterfactual Address failed:", error);
+    return Promise.reject("Getting Counterfactual Address failed");
+  }
+}
+
+export async function sendUserOperation(
+  pkpEthAddress: string,
+  pkpWallet: PKPEthersWallet,
+  chain: Chain
+): Promise<SendUserOperationResult> {
+  console.log("Sending user operation");
+  console.log("chain", chain);
+  try {
+    const owner: SimpleSmartAccountOwner = await getSimpleAccountOwner(
+      pkpWallet
+    );
 
     let provider = new AlchemyProvider({
       chain: viemChain(chain),
@@ -216,6 +289,10 @@ export async function sendUserOperation(
         args: [address],
       }),
     });
+
+    if (result === undefined) {
+      return Promise.reject("Transaction failed");
+    }
 
     return result;
   } catch (error) {

@@ -1,11 +1,18 @@
+@import "normalize.css";
+
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+@import "./fonts/fonts.css";
 
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --vh: calc(
+    100vh - (var(--safe-area-inset-top) + var(--safe-area-inset-bottom))
+  );
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,13 +24,8 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: white;
+  background: black;
   overflow: hidden;
 }
 
@@ -42,4 +44,39 @@ body {
   .animate-blink {
     animation: blink 1s linear infinite;
   }
+}
+
+@keyframes circleToIgloo {
+  0% {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background-color: #3b82f6; /* This is an approximation of blue-400 */
+    transform: translateY(0);
+  }
+
+  40% {
+    border-radius: 20%;
+    width: 200px;
+    height: 150px;
+  }
+
+  60% {
+    border: 3px solid #ffffff;
+  }
+
+  80% {
+    background-image: radial-gradient(circle, #3b82f6 10%, transparent 10%),
+      radial-gradient(circle, #3b82f6 10%, transparent 10%);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+  }
+
+  100% {
+    /* Final igloo form */
+  }
+}
+
+.circle-animate {
+  animation: circleToIgloo 3s forwards;
 }

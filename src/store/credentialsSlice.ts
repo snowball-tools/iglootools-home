@@ -2,16 +2,16 @@ import { AuthMethod, SessionSigsMap } from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chain, CHAINS } from "../helpers/chains";
 import { SendUserOperationResult } from "@alchemy/aa-core";
+import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
 
 export const LoginViews = {
+  INITIAL_VIEW: "initial_view",
   SIGN_UP: "sign_up",
-  SIGN_IN: "sign_in",
   REGISTERING: "registering",
   AUTHENTICATING: "authenticating",
   MINTING: "minting",
   MINTED: "minted",
-  CREATING_SESSION: "creating_session",
-  SESSION_CREATED: "session_created",
+  WALLET_HOME: "wallet_home",
   ERROR: "error",
   IGLOO_NFT_MINTED: "igloo_nft_minted",
 };
@@ -29,10 +29,11 @@ export interface CredentialState {
   appChains: { [key: string]: Chain };
   errorMsg: string | null;
   userOpResult: SendUserOperationResult | null;
+  ethAddress: string | null;
 }
 
 export const initialState: CredentialState = {
-  view: LoginViews.SIGN_UP,
+  view: LoginViews.INITIAL_VIEW,
   isAuthenticated: false,
   username: "",
   currentPKP: undefined,
@@ -44,15 +45,23 @@ export const initialState: CredentialState = {
   appChains: CHAINS,
   errorMsg: null,
   userOpResult: null,
+  ethAddress: null,
 };
 
 const credentialsSlice = createSlice({
   name: "credentials",
   initialState,
   reducers: {
-    authenticated: (state, action: PayloadAction<AuthMethod>) => {
+    authenticated: (
+      state,
+      action: PayloadAction<{
+        currentAuthMethod: AuthMethod;
+        view: string;
+      }>
+    ) => {
       state.isAuthenticated = true;
-      state.currentAuthMethod = action.payload;
+      state.currentAuthMethod = action.payload.currentAuthMethod;
+      state.view = action.payload.view;
     },
     disconnect: () => initialState,
     switchChain: (state, action: PayloadAction<Chain>) => {
@@ -89,14 +98,15 @@ const credentialsSlice = createSlice({
         currentPKPEthAddress: string;
         currentAuthMethod: AuthMethod;
         sessionSigs: SessionSigsMap;
-        view: string;
+        ethAddress: string;
       }>
     ) => {
       state.currentPKP = action.payload.currentPKP;
       state.currentPKPEthAddress = action.payload.currentPKPEthAddress;
       state.currentAuthMethod = action.payload.currentAuthMethod;
       state.sessionSigs = action.payload.sessionSigs;
-      state.view = action.payload.view;
+      state.ethAddress = action.payload.ethAddress;
+      state.view = LoginViews.WALLET_HOME;
     },
   },
 });
