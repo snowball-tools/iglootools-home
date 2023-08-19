@@ -4,7 +4,7 @@ import ColumnButton from "@/components/ColumnButton";
 import Card from "@/components/Card";
 import { Chain } from "@/helpers/chains";
 
-interface WalletViewProps {
+export interface WalletViewProps {
   chain: Chain;
   supportedChains: { [key: string]: Chain };
   switchChainAction: (chain: Chain) => void;
@@ -25,6 +25,10 @@ const WalletView = ({
   openInBlockExplorerAction,
   copyAddressAction,
 }: WalletViewProps) => {
+  // todo: fix. why compiler
+  if (chain === undefined) {
+    return <></>;
+  }
   return (
     <div className="flex flex-col gap-2">
       <NavBar

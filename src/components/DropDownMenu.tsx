@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Chain } from "../helpers/chains";
 import ChainMenuItem from "./ChainMenuItem";
-import Image from "next/image";
 
 interface DropDownMenuProps {
   currentChain: Chain;
@@ -28,7 +27,7 @@ const DropDownMenu = ({
           onClick={() => setIsOpen(!isOpen)}
           className="text-white focus:outline-none flex items-center"
         >
-          {ChainMenuItem({ chain: currentChain })}
+          <ChainMenuItem chain={currentChain} />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -55,7 +54,7 @@ const DropDownMenu = ({
                       chain.name === currentChain.name || !chain.enabled
                     }
                   >
-                    {ChainMenuItem({ chain })}
+                    <ChainMenuItem chain={chain} />
                   </button>
                 );
               })}

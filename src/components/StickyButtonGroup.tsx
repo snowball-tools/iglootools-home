@@ -1,10 +1,10 @@
 import React from "react";
 
 interface StickyButtonGroupProps {
-  buttons: ButtonProps[];
+  buttons: IglooButtonProps[];
 }
 
-interface ButtonProps {
+interface IglooButtonProps {
   disabled?: boolean;
   label: string;
   onClick: () => void;
@@ -29,6 +29,7 @@ const StickyButtonGroup = ({ buttons }: StickyButtonGroupProps) => (
         textWeight,
       }) => (
         <button
+          key={label}
           className={`self-stretch flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center ${
             textSize ? textSize : "text-md"
           } font-sf_pro_rounded ${

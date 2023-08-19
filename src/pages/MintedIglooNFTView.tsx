@@ -1,8 +1,8 @@
 import React from "react";
-import { Chain } from "@/helpers/chains";
 import Header from "../components/Header";
 import { LoginViews } from "@/store/credentialsSlice";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
+import { Chain } from "@/helpers/chains";
 
 interface MintedIglooNFTProps {
   nftLabel: string;
@@ -11,12 +11,16 @@ interface MintedIglooNFTProps {
   returnToWalletAction: () => void;
 }
 
-const MintedIglooNFT = ({
+const MintedIglooNFTView = ({
   nftLabel,
   chain,
   openInOpenSeaAction,
   returnToWalletAction,
 }: MintedIglooNFTProps) => {
+  // todo: fix. why compiler
+  if (chain === undefined) {
+    return <></>;
+  }
   return (
     <>
       <Header infoView={LoginViews.IGLOO_NFT_MINTED} />
@@ -55,4 +59,4 @@ const MintedIglooNFT = ({
   );
 };
 
-export default MintedIglooNFT;
+export default MintedIglooNFTView;

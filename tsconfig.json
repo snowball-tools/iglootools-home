@@ -9,7 +9,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -30,5 +30,5 @@
     ".next/types/**/*.ts",
     "jest.config.js"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", ".next"]
 }

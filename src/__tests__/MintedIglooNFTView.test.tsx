@@ -15,14 +15,28 @@ describe("MintedIglooNFTView", () => {
   };
 
   it("renders correctly with provided props", () => {
-    const { getByText } = render(<MintedIglooNFTView {...props} />);
+    const { getByText } = render(
+      <MintedIglooNFTView
+        nftLabel="Igloo #172"
+        chain={CHAINS.goerli}
+        openInOpenSeaAction={mockOpenInOpenSeaAction}
+        returnToWalletAction={mockReturnToWalletAction}
+      />
+    );
 
     expect(getByText("Igloo #172")).toBeInTheDocument();
     expect(getByText("Minted on Goerli")).toBeInTheDocument();
   });
 
   it('calls the correct action on "View on OpenSea" button click', () => {
-    const { getByText } = render(<MintedIglooNFTView {...props} />);
+    const { getByText } = render(
+      <MintedIglooNFTView
+        nftLabel="Igloo #172"
+        chain={CHAINS.goerli}
+        openInOpenSeaAction={mockOpenInOpenSeaAction}
+        returnToWalletAction={mockReturnToWalletAction}
+      />
+    );
     const button = getByText("View on OpenSea");
 
     fireEvent.click(button);
@@ -31,7 +45,14 @@ describe("MintedIglooNFTView", () => {
   });
 
   it('calls the correct action on "Return to Wallet" button click', () => {
-    const { getByText } = render(<MintedIglooNFTView {...props} />);
+    const { getByText } = render(
+      <MintedIglooNFTView
+        nftLabel="Igloo #172"
+        chain={CHAINS.goerli}
+        openInOpenSeaAction={mockOpenInOpenSeaAction}
+        returnToWalletAction={mockReturnToWalletAction}
+      />
+    );
     const button = getByText("Return to Wallet");
 
     fireEvent.click(button);

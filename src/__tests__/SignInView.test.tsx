@@ -68,7 +68,7 @@ describe("SignInView", () => {
     fireEvent.click(getByText("Create passkey"));
     expect(mockFunctions.createNewPasskey).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(getByText("Sign in with passkey"));
+    fireEvent.click(getByText("Sign in"));
     expect(mockFunctions.signIn).toHaveBeenCalledTimes(1);
   });
 });

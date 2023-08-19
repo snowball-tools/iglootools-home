@@ -27,9 +27,8 @@ import Header from "../components/Header";
 import { AuthMethod } from "@lit-protocol/types";
 import WalletView from "./WalletView";
 import Box from "@/components/Box";
-import { Chain } from "@/helpers/chains";
-import { chains } from "@alchemy/aa-core";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
+import { Chain } from "@/helpers/chains";
 
 export default function PasskeyMainView() {
   const {
@@ -202,7 +201,7 @@ export default function PasskeyMainView() {
             }
             chain={currentAppChain}
             supportedChains={appChains}
-            switchChainAction={(newChain) => {
+            switchChainAction={(newChain: Chain) => {
               dispatch(switchChain(newChain));
             }}
           />

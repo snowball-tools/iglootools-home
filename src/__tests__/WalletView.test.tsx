@@ -1,12 +1,12 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import WalletView from "@/pages/WalletView";
-import { Chain } from "@/helpers/chains";
+import WalletView, { WalletViewProps } from "@/pages/WalletView";
+import { CHAINS } from "@/helpers/chains";
 
 describe("WalletView Component", () => {
-  const mockProps = {
-    chain: {} as Chain,
-    supportedChains: {},
+  const mockProps: WalletViewProps = {
+    chain: CHAINS.goerli,
+    supportedChains: CHAINS,
     switchChainAction: jest.fn(),
     ethAddress: "0x12345",
     mintNftAction: jest.fn(),

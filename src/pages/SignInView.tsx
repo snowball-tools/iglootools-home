@@ -17,6 +17,10 @@ const SignInView = ({
   username,
   setUsername,
 }: SignInViewProps) => {
+  // todo: fix. why compiler
+  if (username === undefined) {
+    return <></>;
+  }
   return (
     <>
       <div className="flex flex-col gap-10 items-center">
