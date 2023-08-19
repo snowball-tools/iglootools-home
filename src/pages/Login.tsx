@@ -8,7 +8,6 @@ import {
   setCurrentPKP,
   LoginViews,
   setSessionSig,
-  setEthAddressAndPKPWallet,
 } from "../store/credentialsSlice";
 import {
   authenticatePasskey,
@@ -93,15 +92,6 @@ export default function Login() {
       currentAppChain
     );
 
-    dispatch(
-      setSessionSig({
-        currentPKP: pkpPublicKey,
-        currentPKPEthAddress: pkpEthAddress,
-        currentAuthMethod: auth,
-        sessionSigs: sessionSigs,
-      })
-    );
-
     const pkpEthWallet = await createPkpEthersWallet(
       pkpPublicKey,
       pkpEthAddress,
@@ -115,7 +105,11 @@ export default function Login() {
     );
 
     dispatch(
-      setEthAddressAndPKPWallet({
+      setSessionSig({
+        currentPKP: pkpPublicKey,
+        currentPKPEthAddress: pkpEthAddress,
+        currentAuthMethod: auth,
+        sessionSigs: sessionSigs,
         ethAddress: smartWalletAddress,
       })
     );
