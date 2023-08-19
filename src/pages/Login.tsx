@@ -22,7 +22,7 @@ import InitialView from "./InitialView";
 import SignInView from "./SignInView";
 import InfoView from "./InfoView";
 import { AuthMethod } from "@lit-protocol/types";
-import NavBar from "@/components/NavBar";
+import WalletView from "./WalletView";
 
 export default function Login() {
   const {
@@ -168,32 +168,7 @@ export default function Login() {
           </>
         );
       case LoginViews.WALLET_HOME:
-        return (
-          <>
-            <div className="flex flex-col justify-between items-center">
-              <NavBar />
-
-              <div className="text-center text-xl font-['SF_Pro_Rounded'] font-bold leading-[40px] self-center">
-                Your Smart Wallet
-              </div>
-              <div className="text-center text-sm font-SF_Pro_Rounded font-medium leading-[20px] w-full break-all">
-                {ethAddress}
-              </div>
-            </div>
-            <div className="flex flex-col justify-end gap-3 w-full">
-              <button
-                className="bg-black flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-white"
-                onClick={sendUserOp}
-              >
-                Mint Igloo NFT
-              </button>
-              <div className="text-center text-xs font-SF_Pro_Rounded tracking-[-0.24] leading-[20px]">
-                Try out your new smart wallet by minting this NFT. <br />
-                We will cover the gas for this!
-              </div>
-            </div>
-          </>
-        );
+        return <WalletView />;
       case LoginViews.SIGN_UP:
         return (
           <SignInView
