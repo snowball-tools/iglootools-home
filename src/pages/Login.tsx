@@ -19,7 +19,6 @@ import {
   registerPasskey,
   sendUserOperation,
 } from "../helpers/webauthn";
-import { authenticated } from "../store/credentialsSlice";
 import InitialView from "./InitialView";
 import SignInView from "./SignInView";
 import InfoView from "./InfoView";
@@ -56,6 +55,29 @@ export default function Login() {
     } catch (e) {
       console.log(e);
       dispatch(setErrorMsg("Error creating passkey"));
+    }
+  }
+
+  async function authThenGetSessionSigs() {
+    let pkp: string | undefined = currentPKP;
+    let pkpEthAddress: string | undefined = currentPKPEthAddress;
+
+    dispatch(setView(LoginViews.AUTHENTICATING));
+
+    try {
+      const auth = await authenticatePasskey();
+
+      if (pkp === undefined || pkpEthAddress === undefined) {
+        const pkps = await fetchPkpsForAuthMethod(auth);
+
+        pkp = pkps[0].publicKey;
+        pkpEthAddress = pkps[0].ethAddress;
+      }
+
+      await getSessionSig(pkp, pkpEthAddress, auth);
+    } catch (e) {
+      console.log(e);
+      dispatch(setErrorMsg("Error authenticating passkey"));
     }
   }
 
@@ -98,29 +120,6 @@ export default function Login() {
         ethAddress: smartWalletAddress,
       })
     );
-  }
-
-  async function authThenGetSessionSigs() {
-    let pkp: string | undefined = currentPKP;
-    let pkpEthAddress: string | undefined = currentPKPEthAddress;
-
-    dispatch(setView(LoginViews.AUTHENTICATING));
-
-    try {
-      const auth = await authenticatePasskey();
-
-      if (pkp === undefined || pkpEthAddress === undefined) {
-        const pkps = await fetchPkpsForAuthMethod(auth);
-
-        pkp = pkps[0].publicKey;
-        pkpEthAddress = pkps[0].ethAddress;
-      }
-
-      await getSessionSig(pkp, pkpEthAddress, auth);
-    } catch (e) {
-      console.log(e);
-      dispatch(setErrorMsg("Error authenticating passkey"));
-    }
   }
 
   async function sendUserOp() {
