@@ -18,7 +18,7 @@ const WalletView = ({ mintNftAction }: WalletViewProps) => {
   const dispatch = useDispatch();
 
   return (
-    <div className="border-solid overflow-hidden flex flex-col gap-2 px-5 py-4">
+    <div className="flex flex-col gap-2">
       <NavBar
         exitAction={() => {
           dispatch(disconnect());
