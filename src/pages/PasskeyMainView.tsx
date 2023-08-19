@@ -155,10 +155,10 @@ export default function PasskeyMainView() {
       case LoginViews.ERROR:
         return (
           <>
-            <InfoView infoView={view} sendUserOp={sendUserOp} />;
+            <InfoView infoView={view} sendUserOp={sendUserOp} />
             <div className="flex flex-col justify-end gap-3 w-full">
               <button
-                className="bg-black flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-white"
+                className="bg-cyan-200 flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-black"
                 onClick={() => dispatch(setView(LoginViews.INITIAL_VIEW))}
               >
                 Try again
