@@ -10,10 +10,7 @@ export default function WalletView() {
       <div className="text-2xl font-['SF_Pro_Display'] font-bold tracking-[0.35] leading-[26px] text-white self-start ml-px">
         Welcome to your smart wallet
       </div>
-      <div
-        className="font-sf_pro_text tracking-[-0.24] leading-[20px] text-white/60 self-center mb-3 w-full"
-        id="ThisIsASubheading"
-      >
+      <div className="font-sf_pro_text tracking-[-0.24] leading-[20px] text-white/60 self-center mb-3 w-full">
         No more passwords, no more seed phrases, no more extensions. We&apos;re
         talking ERC-4337, baby.
       </div>
