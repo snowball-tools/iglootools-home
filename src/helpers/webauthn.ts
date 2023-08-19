@@ -139,7 +139,7 @@ export async function getSessionSigs(
     });
 
     if (sessionSigs === undefined) {
-      return Promise.reject("Retrieving session sigs failed");
+      return Promise.reject("Retrieving session sigs failed. undefined");
     }
 
     return sessionSigs;

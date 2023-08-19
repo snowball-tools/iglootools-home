@@ -8,6 +8,7 @@ import {
   setCurrentPKP,
   LoginViews,
   setSessionSig,
+  setEthAddressAndPKPWallet,
 } from "../store/credentialsSlice";
 import {
   authenticatePasskey,
@@ -32,6 +33,7 @@ export default function Login() {
     currentPKPEthAddress,
     sessionSigs,
     ethAddress,
+    pkpEthWallet,
   } = useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
 
@@ -104,6 +106,25 @@ export default function Login() {
           view: LoginViews.WALLET_HOME,
         })
       );
+
+      const pkpEthWallet = await createPkpEthersWallet(
+        pkp,
+        pkpEthAddress,
+        sessionSigs,
+        currentAppChain
+      );
+
+      const smartWalletAddress = await getSmartWalletAddress(
+        pkpEthWallet,
+        currentAppChain
+      );
+
+      dispatch(
+        setEthAddressAndPKPWallet({
+          ethAddress: smartWalletAddress,
+          pkpEthWallet: pkpEthWallet,
+        })
+      );
     } catch (e) {
       console.log(e);
       dispatch(setErrorMsg("Error authenticating passkey"));
@@ -113,34 +134,32 @@ export default function Login() {
   async function sendUserOp() {
     dispatch(setView(LoginViews.MINTING));
 
-    try {
-      if (
-        currentPKP &&
-        currentPKPEthAddress &&
-        currentAppChain &&
-        sessionSigs
-      ) {
-        const pkpEthWallet = await createPkpEthersWallet(
-          currentPKP,
-          currentPKPEthAddress,
-          sessionSigs,
-          currentAppChain
-        );
+    let pkpEthWalletForUserOp = pkpEthWallet;
+
+    if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
+      try {
+        if (pkpEthWalletForUserOp === null) {
+          pkpEthWalletForUserOp = await createPkpEthersWallet(
+            currentPKP,
+            currentPKPEthAddress,
+            sessionSigs,
+            currentAppChain
+          );
+        }
 
         const result = await sendUserOperation(
           currentPKPEthAddress,
-          pkpEthWallet,
+          pkpEthWalletForUserOp,
           currentAppChain
         );
 
         dispatch(setMintedNFT(result));
-
         return result;
-      } else {
+      } catch (e) {
+        console.log(e);
         dispatch(setErrorMsg("Error sending user operation"));
       }
-    } catch (e) {
-      console.log(e);
+    } else {
       dispatch(setErrorMsg("Error sending user operation"));
     }
   }
