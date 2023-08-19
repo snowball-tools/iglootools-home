@@ -37,7 +37,7 @@ const SignInView = ({ signIn, createNewPasskey }: SignInViewProps) => {
       </div>
       <div className="flex flex-col gap-3 items-center mx-1">
         <button
-          className="bg-black self-stretch flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-white disabled:bg-disabled-gray"
+          className="bg-cyan-200 self-stretch flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-black disabled:bg-disabled-gray disabled:text-white/10"
           disabled={username.length === 0}
           onClick={createNewPasskey}
         >
