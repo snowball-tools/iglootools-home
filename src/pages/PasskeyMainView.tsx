@@ -8,6 +8,8 @@ import {
   setCurrentPKP,
   LoginViews,
   setSessionSig,
+  disconnect,
+  setUsername,
 } from "../store/credentialsSlice";
 import {
   authenticatePasskey,
@@ -23,6 +25,7 @@ import SignInView from "./SignInView";
 import InfoView from "./InfoView";
 import { AuthMethod } from "@lit-protocol/types";
 import WalletView from "./WalletView";
+import Box from "@/components/Box";
 
 export default function PasskeyMainView() {
   const {
@@ -32,6 +35,8 @@ export default function PasskeyMainView() {
     currentPKP,
     currentPKPEthAddress,
     sessionSigs,
+    ethAddress,
+    errorMsg,
   } = useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
 
@@ -151,11 +156,16 @@ export default function PasskeyMainView() {
       case LoginViews.MINTING:
       case LoginViews.MINTED:
       case LoginViews.IGLOO_NFT_MINTED:
-        return <InfoView infoView={view} sendUserOp={sendUserOp} />;
+        return (
+          <InfoView
+            infoView={view}
+            mintingNFT={view === LoginViews.IGLOO_NFT_MINTED}
+          />
+        );
       case LoginViews.ERROR:
         return (
           <>
-            <InfoView infoView={view} sendUserOp={sendUserOp} />
+            <InfoView infoView={view} errorMsg={errorMsg ?? ""} />
             <div className="flex flex-col justify-end gap-3 w-full">
               <button
                 className="bg-cyan-200 flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-black"
@@ -167,12 +177,29 @@ export default function PasskeyMainView() {
           </>
         );
       case LoginViews.WALLET_HOME:
-        return <WalletView mintNftAction={sendUserOp} />;
+        return (
+          <WalletView
+            mintNftAction={sendUserOp}
+            exitAction={() => dispatch(disconnect())}
+            ethAddress={ethAddress ?? ""}
+            openInBlockExplorerAction={() =>
+              window.open(
+                `${currentAppChain.blockExplorerUrls[0]}/address/${ethAddress}`,
+                "_blank"
+              )
+            }
+            copyAddressAction={() =>
+              navigator.clipboard.writeText(ethAddress ?? "")
+            }
+          />
+        );
       case LoginViews.SIGN_UP:
         return (
           <SignInView
             signIn={authThenGetSessionSigs}
             createNewPasskey={createPKPWithWebAuthn}
+            username={username}
+            setUsername={(newUsername) => dispatch(setUsername(newUsername))}
           />
         );
       default:
@@ -185,11 +212,5 @@ export default function PasskeyMainView() {
     }
   };
 
-  return (
-    <>
-      <div className="flex flex-col gap-1 w-full py-6 px-6 h-screen justify-between lg:max-w-md mx-auto">
-        {renderView()}
-      </div>
-    </>
-  );
+  return <Box>{renderView()}</Box>;
 }

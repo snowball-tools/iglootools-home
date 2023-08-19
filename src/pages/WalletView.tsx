@@ -2,30 +2,27 @@ import React from "react";
 import NavBar from "@/components/NavBar";
 import ColumnButton from "@/components/ColumnButton";
 import Card from "@/components/Card";
-import { RootState } from "@/store/store";
-import { useDispatch, useSelector } from "react-redux";
-import exp from "constants";
-import { disconnect } from "@/store/credentialsSlice";
 
 interface WalletViewProps {
+  ethAddress: string;
   mintNftAction: () => void;
+  exitAction: () => void;
+  openInBlockExplorerAction: () => void;
+  copyAddressAction: () => void;
 }
 
-const WalletView = ({ mintNftAction }: WalletViewProps) => {
-  const { ethAddress, currentAppChain } = useSelector(
-    (state: RootState) => state.credentials
-  );
-  const dispatch = useDispatch();
-
+const WalletView = ({
+  ethAddress,
+  mintNftAction,
+  exitAction,
+  openInBlockExplorerAction,
+  copyAddressAction,
+}: WalletViewProps) => {
   return (
     <div className="flex flex-col gap-2">
-      <NavBar
-        exitAction={() => {
-          dispatch(disconnect());
-        }}
-      />
+      <NavBar exitAction={exitAction} />
       <div className="border-solid border-white/10 h-px shrink-0 mb-3 ml-px border-t border-b-0 border-x-0" />
-      <div className="text-2xl font-['SF_Pro_Display'] font-bold tracking-[0.35] leading-[26px] text-white self-start ml-px">
+      <div className="text-2xl font-sf_pro_display font-bold tracking-[0.35] leading-[26px] text-white self-start ml-px">
         Welcome to your smart wallet
       </div>
       <div className="font-sf_pro_text tracking-[-0.24] leading-[20px] text-white/60 self-center mb-3 w-full">
@@ -46,18 +43,13 @@ const WalletView = ({ mintNftAction }: WalletViewProps) => {
             text="Copy address"
             color="bg-[#00d4ff]"
             textColor="text-black"
-            onClick={() => navigator.clipboard.writeText(ethAddress ?? "")}
+            onClick={copyAddressAction}
           />
           <ColumnButton
             text="View on Etherscan"
             color="bg-[#00d4ff]"
             textColor="text-black"
-            onClick={() =>
-              window.open(
-                `${currentAppChain.blockExplorerUrls[0]}/address/${ethAddress}`,
-                "_blank"
-              )
-            }
+            onClick={openInBlockExplorerAction}
           />
         </div>
       </Card>
@@ -66,7 +58,7 @@ const WalletView = ({ mintNftAction }: WalletViewProps) => {
         textColor="text-white"
         borderColor="border border-white/32 border-solid"
       >
-        <div className="font-sf_pro_text font-bold tracking-[-0.41] leading-[24px] text-white self-start">
+        <div className="font-sf_pro_display font-bold tracking-[-0.41] leading-[24px] text-white self-start">
           What is a ERC-4337 wallet?
         </div>
         <div className="font-sf_pro_text tracking-[-0.41] leading-[24px] text-white w-full">
