@@ -23,6 +23,7 @@ import { authenticated } from "../store/credentialsSlice";
 import InitialView from "./InitialView";
 import SignInView from "./SignInView";
 import InfoView from "./InfoView";
+import { AuthMethod } from "@lit-protocol/types";
 
 export default function Login() {
   const {
@@ -33,7 +34,6 @@ export default function Login() {
     currentPKPEthAddress,
     sessionSigs,
     ethAddress,
-    pkpEthWallet,
   } = useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
 
@@ -52,45 +52,52 @@ export default function Login() {
 
       const auth = await authenticatePasskey();
 
-      const sessionSigs = await getSessionSigs(
-        response.pkpPublicKey,
-        response.pkpEthAddress,
-        auth,
-        currentAppChain
-      );
-
-      dispatch(
-        setSessionSig({
-          currentPKP: response.pkpPublicKey,
-          currentPKPEthAddress: response.pkpEthAddress,
-          currentAuthMethod: auth,
-          sessionSigs: sessionSigs,
-          view: LoginViews.WALLET_HOME,
-        })
-      );
-
-      const pkpEthWallet = await createPkpEthersWallet(
-        response.pkpPublicKey,
-        response.pkpEthAddress,
-        sessionSigs,
-        currentAppChain
-      );
-
-      const smartWalletAddress = await getSmartWalletAddress(
-        pkpEthWallet,
-        currentAppChain
-      );
-
-      dispatch(
-        setEthAddressAndPKPWallet({
-          ethAddress: smartWalletAddress,
-          pkpEthWallet: pkpEthWallet,
-        })
-      );
+      await getSessionSig(response.pkpPublicKey, response.pkpEthAddress, auth);
     } catch (e) {
       console.log(e);
       dispatch(setErrorMsg("Error creating passkey"));
     }
+  }
+
+  async function getSessionSig(
+    pkpPublicKey: string,
+    pkpEthAddress: string,
+    auth: AuthMethod
+  ) {
+    const sessionSigs = await getSessionSigs(
+      pkpPublicKey,
+      pkpEthAddress,
+      auth,
+      currentAppChain
+    );
+
+    dispatch(
+      setSessionSig({
+        currentPKP: pkpPublicKey,
+        currentPKPEthAddress: pkpEthAddress,
+        currentAuthMethod: auth,
+        sessionSigs: sessionSigs,
+        view: LoginViews.WALLET_HOME,
+      })
+    );
+
+    const pkpEthWallet = await createPkpEthersWallet(
+      pkpPublicKey,
+      pkpEthAddress,
+      sessionSigs,
+      currentAppChain
+    );
+
+    const smartWalletAddress = await getSmartWalletAddress(
+      pkpEthWallet,
+      currentAppChain
+    );
+
+    dispatch(
+      setEthAddressAndPKPWallet({
+        ethAddress: smartWalletAddress,
+      })
+    );
   }
 
   async function authThenGetSessionSigs() {
@@ -109,41 +116,7 @@ export default function Login() {
         pkpEthAddress = pkps[0].ethAddress;
       }
 
-      const sessionSigs = await getSessionSigs(
-        pkp,
-        pkpEthAddress,
-        auth,
-        currentAppChain
-      );
-
-      dispatch(
-        setSessionSig({
-          currentPKP: pkp,
-          currentPKPEthAddress: pkpEthAddress,
-          currentAuthMethod: auth,
-          sessionSigs: sessionSigs,
-          view: LoginViews.WALLET_HOME,
-        })
-      );
-
-      const pkpEthWallet = await createPkpEthersWallet(
-        pkp,
-        pkpEthAddress,
-        sessionSigs,
-        currentAppChain
-      );
-
-      const smartWalletAddress = await getSmartWalletAddress(
-        pkpEthWallet,
-        currentAppChain
-      );
-
-      dispatch(
-        setEthAddressAndPKPWallet({
-          ethAddress: smartWalletAddress,
-          pkpEthWallet: pkpEthWallet,
-        })
-      );
+      await getSessionSig(pkp, pkpEthAddress, auth);
     } catch (e) {
       console.log(e);
       dispatch(setErrorMsg("Error authenticating passkey"));
@@ -153,22 +126,18 @@ export default function Login() {
   async function sendUserOp() {
     dispatch(setView(LoginViews.MINTING));
 
-    let pkpEthWalletForUserOp = pkpEthWallet;
-
     if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
       try {
-        if (pkpEthWalletForUserOp === null) {
-          pkpEthWalletForUserOp = await createPkpEthersWallet(
-            currentPKP,
-            currentPKPEthAddress,
-            sessionSigs,
-            currentAppChain
-          );
-        }
+        const pkpEthWallet = await createPkpEthersWallet(
+          currentPKP,
+          currentPKPEthAddress,
+          sessionSigs,
+          currentAppChain
+        );
 
         const result = await sendUserOperation(
           currentPKPEthAddress,
-          pkpEthWalletForUserOp,
+          pkpEthWallet,
           currentAppChain
         );
 

@@ -30,7 +30,6 @@ export interface CredentialState {
   errorMsg: string | null;
   userOpResult: SendUserOperationResult | null;
   ethAddress: string | null;
-  pkpEthWallet: PKPEthersWallet | null;
 }
 
 export const initialState: CredentialState = {
@@ -47,7 +46,6 @@ export const initialState: CredentialState = {
   errorMsg: null,
   userOpResult: null,
   ethAddress: null,
-  pkpEthWallet: null,
 };
 
 const credentialsSlice = createSlice({
@@ -113,11 +111,9 @@ const credentialsSlice = createSlice({
       state,
       action: PayloadAction<{
         ethAddress: string;
-        pkpEthWallet: PKPEthersWallet;
       }>
     ) => {
       state.ethAddress = action.payload.ethAddress;
-      state.pkpEthWallet = action.payload.pkpEthWallet;
     },
   },
 });
