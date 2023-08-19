@@ -6,6 +6,7 @@ export interface HeaderConstants {
   titleText: string;
   subtitleText: string;
   step: number;
+  additionalText?: string;
 }
 
 function getHeaderConstants(
@@ -44,9 +45,10 @@ function getHeaderConstants(
       };
     case LoginViews.IGLOO_NFT_MINTED:
       return {
-        titleText: "Minting succesful  🎉",
+        titleText: "Minting succesful",
         subtitleText: "Added to your smart wallet",
         step: 0,
+        additionalText: "🎉",
       };
     case LoginViews.WALLET_HOME:
       return {
@@ -59,6 +61,12 @@ function getHeaderConstants(
         titleText: "Error",
         subtitleText: errorMsg ?? "",
         step: 0,
+      };
+    case LoginViews.SIGN_UP:
+      return {
+        titleText: "Name your passkey",
+        subtitleText: "Give your passkey a unique name.",
+        step: 1,
       };
     default:
       return {
@@ -76,7 +84,7 @@ interface InfoViewProps {
 }
 
 const Header = ({ infoView, mintingNFT, errorMsg }: InfoViewProps) => {
-  const { titleText, subtitleText, step } = getHeaderConstants(
+  const { titleText, subtitleText, step, additionalText } = getHeaderConstants(
     infoView,
     mintingNFT,
     errorMsg
@@ -84,13 +92,13 @@ const Header = ({ infoView, mintingNFT, errorMsg }: InfoViewProps) => {
 
   return (
     <>
-      <div className="flex flex-col gap-10 items-center">
+      <div className="flex flex-col gap-6 items-center">
         <StatusBar step={step} />
-        <div className="self-stretch flex flex-col gap-1 items-start">
-          <div className="text-xl font-sf_pro_rounded font-bold tracking-[0.35] leading-[28px]">
-            {titleText}
+        <div className="self-stretch flex flex-col gap-2 items-start w-full">
+          <div className="self-stretch text-white text-2xl font-bold tracking-[0.35] leading-[28px]">
+            {titleText}&nbsp;&nbsp;{additionalText && additionalText}
           </div>
-          <div className="text-sm font-sf_pro_rounded tracking-[-0.24] leading-[20px]">
+          <div className="self-stretch text-white text-opacity-60 text-base font-normal leading-tight">
             {subtitleText}
           </div>
         </div>

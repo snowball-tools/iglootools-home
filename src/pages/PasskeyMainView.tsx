@@ -29,6 +29,7 @@ import WalletView from "./WalletView";
 import Box from "@/components/Box";
 import { Chain } from "@/helpers/chains";
 import { chains } from "@alchemy/aa-core";
+import StickyButtonGroup from "@/components/StickyButtonGroup";
 
 export default function PasskeyMainView() {
   const {
@@ -170,14 +171,18 @@ export default function PasskeyMainView() {
         return (
           <>
             <Header infoView={view} errorMsg={errorMsg ?? ""} />
-            <div className="flex flex-col justify-end gap-3 w-full">
-              <button
-                className="bg-cyan-200 flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-black"
-                onClick={() => dispatch(setView(LoginViews.INITIAL_VIEW))}
-              >
-                Try again
-              </button>
-            </div>
+            <StickyButtonGroup
+              buttons={[
+                {
+                  label: "Try again",
+                  onClick: () => dispatch(disconnect()),
+                  bgColor: "bg-cyan-200",
+                  textColor: "text-black",
+                  disabledColor:
+                    "disabled:bg-disabled-gray disabled:text-white/10",
+                },
+              ]}
+            />
           </>
         );
       case LoginViews.WALLET_HOME:

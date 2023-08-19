@@ -50,6 +50,7 @@ const TestView = ({}: TestViewProps) => {
           chain={CHAINS.goerli}
           openInOpenSeaAction={() => setShowView(undefined)}
           returnToWalletAction={() => setShowView(undefined)}
+          nftLabel="Igloo #172"
         />
       ),
     },

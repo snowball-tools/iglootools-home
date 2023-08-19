@@ -2,53 +2,55 @@ import React from "react";
 import { Chain } from "@/helpers/chains";
 import Header from "../components/Header";
 import { LoginViews } from "@/store/credentialsSlice";
+import StickyButtonGroup from "@/components/StickyButtonGroup";
 
 interface MintedIglooNFTProps {
+  nftLabel: string;
   chain: Chain;
   openInOpenSeaAction: () => void;
   returnToWalletAction: () => void;
 }
 
 const MintedIglooNFT = ({
+  nftLabel,
   chain,
   openInOpenSeaAction,
   returnToWalletAction,
 }: MintedIglooNFTProps) => {
   return (
     <>
-      <div className="flex flex-col gap-1 w-full py-6 px-6 h-screen justify-between lg:max-w-md mx-auto">
-        <Header infoView={LoginViews.IGLOO_NFT_MINTED} />
-        <div className="w-44 h-64 relative">
-          <div className="w-44 h-44 left-0 top-0 absolute">
-            <div className="w-44 h-44 left-0 top-0 absolute bg-blue-500 rounded-lg" />
-            <div className="w-28 h-20 left-[34px] top-[49.25px] absolute">
-              <div className="opacity-10 w-20 h-20 left-0 top-0 absolute"></div>
-              <div className="opacity-20 w-20 h-20 left-[8.63px] top-0 absolute"></div>
-              <div className="opacity-50 w-20 h-20 left-[20.31px] top-0 absolute"></div>
-            </div>
-          </div>
-          <div className="left-[36px] top-[193px] absolute text-white text-xl font-normal leading-10">
-            Igloo #172
-          </div>
-          <div className="left-[26px] top-[233px] absolute text-white text-opacity-60 text-base font-normal leading-tight">
-            Minted on {chain.name}
-          </div>
+      <Header infoView={LoginViews.IGLOO_NFT_MINTED} />
+      <div className="flex flex-col justify-between gap-2 w-full items-start">
+        <img
+          src="https://file.rendit.io/n/HUQNaYa4fQwtw3yDCZwC.svg"
+          className="self-center"
+        />
+        <div className="text-center text-xl font-orelega_one leading-[40px] text-white w-full">
+          {nftLabel}
         </div>
-        <div className="flex flex-col gap-3 items-center mx-1">
-          <button
-            className="bg-cyan-200 self-stretch flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-sf_pro_rounded font-semibold leading-[20px] text-black disabled:bg-disabled-gray disabled:text-white/10"
-            onClick={openInOpenSeaAction}
-          >
-            View on OpenSea
-          </button>
-          <button
-            className="flex flex-col w-1/2 h-8 shrink-0 items-center py-2 rounded-lg text-center text-sm font-sf_pro_rounded font-semibold leading-[20px]"
-            onClick={returnToWalletAction}
-          >
-            Return to Wallet
-          </button>
+        <div className="text-center font-sf_pro_text tracking-[-0.24] leading-[20px] text-white/60 w-full">
+          Minted on {chain.name}
         </div>
       </div>
+
+      <StickyButtonGroup
+        buttons={[
+          {
+            label: "View on OpenSea",
+            onClick: openInOpenSeaAction,
+            bgColor: "bg-cyan-200",
+            textColor: "text-black",
+            disabledColor: "disabled:bg-disabled-gray disabled:text-white/10",
+          },
+          {
+            label: "Return to Wallet",
+            onClick: returnToWalletAction,
+            bgColor: "bg-clear",
+            textColor: "text-white",
+            textWeight: "font-normal",
+          },
+        ]}
+      />
     </>
   );
 };

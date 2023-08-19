@@ -15,7 +15,9 @@ const ChainMenuItem = ({ chain }: ChainMenuItemProps) => (
       width={20}
       height={20}
     />
-    <span className="ml-2 font-sf_pro_text font-semibold">{chain.name}</span>
+    <span className="ml-2 font-sf_pro_text font-semibold tracking-[-0.08] leading-[20px] ">
+      {chain.name}
+    </span>
   </div>
 );
 

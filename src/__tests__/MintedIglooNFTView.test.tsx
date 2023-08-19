@@ -8,6 +8,7 @@ describe("MintedIglooNFTView", () => {
   const mockReturnToWalletAction = jest.fn();
 
   const props = {
+    nftLabel: "Igloo #172",
     chain: CHAINS.goerli,
     openInOpenSeaAction: mockOpenInOpenSeaAction,
     returnToWalletAction: mockReturnToWalletAction,

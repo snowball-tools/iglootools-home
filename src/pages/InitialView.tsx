@@ -1,3 +1,4 @@
+import StickyButtonGroup from "@/components/StickyButtonGroup";
 import React from "react";
 
 interface InitialViewProps {
@@ -24,20 +25,25 @@ const InitialView = ({
         No more passwords, no more seed phrases, no more extensions.
       </div>
     </div>
-    <div className="flex flex-col gap-3 w-full">
-      <button
-        className="bg-[#9ee7ff] flex flex-col justify-center mb-2 h-12 shrink-0 items-center rounded-[41px] text-center text-md font-semibold font-sf_pro_text leading-tight text-black"
-        onClick={creatNewPasskey}
-      >
-        Create a new passkey
-      </button>
-      <button
-        className="bg-[#282828] border-solid flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-md font-semibold font-sf_pro_text leading-tight"
-        onClick={useExistingPasskey}
-      >
-        Sign in
-      </button>
-    </div>
+
+    <StickyButtonGroup
+      buttons={[
+        {
+          label: "Create a new passkey",
+          onClick: creatNewPasskey,
+          bgColor: "bg-[#9ee7ff]",
+          textColor: "text-black",
+          textSize: "text-md",
+        },
+        {
+          label: "Sign in",
+          onClick: useExistingPasskey,
+          bgColor: "bg-[#282828]",
+          textColor: "text-white",
+          textSize: "text-md",
+        },
+      ]}
+    />
   </>
 );
 

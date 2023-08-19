@@ -70,7 +70,7 @@ const WalletView = ({
         textColor="text-white"
         borderColor="border border-white/32 border-solid"
       >
-        <div className="font-sf_pro_display font-bold tracking-[-0.41] leading-[24px] text-white self-start">
+        <div className="font-sf_pro_text font-bold tracking-[-0.41] leading-[24px] text-white self-start">
           What is a ERC-4337 wallet?
         </div>
         <div className="font-sf_pro_text tracking-[-0.41] leading-[24px] text-white w-full">
@@ -84,7 +84,7 @@ const WalletView = ({
         borderColor="border border-white/30 border-solid"
       >
         <div className="flex-col justify-start items-start gap-1 inline-flex">
-          <div className="self-stretch text-white text-base font-bold leading-normal">
+          <div className="self-stretch text-white text-baseleading-normal font-sf_pro_text font-bold">
             Take your smart wallet for a spin
           </div>
           <div className="self-stretch grow shrink basis-0 justify-start items-center gap-1 inline-flex">
