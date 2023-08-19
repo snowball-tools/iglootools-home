@@ -28,7 +28,7 @@ const DropDownMenu: React.FC = () => {
           {ChainMenuItem({ chain: currentAppChain })}
         </button>
         {isOpen && (
-          <div className="origin-top-left absolute right-0 mt-2 rounded-md shadow-lg bg-white">
+          <div className="origin-top-left absolute left-0 mt-2 rounded-md shadow-lg bg-white">
             <div className="py-1">
               {Object.values(appChains).map((chain: Chain) => {
                 return (
