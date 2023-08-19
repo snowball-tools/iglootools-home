@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { switchChain } from "../store/credentialsSlice";
-import { Chain, getChainIcon } from "../helpers/chains";
+import { Chain } from "../helpers/chains";
 import ChainMenuItem from "./ChainMenuItem";
 
 // todo: make generic

@@ -3,8 +3,9 @@ import NavBar from "@/components/NavBar";
 import ColumnButton from "@/components/ColumnButton";
 import Card from "@/components/Card";
 import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import exp from "constants";
+import { disconnect } from "@/store/credentialsSlice";
 
 interface WalletViewProps {
   mintNftAction: () => void;
@@ -14,10 +15,15 @@ const WalletView = ({ mintNftAction }: WalletViewProps) => {
   const { ethAddress, currentAppChain } = useSelector(
     (state: RootState) => state.credentials
   );
+  const dispatch = useDispatch();
 
   return (
     <div className="border-solid overflow-hidden flex flex-col gap-2 px-5 py-4">
-      <NavBar exitAction={() => console.log("exit action")} />
+      <NavBar
+        exitAction={() => {
+          dispatch(disconnect());
+        }}
+      />
       <div className="border-solid border-white/10 h-px shrink-0 mb-3 ml-px border-t border-b-0 border-x-0" />
       <div className="text-2xl font-['SF_Pro_Display'] font-bold tracking-[0.35] leading-[26px] text-white self-start ml-px">
         Welcome to your smart wallet
