@@ -1,6 +1,6 @@
 import React from "react";
 import { Chain } from "@/helpers/chains";
-import InfoView from "./InfoView";
+import Header from "../components/Header";
 import { LoginViews } from "@/store/credentialsSlice";
 
 interface MintedIglooNFTProps {
@@ -17,7 +17,7 @@ const MintedIglooNFT = ({
   return (
     <>
       <div className="flex flex-col gap-1 w-full py-6 px-6 h-screen justify-between lg:max-w-md mx-auto">
-        <InfoView infoView={LoginViews.IGLOO_NFT_MINTED} />
+        <Header infoView={LoginViews.IGLOO_NFT_MINTED} />
         <div className="w-44 h-64 relative">
           <div className="w-44 h-44 left-0 top-0 absolute">
             <div className="w-44 h-44 left-0 top-0 absolute bg-blue-500 rounded-lg" />

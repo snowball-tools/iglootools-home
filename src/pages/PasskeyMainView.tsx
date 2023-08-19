@@ -22,7 +22,7 @@ import {
 } from "../helpers/webauthn";
 import InitialView from "./InitialView";
 import SignInView from "./SignInView";
-import InfoView from "./InfoView";
+import Header from "../components/Header";
 import { AuthMethod } from "@lit-protocol/types";
 import WalletView from "./WalletView";
 import Box from "@/components/Box";
@@ -157,7 +157,7 @@ export default function PasskeyMainView() {
       case LoginViews.MINTED:
       case LoginViews.IGLOO_NFT_MINTED:
         return (
-          <InfoView
+          <Header
             infoView={view}
             mintingNFT={view === LoginViews.IGLOO_NFT_MINTED}
           />
@@ -165,7 +165,7 @@ export default function PasskeyMainView() {
       case LoginViews.ERROR:
         return (
           <>
-            <InfoView infoView={view} errorMsg={errorMsg ?? ""} />
+            <Header infoView={view} errorMsg={errorMsg ?? ""} />
             <div className="flex flex-col justify-end gap-3 w-full">
               <button
                 className="bg-cyan-200 flex flex-col justify-center h-12 shrink-0 items-center rounded-[41px] text-center text-sm font-SF_Pro_Rounded font-semibold leading-[20px] text-black"

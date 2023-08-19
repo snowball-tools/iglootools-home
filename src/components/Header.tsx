@@ -2,17 +2,17 @@ import React from "react";
 import { LoginViews } from "@/store/credentialsSlice";
 import StatusBar from "@/components/StatusBar";
 
-export interface InfoViewConstants {
+export interface HeaderConstants {
   titleText: string;
   subtitleText: string;
   step: number;
 }
 
-function infoForLoginView(
+function getHeaderConstants(
   loginView: string,
-  mintingNFT: boolean,
-  errorMsg: string | null
-): InfoViewConstants {
+  mintingNFT: boolean = false,
+  errorMsg?: string
+): HeaderConstants {
   switch (loginView) {
     case LoginViews.REGISTERING:
       return {
@@ -75,11 +75,11 @@ interface InfoViewProps {
   errorMsg?: string;
 }
 
-const InfoView = ({ infoView, mintingNFT, errorMsg }: InfoViewProps) => {
-  const { titleText, subtitleText, step } = infoForLoginView(
+const Header = ({ infoView, mintingNFT, errorMsg }: InfoViewProps) => {
+  const { titleText, subtitleText, step } = getHeaderConstants(
     infoView,
-    mintingNFT ?? false,
-    errorMsg ?? null
+    mintingNFT,
+    errorMsg
   );
 
   return (
@@ -99,4 +99,4 @@ const InfoView = ({ infoView, mintingNFT, errorMsg }: InfoViewProps) => {
   );
 };
 
-export default InfoView;
+export default Header;
