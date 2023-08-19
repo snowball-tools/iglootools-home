@@ -15,7 +15,7 @@ const InitialView = ({
     </div>
     <div className="flex-col justify-center items-start gap-7 inline-flex">
       <div className="self-stretch text-white text-2xl font-bold leading-7 tracking-tight font-sf_pro_display">
-        The most secure and customizable wallet that's 100% yours
+        The most secure and customizable wallet that&apos;s 100% yours
       </div>
       <div className="self-stretch text-white text-opacity-60 text-base font-normal leading-tight font-sf_pro_text">
         Create a self-custody wallet in just a few taps using the latest auth
