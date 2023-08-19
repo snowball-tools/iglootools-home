@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const NavBar: React.FC = () => {
   return (
-    <div className="fixed top-0 left-0 w-full p-4 flex items-center">
+    <div className="flex">
       <DropdownMenu />
       <Image
         src="rectangle_portrait_and_arrow_right.svg"
