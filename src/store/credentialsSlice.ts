@@ -98,14 +98,12 @@ const credentialsSlice = createSlice({
         currentPKPEthAddress: string;
         currentAuthMethod: AuthMethod;
         sessionSigs: SessionSigsMap;
-        view: string;
       }>
     ) => {
       state.currentPKP = action.payload.currentPKP;
       state.currentPKPEthAddress = action.payload.currentPKPEthAddress;
       state.currentAuthMethod = action.payload.currentAuthMethod;
       state.sessionSigs = action.payload.sessionSigs;
-      state.view = action.payload.view;
     },
     setEthAddressAndPKPWallet: (
       state,
@@ -114,6 +112,7 @@ const credentialsSlice = createSlice({
       }>
     ) => {
       state.ethAddress = action.payload.ethAddress;
+      state.view = LoginViews.WALLET_HOME;
     },
   },
 });

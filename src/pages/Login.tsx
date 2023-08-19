@@ -99,7 +99,6 @@ export default function Login() {
         currentPKPEthAddress: pkpEthAddress,
         currentAuthMethod: auth,
         sessionSigs: sessionSigs,
-        view: LoginViews.WALLET_HOME,
       })
     );
 
