@@ -68,6 +68,25 @@ export default function Login() {
           view: LoginViews.WALLET_HOME,
         })
       );
+
+      const pkpEthWallet = await createPkpEthersWallet(
+        response.pkpPublicKey,
+        response.pkpEthAddress,
+        sessionSigs,
+        currentAppChain
+      );
+
+      const smartWalletAddress = await getSmartWalletAddress(
+        pkpEthWallet,
+        currentAppChain
+      );
+
+      dispatch(
+        setEthAddressAndPKPWallet({
+          ethAddress: smartWalletAddress,
+          pkpEthWallet: pkpEthWallet,
+        })
+      );
     } catch (e) {
       console.log(e);
       dispatch(setErrorMsg("Error creating passkey"));
