@@ -45,7 +45,7 @@ function getHeaderConstants(
       };
     case LoginViews.IGLOO_NFT_MINTED:
       return {
-        titleText: "Minting succesful",
+        titleText: "Minting successful",
         subtitleText: "Added to your smart wallet",
         step: 0,
         additionalText: "🎉",

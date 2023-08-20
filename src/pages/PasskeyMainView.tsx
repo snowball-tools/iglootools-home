@@ -29,6 +29,8 @@ import WalletView from "./WalletView";
 import Box from "@/components/Box";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
 import { Chain } from "@/helpers/chains";
+import MintedIglooNFTView from "./MintedIglooNFTView";
+import LoadingAnimation from "@/components/LoadingAnimation";
 
 export default function PasskeyMainView() {
   const {
@@ -94,6 +96,8 @@ export default function PasskeyMainView() {
     pkpEthAddress: string,
     auth: AuthMethod
   ) {
+    dispatch(setView(LoginViews.MINTING));
+
     const sessionSigs = await getSessionSigs(
       pkpPublicKey,
       pkpEthAddress,
@@ -158,12 +162,37 @@ export default function PasskeyMainView() {
       case LoginViews.REGISTERING:
       case LoginViews.AUTHENTICATING:
       case LoginViews.MINTING:
+        return (
+          <>
+            <Header
+              infoView={view}
+              mintingNFT={view === LoginViews.IGLOO_NFT_MINTED}
+            />
+            <LoadingAnimation />
+          </>
+        );
       case LoginViews.MINTED:
-      case LoginViews.IGLOO_NFT_MINTED:
         return (
           <Header
             infoView={view}
             mintingNFT={view === LoginViews.IGLOO_NFT_MINTED}
+          />
+        );
+      case LoginViews.IGLOO_NFT_MINTED:
+        return (
+          <MintedIglooNFTView
+            nftLabel={"IglooNFT #172"}
+            chain={currentAppChain}
+            openInOpenSeaAction={() =>
+              // to do open sea link
+              window.open(
+                `${currentAppChain.blockExplorerUrls[0]}/address/${ethAddress}`,
+                "_blank"
+              )
+            }
+            returnToWalletAction={() =>
+              dispatch(setView(LoginViews.WALLET_HOME))
+            }
           />
         );
       case LoginViews.ERROR:

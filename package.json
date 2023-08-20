@@ -19,6 +19,7 @@
   "dependencies": {
     "@alchemy/aa-alchemy": "^0.1.0-alpha.21",
     "@alchemy/aa-core": "^0.1.0-alpha.20",
+    "@emotion/react": "^11.11.1",
     "@ethersproject/abstract-signer": "^5.7.0",
     "@ethersproject/contracts": "^5.7.0",
     "@ethersproject/hash": "^5.7.0",

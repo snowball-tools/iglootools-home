@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        "light-blue": "#add8e6",
+      },
       height: {
         screen: "calc(var(--vh, 1vh) * 100)",
       },
@@ -33,14 +36,26 @@ module.exports = {
         sf_pro_display: ["SF_Pro_Display", "sans-serif"],
         sf_mono: ["SF_Mono", "sans-serif"],
       },
-      animation: {
-        grow: "grow 3s infinite",
-      },
       keyframes: {
-        grow: {
-          "0%": { transform: "scale(0)" },
-          "100%": { transform: "scale(1)" },
+        drawCircle: {
+          "0%": {
+            strokeDashoffset: "360",
+            opacity: "0.1",
+          },
+          "10%": {
+            opacity: "0.1",
+          },
+          "20%": {
+            opacity: "0.2",
+          },
+          "100%": {
+            strokeDashoffset: "0",
+            opacity: "0.9",
+          },
         },
+      },
+      animation: {
+        drawCircle: `drawCircle 2.5s forwards ease-in-out`,
       },
     },
   },
