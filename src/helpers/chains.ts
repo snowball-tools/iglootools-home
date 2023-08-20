@@ -94,7 +94,7 @@ export const CHAINS = {
   },
   mantle_testnet: {
     chainId: 5001,
-    name: "Mantle Testnet",
+    name: "Ringwood",
     symbol: "MNT",
     decimals: 18,
     type: "ERC1155",

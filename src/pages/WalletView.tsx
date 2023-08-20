@@ -78,8 +78,15 @@ const WalletView = ({
           What is a ERC-4337 wallet?
         </div>
         <div className="font-sf_pro_text tracking-[-0.41] leading-[24px] text-white w-full">
-          Smart contract wallets using Account Abstraction (ERC-4337) are
-          managed by a smart contract ....
+          Smart contract wallets -- AKA Account Abstraction (
+          <a href="https://eips.ethereum.org/EIPS/eip-4337">ERC-4337</a>) -- is
+          changing the landscape of crypto UX forever enabling gas sponsored
+          transactions, bundling, intents, social recovery, scheduling
+          “transactions” (user operations), limit orders, and so much more.
+          Learn more from our partners at{" "}
+          <a href="https://www.alchemy.com/learn/account-abstraction">
+            Alchemy
+          </a>
         </div>
       </Card>
       <Card
