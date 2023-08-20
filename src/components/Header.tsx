@@ -25,9 +25,10 @@ function getHeaderConstants(
       return {
         titleText: "Authenticate with your passkey",
         subtitleText:
-          " To start using your new cloud wallet, you'll need to authenticate with your newly registered passkey. Follow your browser's prompts to authenticate.",
+          "To start using your new cloud wallet, you'll need to authenticate with your newly registered passkey. Follow your browser's prompts to authenticate.",
         step: 0,
       };
+    case LoginViews.IGLOO_NFT_MINTING:
     case LoginViews.MINTING:
       return {
         titleText: `Minting your ${mintingNFT ? "Igloo NFT" : "Wallet"}...`,

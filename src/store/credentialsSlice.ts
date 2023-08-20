@@ -13,6 +13,7 @@ export const LoginViews = {
   MINTED: "minted",
   WALLET_HOME: "wallet_home",
   ERROR: "error",
+  IGLOO_NFT_MINTING: "igloo_nft_minting",
   IGLOO_NFT_MINTED: "igloo_nft_minted",
 };
 

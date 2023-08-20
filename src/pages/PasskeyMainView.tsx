@@ -59,6 +59,8 @@ export default function PasskeyMainView() {
         })
       );
 
+      dispatch(setView(LoginViews.MINTING));
+
       const auth = await authenticatePasskey();
 
       await getSessionSig(response.pkpPublicKey, response.pkpEthAddress, auth);
@@ -96,8 +98,6 @@ export default function PasskeyMainView() {
     pkpEthAddress: string,
     auth: AuthMethod
   ) {
-    dispatch(setView(LoginViews.MINTING));
-
     const sessionSigs = await getSessionSigs(
       pkpPublicKey,
       pkpEthAddress,
@@ -161,6 +161,7 @@ export default function PasskeyMainView() {
     switch (view) {
       case LoginViews.REGISTERING:
       case LoginViews.AUTHENTICATING:
+      case LoginViews.IGLOO_NFT_MINTING:
       case LoginViews.MINTING:
         return (
           <>
@@ -172,12 +173,7 @@ export default function PasskeyMainView() {
           </>
         );
       case LoginViews.MINTED:
-        return (
-          <Header
-            infoView={view}
-            mintingNFT={view === LoginViews.IGLOO_NFT_MINTED}
-          />
-        );
+        return <Header infoView={view} />;
       case LoginViews.IGLOO_NFT_MINTED:
         return (
           <MintedIglooNFTView
