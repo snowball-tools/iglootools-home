@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chain, CHAINS } from "../helpers/chains";
 import { SendUserOperationResult } from "@alchemy/aa-core";
 import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
+import { OwnedNft } from "alchemy-sdk";
 
 export const LoginViews = {
   INITIAL_VIEW: "initial_view",
@@ -29,8 +30,9 @@ export interface CredentialState {
   currentAppChain: Chain;
   appChains: { [key: string]: Chain };
   errorMsg: string | null;
-  userOpResult: SendUserOperationResult | null;
+  userOpResult: string | null;
   ethAddress: string | null;
+  nftId: string | null;
 }
 
 export const initialState: CredentialState = {
@@ -47,6 +49,7 @@ export const initialState: CredentialState = {
   errorMsg: null,
   userOpResult: null,
   ethAddress: null,
+  nftId: null,
 };
 
 const credentialsSlice = createSlice({
@@ -74,8 +77,15 @@ const credentialsSlice = createSlice({
     setUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload;
     },
-    setMintedNFT: (state, action: PayloadAction<SendUserOperationResult>) => {
-      state.userOpResult = action.payload;
+    setMintedNFT: (
+      state,
+      action: PayloadAction<{
+        hash: string;
+        nftId: string;
+      }>
+    ) => {
+      state.userOpResult = action.payload.hash;
+      state.nftId = action.payload.nftId;
       state.view = LoginViews.IGLOO_NFT_MINTED;
     },
     setErrorMsg: (state, action: PayloadAction<string>) => {

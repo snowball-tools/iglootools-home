@@ -31,7 +31,6 @@ import StickyButtonGroup from "@/components/StickyButtonGroup";
 import { Chain } from "@/helpers/chains";
 import MintedIglooNFTView from "./MintedIglooNFTView";
 import LoadingAnimation from "@/components/LoadingAnimation";
-import { updateWebhookAddressesForChain } from "./api/iglooNFTWebhook";
 
 export default function PasskeyMainView() {
   const {
@@ -44,6 +43,7 @@ export default function PasskeyMainView() {
     sessionSigs,
     ethAddress,
     errorMsg,
+    nftId,
   } = useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
 
@@ -147,9 +147,12 @@ export default function PasskeyMainView() {
           currentAppChain
         );
 
-        await updateWebhookAddressesForChain(currentAppChain, [result.hash]);
-
-        dispatch(setMintedNFT(result));
+        dispatch(
+          setMintedNFT({
+            hash: result.hash,
+            nftId: result.nftId ?? "0",
+          })
+        );
 
         return result;
       } catch (e) {
@@ -181,12 +184,14 @@ export default function PasskeyMainView() {
       case LoginViews.IGLOO_NFT_MINTED:
         return (
           <MintedIglooNFTView
-            nftLabel={"IglooNFT #172"}
+            nftLabel={`IglooNFT #${nftId}`}
             chain={currentAppChain}
             openInOpenSeaAction={() =>
               // to do open sea link
               window.open(
-                `${currentAppChain.blockExplorerUrls[0]}/address/${ethAddress}`,
+                `https://testnets.opensea.io/assets/${currentAppChain.name.toLowerCase()}/${
+                  currentAppChain.iglooNFTAddress
+                }/${nftId}`,
                 "_blank"
               )
             }

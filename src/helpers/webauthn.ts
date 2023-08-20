@@ -21,7 +21,14 @@ import { IglooNFTABI } from "./abis/IglooNFTABI";
 import { TypedDataField } from "@ethersproject/abstract-signer";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { LIT_RELAY_API_KEY } from "../helpers/env";
-import { Chain, alchemyAPIKey, alchemyGasPolicyId, viemChain } from "./chains";
+import {
+  Chain,
+  alchemyAPIKey,
+  alchemyGasPolicyId,
+  getAlchemyNetwork,
+  viemChain,
+} from "./chains";
+import { Alchemy, OwnedNft } from "alchemy-sdk";
 
 export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
@@ -250,7 +257,10 @@ export async function sendUserOperation(
   pkpEthAddress: string,
   pkpWallet: PKPEthersWallet,
   chain: Chain
-): Promise<SendUserOperationResult> {
+): Promise<{
+  hash: string;
+  nftId: string | undefined;
+}> {
   console.log("Sending user operation");
   console.log("chain", chain);
   try {
@@ -294,7 +304,37 @@ export async function sendUserOperation(
       return Promise.reject("Transaction failed");
     }
 
-    return result;
+    const settings = {
+      apiKey: alchemyAPIKey(chain),
+      network: getAlchemyNetwork(chain),
+    };
+
+    const alchemy = new Alchemy(settings);
+
+    // theres a way better way hack for now
+    // fix this
+    let nfts = await alchemy.nft.getNftsForOwner(address);
+    let attempt = 0;
+
+    while (nfts.ownedNfts.length === 0 && attempt < 10) {
+      nfts = await alchemy.nft.getNftsForOwner(address);
+      attempt++;
+    }
+
+    if (nfts === undefined || nfts.ownedNfts.length === 0) {
+      return Promise.reject(
+        `NFT may have failed -- check hash: ${result.hash}`
+      );
+    }
+
+    const id = nfts.ownedNfts.reduce((prev: OwnedNft, curr: OwnedNft) => {
+      return curr.tokenId > prev.tokenId ? curr : prev;
+    }).tokenId;
+
+    return {
+      hash: result.hash,
+      nftId: id,
+    };
   } catch (error) {
     console.error("Transaction failed:", error);
     return Promise.reject("Transaction failed");

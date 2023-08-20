@@ -8,9 +8,12 @@ import {
   ALCHEMY_SEPOLIA_GAS_POLICY_ID,
   ALCHEMY_GOERLI_WEBHOOK_ID,
   ALCHEMY_SEPOLIA_WEBHOOK_ID,
+  ALCHEMY_GOERLI_WEBHOOK_SIGNING_KEY,
+  ALCHEMY_SEPOLIA_WEBHOOK_SIGNING_KEY,
 } from "../helpers/env";
 import { Address } from "viem";
 import { mainnet, sepolia, goerli, Chain as ViemChain } from "viem/chains";
+import { Network } from "alchemy-sdk";
 
 export interface Chain {
   chainId: number;
@@ -251,5 +254,29 @@ export function getChainWebhookID(chain: Chain): string {
       return ALCHEMY_SEPOLIA_WEBHOOK_ID;
     default:
       return "";
+  }
+}
+
+export function getChainWebhookSigningKey(chain: string): string {
+  switch (chain) {
+    case "ETH_SEPOLIA":
+      return ALCHEMY_SEPOLIA_WEBHOOK_SIGNING_KEY;
+    case "ETH_GOERLI":
+      return ALCHEMY_GOERLI_WEBHOOK_SIGNING_KEY;
+    default:
+      return "";
+  }
+}
+
+export function getAlchemyNetwork(chain: Chain): Network {
+  switch (chain) {
+    case CHAINS.ethereum:
+      return Network.ETH_MAINNET;
+    case CHAINS.goerli:
+      return Network.ETH_GOERLI;
+    case CHAINS.sepolia:
+      return Network.ETH_SEPOLIA;
+    default:
+      throw new Error("Unsupported chain");
   }
 }
