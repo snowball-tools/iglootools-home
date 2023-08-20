@@ -91,7 +91,7 @@ const WalletView = ({
           <div className="self-stretch text-white text-baseleading-normal font-sf_pro_text font-bold">
             Take your smart wallet for a spin
           </div>
-          <div className="self-stretch grow shrink basis-0 justify-start items-center gap-1 inline-flex">
+          <div className="self-stretch grow shrink basis-0 justify-start items-center gap-3 inline-flex">
             <div className="font-sf_pro_text grow shrink basis-0 text-white text-base font-normal leading-normal">
               Mint a free Igloo NFT. We&apos;ll cover the gas.
             </div>
