@@ -42,13 +42,13 @@ const WalletView = ({
         Welcome to your smart wallet
       </div>
       <div className="font-sf_pro_text tracking-[-0.24] leading-[20px] text-white/60 self-center mb-3 w-full">
-        No more passwords, no more seed phrases, no more extensions. We&apos;re
-        talking ERC-4337, baby.
+        We&apos;re talking ERC-4337. No more passwords, no more seed phrases, no
+        more extensions.
       </div>
       <Card color="bg-[#9ee7ff]" textColor="text-black" borderColor={undefined}>
         <div className="flex flex-col gap-1 items-start">
           <div className="text-xl font-sf_pro_display font-bold leading-[40px] text-black">
-            Your Smart Wallet
+            Your Eth Smart Wallet
           </div>
           <div className="text-sm font-sf_mono font-medium leading-[20px] w-full break-all text-black">
             {ethAddress}
@@ -75,16 +75,25 @@ const WalletView = ({
         borderColor="border border-white/32 border-solid"
       >
         <div className="font-sf_pro_text font-bold tracking-[-0.41] leading-[24px] text-white self-start">
-          What is a ERC-4337 wallet?
+          What is a{" "}
+          <a href="https://eips.ethereum.org/EIPS/eip-4337">ERC-4337</a> wallet?
         </div>
         <div className="font-sf_pro_text tracking-[-0.41] leading-[24px] text-white w-full">
-          Smart contract wallets -- AKA Account Abstraction (
-          <a href="https://eips.ethereum.org/EIPS/eip-4337">ERC-4337</a>) -- is
-          changing the landscape of crypto UX forever enabling gas sponsored
-          transactions, bundling, intents, social recovery, scheduling
+          Smart contract wallets - AKA Account Abstraction{" "}
+          <a
+            className="text-cyan-200"
+            href="https://eips.ethereum.org/EIPS/eip-4337"
+          >
+            ERC-4337
+          </a>{" "}
+          - is changing the landscape of crypto UX forever enabling gas
+          sponsored transactions, bundling, intents, social recovery, scheduling
           “transactions” (user operations), limit orders, and so much more.
           Learn more from our partners at{" "}
-          <a href="https://www.alchemy.com/learn/account-abstraction">
+          <a
+            className="text-cyan-200"
+            href="https://www.alchemy.com/learn/account-abstraction"
+          >
             Alchemy
           </a>
         </div>
