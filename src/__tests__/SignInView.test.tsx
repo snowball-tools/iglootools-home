@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import SignInView from "@/pages/SignInView";
+import SignUpView from "@/pages/SignUpView";
 
 describe("SignInView", () => {
   it("renders without crashing", () => {
@@ -12,7 +12,7 @@ describe("SignInView", () => {
       username: "",
     };
 
-    const { getByText } = render(<SignInView {...mockFunctions} />);
+    const { getByText } = render(<SignUpView {...mockFunctions} />);
     expect(getByText("Name your passkey")).toBeInTheDocument();
   });
 
@@ -24,7 +24,7 @@ describe("SignInView", () => {
       username: "",
     };
 
-    const { getByText } = render(<SignInView {...mockFunctions} />);
+    const { getByText } = render(<SignUpView {...mockFunctions} />);
     expect(getByText("Create passkey")).toBeDisabled();
   });
 
@@ -36,7 +36,7 @@ describe("SignInView", () => {
       username: "John Doe",
     };
 
-    const { getByText } = render(<SignInView {...mockFunctions} />);
+    const { getByText } = render(<SignUpView {...mockFunctions} />);
     expect(getByText("Create passkey")).toBeEnabled();
   });
 
@@ -48,7 +48,7 @@ describe("SignInView", () => {
       username: "",
     };
 
-    const { getByPlaceholderText } = render(<SignInView {...mockFunctions} />);
+    const { getByPlaceholderText } = render(<SignUpView {...mockFunctions} />);
     const input = getByPlaceholderText("ex. Taylor Swift");
 
     fireEvent.change(input, { target: { value: "John Doe" } });
@@ -63,7 +63,7 @@ describe("SignInView", () => {
       username: "John Doe",
     };
 
-    const { getByText } = render(<SignInView {...mockFunctions} />);
+    const { getByText } = render(<SignUpView {...mockFunctions} />);
 
     fireEvent.click(getByText("Create passkey"));
     expect(mockFunctions.createNewPasskey).toHaveBeenCalledTimes(1);

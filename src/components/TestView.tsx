@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import WalletView from "@/pages/WalletView";
 import Box from "@/components/Box";
-import SignInView from "@/pages/SignInView";
+import SignUpView from "@/pages/SignUpView";
 import MintedIglooNFT from "@/pages/MintedIglooNFTView";
 import { CHAINS } from "@/helpers/chains";
 import InitialView from "@/pages/InitialView";
@@ -36,7 +36,7 @@ const TestView = ({}: TestViewProps) => {
     SIGNIN: {
       name: "Sign In View",
       view: (
-        <SignInView
+        <SignUpView
           signIn={() => setShowView(undefined)}
           createNewPasskey={() => setShowView(undefined)}
           username={""}

@@ -22,7 +22,7 @@ import {
   sendUserOperation,
 } from "../helpers/webauthn";
 import InitialView from "./InitialView";
-import SignInView from "./SignInView";
+import SignUpView from "./SignUpView";
 import Header from "../components/Header";
 import { AuthMethod } from "@lit-protocol/types";
 import WalletView from "./WalletView";
@@ -233,7 +233,7 @@ export default function PasskeyMainView() {
         );
       case LoginViews.SIGN_UP:
         return (
-          <SignInView
+          <SignUpView
             signIn={authThenGetSessionSigs}
             createNewPasskey={createPKPWithWebAuthn}
             username={username}

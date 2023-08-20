@@ -4,19 +4,19 @@ import StickyButtonGroup from "@/components/StickyButtonGroup";
 import Header from "@/components/Header";
 import { LoginViews } from "@/store/credentialsSlice";
 
-interface SignInViewProps {
+interface SignUpViewProps {
   signIn: () => void;
   createNewPasskey: () => void;
   username: string;
   setUsername: (username: string) => void;
 }
 
-const SignInView = ({
+const SignUpView = ({
   signIn,
   createNewPasskey,
   username,
   setUsername,
-}: SignInViewProps) => {
+}: SignUpViewProps) => {
   // todo: fix. why compiler
   if (username === undefined) {
     return <></>;
@@ -58,4 +58,4 @@ const SignInView = ({
   );
 };
 
-export default SignInView;
+export default SignUpView;
