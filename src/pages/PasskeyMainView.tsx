@@ -129,7 +129,7 @@ export default function PasskeyMainView() {
   }
 
   async function sendUserOp() {
-    dispatch(setView(LoginViews.MINTING));
+    dispatch(setView(LoginViews.IGLOO_NFT_MINTING));
 
     if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
       try {
@@ -167,7 +167,7 @@ export default function PasskeyMainView() {
           <>
             <Header
               infoView={view}
-              mintingNFT={view === LoginViews.IGLOO_NFT_MINTED}
+              mintingNFT={view === LoginViews.IGLOO_NFT_MINTING}
             />
             <LoadingAnimation />
           </>
