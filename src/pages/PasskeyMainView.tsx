@@ -31,6 +31,7 @@ import StickyButtonGroup from "@/components/StickyButtonGroup";
 import { Chain } from "@/helpers/chains";
 import MintedIglooNFTView from "./MintedIglooNFTView";
 import LoadingAnimation from "@/components/LoadingAnimation";
+import { updateWebhookAddressesForChain } from "./api/iglooNFTWebhook";
 
 export default function PasskeyMainView() {
   const {
@@ -146,7 +147,10 @@ export default function PasskeyMainView() {
           currentAppChain
         );
 
+        await updateWebhookAddressesForChain(currentAppChain, [result.hash]);
+
         dispatch(setMintedNFT(result));
+
         return result;
       } catch (e) {
         console.log(e);

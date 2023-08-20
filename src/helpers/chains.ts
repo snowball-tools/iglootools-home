@@ -1,3 +1,4 @@
+import exp from "constants";
 import {
   ALCHEMY_GOERLI_API_KEY,
   ALCHEMY_MAINNET_API_KEY,
@@ -5,6 +6,8 @@ import {
   ALCHEMY_GOERLI_GAS_POLICY_ID,
   ALCHEMY_MAINNET_GAS_POLICY_ID,
   ALCHEMY_SEPOLIA_GAS_POLICY_ID,
+  ALCHEMY_GOERLI_WEBHOOK_ID,
+  ALCHEMY_SEPOLIA_WEBHOOK_ID,
 } from "../helpers/env";
 import { Address } from "viem";
 import { mainnet, sepolia, goerli, Chain as ViemChain } from "viem/chains";
@@ -237,5 +240,16 @@ export function getChainIcon(chain: Chain): string {
       return "celo.svg";
     default:
       return "ethereum.svg";
+  }
+}
+
+export function getChainWebhookID(chain: Chain): string {
+  switch (chain) {
+    case CHAINS.goerli:
+      return ALCHEMY_GOERLI_WEBHOOK_ID;
+    case CHAINS.sepolia:
+      return ALCHEMY_SEPOLIA_WEBHOOK_ID;
+    default:
+      return "";
   }
 }

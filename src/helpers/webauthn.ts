@@ -290,7 +290,7 @@ export async function sendUserOperation(
       }),
     });
 
-    if (result === undefined) {
+    if (result === undefined || result.hash === undefined) {
       return Promise.reject("Transaction failed");
     }
 
