@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
+import Head from "next/head";
 import { browserSupportsWebAuthn } from "@simplewebauthn/browser";
 import { RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { disconnect } from "@/store/credentialsSlice";
-import BrowserUnsupported from "./Views/BrowserUnsupported";
+import BrowserUnsupportedView from "./Views/BrowserUnsupportedView";
 import AuthView from "./Views/AuthView";
+import WalletView from "./Views/WalletView";
 
 const Home = () => {
-  const { sessionExpiration } = useSelector(
+  const { isAuthenticated, sessionExpiration } = useSelector(
     (state: RootState) => state.credentials
   );
   const dispatch = useDispatch();
@@ -35,10 +37,29 @@ const Home = () => {
   }, [sessionExpiration]);
 
   if (!isWebAuthnSupported) {
-    return <BrowserUnsupported />;
+    return <BrowserUnsupportedView />;
   }
 
-  return <AuthView />;
+  const renderView = () => {
+    if (!isWebAuthnSupported) {
+      return <BrowserUnsupportedView />;
+    } else if (isAuthenticated) {
+      return <WalletView />;
+    }
+    return <AuthView />;
+  };
+
+  return (
+    <>
+      <Head>
+        <title>Igloo</title>
+        <meta name="description" content="MPC Passkey Wallet" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="favicon.ico" />
+      </Head>
+      {renderView()}
+    </>
+  );
 };
 
 export default Home;

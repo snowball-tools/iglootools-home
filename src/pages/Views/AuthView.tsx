@@ -4,13 +4,11 @@ import { RootState } from "../../store/store";
 import {
   setView,
   setErrorMsg,
-  setMintedNFT,
   setCurrentPKP,
   AuthViews,
   setSessionSig,
   disconnect,
   setUsername,
-  switchChain,
 } from "../../store/credentialsSlice";
 import {
   authenticatePasskey,
@@ -19,16 +17,12 @@ import {
   getSmartWalletAddress,
   getSessionSigs,
   registerPasskey,
-  sendUserOperation,
 } from "../../helpers/webauthn";
 import InitialView from "./InitialView";
 import SignUpView from "./SignUpView";
 import Header from "../../components/Header";
 import { AuthMethod } from "@lit-protocol/types";
-import WalletView from "./WalletView";
-import Box from "@/components/Box";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
-import { Chain } from "@/helpers/chains";
 import MintedIglooNFTView from "./MintedIglooNFTView";
 import LoadingAnimation from "@/components/LoadingAnimation";
 
@@ -130,41 +124,6 @@ export default function AuthView() {
     );
   }
 
-  async function sendUserOp() {
-    dispatch(setView(AuthViews.IGLOO_NFT_MINTING));
-
-    if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
-      try {
-        const pkpEthWallet = await createPkpEthersWallet(
-          currentPKP,
-          currentPKPEthAddress,
-          sessionSigs,
-          currentAppChain
-        );
-
-        const result = await sendUserOperation(
-          currentPKPEthAddress,
-          pkpEthWallet,
-          currentAppChain
-        );
-
-        dispatch(
-          setMintedNFT({
-            hash: result.hash,
-            nftId: result.nftId,
-          })
-        );
-
-        return result;
-      } catch (e) {
-        console.log(e);
-        dispatch(setErrorMsg("Error sending user operation"));
-      }
-    } else {
-      dispatch(setErrorMsg("Error sending user operation"));
-    }
-  }
-
   const renderView = () => {
     switch (view) {
       case AuthViews.REGISTERING:
@@ -222,28 +181,6 @@ export default function AuthView() {
             />
           </>
         );
-      case AuthViews.WALLET_HOME:
-        return (
-          <WalletView
-            mintNftAction={sendUserOp}
-            exitAction={() => dispatch(disconnect())}
-            ethAddress={ethAddress ?? ""}
-            openInBlockExplorerAction={() =>
-              window.open(
-                `${currentAppChain.blockExplorerUrls[0]}/address/${ethAddress}`,
-                "_blank"
-              )
-            }
-            copyAddressAction={() =>
-              navigator.clipboard.writeText(ethAddress ?? "")
-            }
-            chain={currentAppChain}
-            supportedChains={appChains}
-            switchChainAction={(newChain: Chain) => {
-              dispatch(switchChain(newChain));
-            }}
-          />
-        );
       case AuthViews.SIGN_UP:
         return (
           <SignUpView
@@ -263,5 +200,5 @@ export default function AuthView() {
     }
   };
 
-  return <Box>{renderView()}</Box>;
+  return renderView();
 }

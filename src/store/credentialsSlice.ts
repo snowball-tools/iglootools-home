@@ -116,6 +116,7 @@ const credentialsSlice = createSlice({
       state.sessionSigs = action.payload.sessionSigs;
       state.ethAddress = action.payload.ethAddress;
       state.view = AuthViews.WALLET_HOME;
+      state.isAuthenticated = true;
     },
   },
 });

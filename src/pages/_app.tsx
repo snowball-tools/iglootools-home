@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import { store } from "../store/store";
 import type { AppProps } from "next/app";
 import { Analytics } from "@vercel/analytics/react";
+import Box from "@/components/Box";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -25,8 +26,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
-      <Analytics />
+      <Box>
+        <Component {...pageProps} />
+        <Analytics />
+      </Box>
     </Provider>
   );
 }

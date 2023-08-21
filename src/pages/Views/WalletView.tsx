@@ -1,41 +1,75 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import NavBar from "@/components/NavBar";
 import ColumnButton from "@/components/ColumnButton";
 import Card from "@/components/Card";
 import { Chain } from "@/helpers/chains";
+import {
+  AuthViews,
+  disconnect,
+  setErrorMsg,
+  setMintedNFT,
+  setView,
+  switchChain,
+} from "@/store/credentialsSlice";
+import { RootState } from "@/store/store";
+import { createPkpEthersWallet, sendUserOperation } from "@/helpers/webauthn";
 
-export interface WalletViewProps {
-  chain: Chain;
-  supportedChains: { [key: string]: Chain };
-  switchChainAction: (chain: Chain) => void;
-  ethAddress: string;
-  mintNftAction: () => void;
-  exitAction: () => void;
-  openInBlockExplorerAction: () => void;
-  copyAddressAction: () => void;
-}
+export interface WalletViewProps {}
 
-const WalletView = ({
-  chain,
-  supportedChains,
-  switchChainAction,
-  ethAddress,
-  mintNftAction,
-  exitAction,
-  openInBlockExplorerAction,
-  copyAddressAction,
-}: WalletViewProps) => {
-  // todo: fix. why compiler
-  if (chain === undefined) {
-    return <></>;
+const WalletView = ({}: WalletViewProps) => {
+  const {
+    currentAppChain,
+    appChains,
+    currentPKP,
+    currentPKPEthAddress,
+    sessionSigs,
+    ethAddress,
+  } = useSelector((state: RootState) => state.credentials);
+  const dispatch = useDispatch();
+
+  async function sendUserOp() {
+    dispatch(setView(AuthViews.IGLOO_NFT_MINTING));
+
+    if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
+      try {
+        const pkpEthWallet = await createPkpEthersWallet(
+          currentPKP,
+          currentPKPEthAddress,
+          sessionSigs,
+          currentAppChain
+        );
+
+        const result = await sendUserOperation(
+          currentPKPEthAddress,
+          pkpEthWallet,
+          currentAppChain
+        );
+
+        dispatch(
+          setMintedNFT({
+            hash: result.hash,
+            nftId: result.nftId,
+          })
+        );
+
+        return result;
+      } catch (e) {
+        console.log(e);
+        dispatch(setErrorMsg("Error sending user operation"));
+      }
+    } else {
+      dispatch(setErrorMsg("Error sending user operation"));
+    }
   }
+
   return (
     <div className="flex flex-col gap-2">
       <NavBar
-        exitAction={exitAction}
-        currentChain={chain}
-        supportedChains={supportedChains}
-        switchChainAction={switchChainAction}
+        exitAction={() => dispatch(disconnect())}
+        currentChain={currentAppChain}
+        supportedChains={appChains}
+        switchChainAction={(newChain: Chain) => dispatch(switchChain(newChain))}
       />
       <div className="border-solid border-white/10 h-px shrink-0 mb-3 ml-px border-t border-b-0 border-x-0" />
       <div className="text-2xl font-sf_pro_display font-bold tracking-[0.35] leading-[26px] text-white self-start ml-px">
@@ -59,13 +93,18 @@ const WalletView = ({
             text="Copy address"
             color="bg-[#00d4ff]"
             textColor="text-black"
-            onClick={copyAddressAction}
+            onClick={() => navigator.clipboard.writeText(ethAddress ?? "")}
           />
           <ColumnButton
             text="View on Etherscan"
             color="bg-[#00d4ff]"
             textColor="text-black"
-            onClick={openInBlockExplorerAction}
+            onClick={() =>
+              window.open(
+                `${currentAppChain.blockExplorerUrls[0]}/address/${ethAddress}`,
+                "_blank"
+              )
+            }
           />
         </div>
       </Card>
@@ -112,7 +151,7 @@ const WalletView = ({
             </div>
             <button
               className="px-4 py-2 bg-cyan-200 rounded-3xl justify-center items-center gap-1 flex"
-              onClick={mintNftAction}
+              onClick={sendUserOp}
             >
               <div className="text-black text-xs font-semibold leading-normal font-sf_pro_text">
                 Mint NFT
