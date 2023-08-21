@@ -1,5 +1,5 @@
 import React from "react";
-import { LoginViews } from "@/store/credentialsSlice";
+import { IglooViews } from "@/store/credentialsSlice";
 import StatusBar from "@/components/StatusBar";
 
 export interface HeaderConstants {
@@ -15,21 +15,28 @@ function getHeaderConstants(
   errorMsg?: string
 ): HeaderConstants {
   switch (loginView) {
-    case LoginViews.REGISTERING:
+    case IglooViews.UNSUPPORTED_BROWSER:
+      return {
+        titleText: "Browser not supported",
+        subtitleText:
+          "Unfortunately, your browser does not support platform authenticators. Try visiting this demo on Chrome, Safari, Brave, or Edge. Refer to this table for a more comprehensive list of supported browsers and operating systems.",
+        step: 0,
+      };
+    case IglooViews.REGISTERING:
       return {
         titleText: "Registering your passkey...",
         subtitleText: "Follow your browser's prompts to create a passkey.",
         step: 2,
       };
-    case LoginViews.AUTHENTICATING:
+    case IglooViews.AUTHENTICATING:
       return {
         titleText: "Authenticate with your passkey",
         subtitleText:
           "To start using your new cloud wallet, you'll need to authenticate with your newly registered passkey. Follow your browser's prompts to authenticate.",
         step: 0,
       };
-    case LoginViews.IGLOO_NFT_MINTING:
-    case LoginViews.MINTING:
+    case IglooViews.IGLOO_NFT_MINTING:
+    case IglooViews.MINTING:
       return {
         titleText: `Minting your ${mintingNFT ? "Igloo NFT" : "Wallet"}...`,
         subtitleText: `Stay with us on this page as your ${
@@ -37,33 +44,33 @@ function getHeaderConstants(
         } is being minted on-chain.`,
         step: mintingNFT ? 0 : 3,
       };
-    case LoginViews.MINTED:
+    case IglooViews.MINTED:
       return {
         titleText: "Wallet created",
         subtitleText:
           "Creating a secured session so you can use your new cloud wallet.",
         step: 4,
       };
-    case LoginViews.IGLOO_NFT_MINTED:
+    case IglooViews.IGLOO_NFT_MINTED:
       return {
         titleText: "Minting successful",
         subtitleText: "Added to your smart wallet",
         step: 0,
         additionalText: "🎉",
       };
-    case LoginViews.WALLET_HOME:
+    case IglooViews.WALLET_HOME:
       return {
         titleText: "Wallet Home",
         subtitleText: "",
         step: 0,
       };
-    case LoginViews.ERROR:
+    case IglooViews.ERROR:
       return {
         titleText: "Error",
         subtitleText: errorMsg ?? "",
         step: 0,
       };
-    case LoginViews.SIGN_UP:
+    case IglooViews.SIGN_UP:
       return {
         titleText: "Name your passkey",
         subtitleText: "Give your passkey a unique name.",

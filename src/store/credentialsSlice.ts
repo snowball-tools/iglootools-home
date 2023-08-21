@@ -1,11 +1,8 @@
 import { AuthMethod, SessionSigsMap } from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chain, CHAINS } from "../helpers/chains";
-import { SendUserOperationResult } from "@alchemy/aa-core";
-import { PKPEthersWallet } from "@lit-protocol/pkp-ethers";
-import { OwnedNft } from "alchemy-sdk";
 
-export const LoginViews = {
+export const IglooViews = {
   INITIAL_VIEW: "initial_view",
   SIGN_UP: "sign_up",
   REGISTERING: "registering",
@@ -16,6 +13,7 @@ export const LoginViews = {
   ERROR: "error",
   IGLOO_NFT_MINTING: "igloo_nft_minting",
   IGLOO_NFT_MINTED: "igloo_nft_minted",
+  UNSUPPORTED_BROWSER: "unsupported_browser",
 };
 
 export interface CredentialState {
@@ -36,7 +34,7 @@ export interface CredentialState {
 }
 
 export const initialState: CredentialState = {
-  view: LoginViews.INITIAL_VIEW,
+  view: IglooViews.INITIAL_VIEW,
   isAuthenticated: false,
   username: "",
   currentPKP: undefined,
@@ -86,11 +84,11 @@ const credentialsSlice = createSlice({
     ) => {
       state.userOpHash = action.payload.hash;
       state.nftId = action.payload.nftId;
-      state.view = LoginViews.IGLOO_NFT_MINTED;
+      state.view = IglooViews.IGLOO_NFT_MINTED;
     },
     setErrorMsg: (state, action: PayloadAction<string>) => {
       state.errorMsg = action.payload;
-      state.view = LoginViews.ERROR;
+      state.view = IglooViews.ERROR;
     },
     setCurrentPKP: (
       state,
@@ -117,7 +115,7 @@ const credentialsSlice = createSlice({
       state.currentAuthMethod = action.payload.currentAuthMethod;
       state.sessionSigs = action.payload.sessionSigs;
       state.ethAddress = action.payload.ethAddress;
-      state.view = LoginViews.WALLET_HOME;
+      state.view = IglooViews.WALLET_HOME;
     },
   },
 });

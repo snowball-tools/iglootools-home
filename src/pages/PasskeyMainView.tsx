@@ -6,7 +6,7 @@ import {
   setErrorMsg,
   setMintedNFT,
   setCurrentPKP,
-  LoginViews,
+  IglooViews,
   setSessionSig,
   disconnect,
   setUsername,
@@ -49,7 +49,7 @@ export default function PasskeyMainView() {
   const dispatch = useDispatch();
 
   async function createPKPWithWebAuthn() {
-    dispatch(setView(LoginViews.REGISTERING));
+    dispatch(setView(IglooViews.REGISTERING));
 
     try {
       const response = await registerPasskey(username);
@@ -61,7 +61,7 @@ export default function PasskeyMainView() {
         })
       );
 
-      dispatch(setView(LoginViews.MINTING));
+      dispatch(setView(IglooViews.MINTING));
 
       const auth = await authenticatePasskey();
 
@@ -76,7 +76,7 @@ export default function PasskeyMainView() {
     let pkp: string | undefined = currentPKP;
     let pkpEthAddress: string | undefined = currentPKPEthAddress;
 
-    dispatch(setView(LoginViews.AUTHENTICATING));
+    dispatch(setView(IglooViews.AUTHENTICATING));
 
     try {
       const auth = await authenticatePasskey();
@@ -131,7 +131,7 @@ export default function PasskeyMainView() {
   }
 
   async function sendUserOp() {
-    dispatch(setView(LoginViews.IGLOO_NFT_MINTING));
+    dispatch(setView(IglooViews.IGLOO_NFT_MINTING));
 
     if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
       try {
@@ -167,26 +167,26 @@ export default function PasskeyMainView() {
 
   const renderView = () => {
     switch (view) {
-      case LoginViews.REGISTERING:
-      case LoginViews.AUTHENTICATING:
-      case LoginViews.IGLOO_NFT_MINTING:
-      case LoginViews.MINTING:
+      case IglooViews.REGISTERING:
+      case IglooViews.AUTHENTICATING:
+      case IglooViews.IGLOO_NFT_MINTING:
+      case IglooViews.MINTING:
         return (
           <>
             <Header
               infoView={view}
-              mintingNFT={view === LoginViews.IGLOO_NFT_MINTING}
+              mintingNFT={view === IglooViews.IGLOO_NFT_MINTING}
             />
             <LoadingAnimation
               animationDuration={
-                view === LoginViews.IGLOO_NFT_MINTING ? 4 : 2.5
+                view === IglooViews.IGLOO_NFT_MINTING ? 4 : 2.5
               }
             />
           </>
         );
-      case LoginViews.MINTED:
+      case IglooViews.MINTED:
         return <Header infoView={view} />;
-      case LoginViews.IGLOO_NFT_MINTED:
+      case IglooViews.IGLOO_NFT_MINTED:
         return (
           <MintedIglooNFTView
             nftLabel={nftId ? `IglooNFT #${nftId}` : "IglooNFT"}
@@ -202,11 +202,11 @@ export default function PasskeyMainView() {
               )
             }
             returnToWalletAction={() =>
-              dispatch(setView(LoginViews.WALLET_HOME))
+              dispatch(setView(IglooViews.WALLET_HOME))
             }
           />
         );
-      case LoginViews.ERROR:
+      case IglooViews.ERROR:
         return (
           <>
             <Header infoView={view} errorMsg={errorMsg ?? ""} />
@@ -224,7 +224,7 @@ export default function PasskeyMainView() {
             />
           </>
         );
-      case LoginViews.WALLET_HOME:
+      case IglooViews.WALLET_HOME:
         return (
           <WalletView
             mintNftAction={sendUserOp}
@@ -246,7 +246,7 @@ export default function PasskeyMainView() {
             }}
           />
         );
-      case LoginViews.SIGN_UP:
+      case IglooViews.SIGN_UP:
         return (
           <SignUpView
             signIn={authThenGetSessionSigs}
@@ -258,7 +258,7 @@ export default function PasskeyMainView() {
       default:
         return (
           <InitialView
-            creatNewPasskey={() => dispatch(setView(LoginViews.SIGN_UP))}
+            creatNewPasskey={() => dispatch(setView(IglooViews.SIGN_UP))}
             useExistingPasskey={authThenGetSessionSigs}
           />
         );

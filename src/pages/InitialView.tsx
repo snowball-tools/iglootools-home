@@ -1,5 +1,5 @@
-import StickyButtonGroup from "@/components/StickyButtonGroup";
 import React from "react";
+import StickyButtonGroup from "@/components/StickyButtonGroup";
 
 interface InitialViewProps {
   creatNewPasskey: () => void;
