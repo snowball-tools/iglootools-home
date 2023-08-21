@@ -2,7 +2,7 @@ import { AuthMethod, SessionSigsMap } from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chain, CHAINS } from "../helpers/chains";
 
-export const IglooViews = {
+export const AuthViews = {
   INITIAL_VIEW: "initial_view",
   SIGN_UP: "sign_up",
   REGISTERING: "registering",
@@ -34,7 +34,7 @@ export interface CredentialState {
 }
 
 export const initialState: CredentialState = {
-  view: IglooViews.INITIAL_VIEW,
+  view: AuthViews.INITIAL_VIEW,
   isAuthenticated: false,
   username: "",
   currentPKP: undefined,
@@ -84,11 +84,11 @@ const credentialsSlice = createSlice({
     ) => {
       state.userOpHash = action.payload.hash;
       state.nftId = action.payload.nftId;
-      state.view = IglooViews.IGLOO_NFT_MINTED;
+      state.view = AuthViews.IGLOO_NFT_MINTED;
     },
     setErrorMsg: (state, action: PayloadAction<string>) => {
       state.errorMsg = action.payload;
-      state.view = IglooViews.ERROR;
+      state.view = AuthViews.ERROR;
     },
     setCurrentPKP: (
       state,
@@ -115,7 +115,7 @@ const credentialsSlice = createSlice({
       state.currentAuthMethod = action.payload.currentAuthMethod;
       state.sessionSigs = action.payload.sessionSigs;
       state.ethAddress = action.payload.ethAddress;
-      state.view = IglooViews.WALLET_HOME;
+      state.view = AuthViews.WALLET_HOME;
     },
   },
 });

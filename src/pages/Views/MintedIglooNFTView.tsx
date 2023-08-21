@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "../components/Header";
-import { IglooViews } from "@/store/credentialsSlice";
+import Header from "../../components/Header";
+import { AuthViews } from "@/store/credentialsSlice";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
 import { Chain } from "@/helpers/chains";
 import Image from "next/image";
@@ -24,7 +24,7 @@ const MintedIglooNFTView = ({
   }
   return (
     <>
-      <Header infoView={IglooViews.IGLOO_NFT_MINTED} />
+      <Header infoView={AuthViews.IGLOO_NFT_MINTED} />
       <div className="flex flex-col justify-between gap-2 w-full items-start">
         <Image
           src="snowball.svg"

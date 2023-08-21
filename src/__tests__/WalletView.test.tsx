@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import WalletView, { WalletViewProps } from "@/pages/WalletView";
+import WalletView, { WalletViewProps } from "@/pages/Views/WalletView";
 import { CHAINS } from "@/helpers/chains";
 
 describe("WalletView Component", () => {

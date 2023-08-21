@@ -1,17 +1,17 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { RootState } from "../../store/store";
 import {
   setView,
   setErrorMsg,
   setMintedNFT,
   setCurrentPKP,
-  IglooViews,
+  AuthViews,
   setSessionSig,
   disconnect,
   setUsername,
   switchChain,
-} from "../store/credentialsSlice";
+} from "../../store/credentialsSlice";
 import {
   authenticatePasskey,
   createPkpEthersWallet,
@@ -20,10 +20,10 @@ import {
   getSessionSigs,
   registerPasskey,
   sendUserOperation,
-} from "../helpers/webauthn";
+} from "../../helpers/webauthn";
 import InitialView from "./InitialView";
 import SignUpView from "./SignUpView";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 import { AuthMethod } from "@lit-protocol/types";
 import WalletView from "./WalletView";
 import Box from "@/components/Box";
@@ -32,7 +32,7 @@ import { Chain } from "@/helpers/chains";
 import MintedIglooNFTView from "./MintedIglooNFTView";
 import LoadingAnimation from "@/components/LoadingAnimation";
 
-export default function PasskeyMainView() {
+export default function AuthView() {
   const {
     view,
     username,
@@ -49,7 +49,7 @@ export default function PasskeyMainView() {
   const dispatch = useDispatch();
 
   async function createPKPWithWebAuthn() {
-    dispatch(setView(IglooViews.REGISTERING));
+    dispatch(setView(AuthViews.REGISTERING));
 
     try {
       const response = await registerPasskey(username);
@@ -61,7 +61,7 @@ export default function PasskeyMainView() {
         })
       );
 
-      dispatch(setView(IglooViews.MINTING));
+      dispatch(setView(AuthViews.MINTING));
 
       const auth = await authenticatePasskey();
 
@@ -76,7 +76,7 @@ export default function PasskeyMainView() {
     let pkp: string | undefined = currentPKP;
     let pkpEthAddress: string | undefined = currentPKPEthAddress;
 
-    dispatch(setView(IglooViews.AUTHENTICATING));
+    dispatch(setView(AuthViews.AUTHENTICATING));
 
     try {
       const auth = await authenticatePasskey();
@@ -131,7 +131,7 @@ export default function PasskeyMainView() {
   }
 
   async function sendUserOp() {
-    dispatch(setView(IglooViews.IGLOO_NFT_MINTING));
+    dispatch(setView(AuthViews.IGLOO_NFT_MINTING));
 
     if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
       try {
@@ -167,26 +167,24 @@ export default function PasskeyMainView() {
 
   const renderView = () => {
     switch (view) {
-      case IglooViews.REGISTERING:
-      case IglooViews.AUTHENTICATING:
-      case IglooViews.IGLOO_NFT_MINTING:
-      case IglooViews.MINTING:
+      case AuthViews.REGISTERING:
+      case AuthViews.AUTHENTICATING:
+      case AuthViews.IGLOO_NFT_MINTING:
+      case AuthViews.MINTING:
         return (
           <>
             <Header
               infoView={view}
-              mintingNFT={view === IglooViews.IGLOO_NFT_MINTING}
+              mintingNFT={view === AuthViews.IGLOO_NFT_MINTING}
             />
             <LoadingAnimation
-              animationDuration={
-                view === IglooViews.IGLOO_NFT_MINTING ? 4 : 2.5
-              }
+              animationDuration={view === AuthViews.IGLOO_NFT_MINTING ? 4 : 2.5}
             />
           </>
         );
-      case IglooViews.MINTED:
+      case AuthViews.MINTED:
         return <Header infoView={view} />;
-      case IglooViews.IGLOO_NFT_MINTED:
+      case AuthViews.IGLOO_NFT_MINTED:
         return (
           <MintedIglooNFTView
             nftLabel={nftId ? `IglooNFT #${nftId}` : "IglooNFT"}
@@ -202,11 +200,11 @@ export default function PasskeyMainView() {
               )
             }
             returnToWalletAction={() =>
-              dispatch(setView(IglooViews.WALLET_HOME))
+              dispatch(setView(AuthViews.WALLET_HOME))
             }
           />
         );
-      case IglooViews.ERROR:
+      case AuthViews.ERROR:
         return (
           <>
             <Header infoView={view} errorMsg={errorMsg ?? ""} />
@@ -224,7 +222,7 @@ export default function PasskeyMainView() {
             />
           </>
         );
-      case IglooViews.WALLET_HOME:
+      case AuthViews.WALLET_HOME:
         return (
           <WalletView
             mintNftAction={sendUserOp}
@@ -246,7 +244,7 @@ export default function PasskeyMainView() {
             }}
           />
         );
-      case IglooViews.SIGN_UP:
+      case AuthViews.SIGN_UP:
         return (
           <SignUpView
             signIn={authThenGetSessionSigs}
@@ -258,7 +256,7 @@ export default function PasskeyMainView() {
       default:
         return (
           <InitialView
-            creatNewPasskey={() => dispatch(setView(IglooViews.SIGN_UP))}
+            creatNewPasskey={() => dispatch(setView(AuthViews.SIGN_UP))}
             useExistingPasskey={authThenGetSessionSigs}
           />
         );

@@ -3,8 +3,8 @@ import { browserSupportsWebAuthn } from "@simplewebauthn/browser";
 import { RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { disconnect } from "@/store/credentialsSlice";
-import BrowserUnsupported from "./BrowserUnsupported";
-import PasskeyMainView from "./PasskeyMainView";
+import BrowserUnsupported from "./Views/BrowserUnsupported";
+import AuthView from "./Views/AuthView";
 
 const Home = () => {
   const { sessionExpiration } = useSelector(
@@ -38,7 +38,7 @@ const Home = () => {
     return <BrowserUnsupported />;
   }
 
-  return <PasskeyMainView />;
+  return <AuthView />;
 };
 
 export default Home;

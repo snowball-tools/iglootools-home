@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import SignUpView from "@/pages/SignUpView";
+import SignUpView from "@/pages/Views/SignUpView";
 
 describe("SignInView", () => {
   it("renders without crashing", () => {

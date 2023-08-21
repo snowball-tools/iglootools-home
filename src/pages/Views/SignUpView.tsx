@@ -2,7 +2,7 @@ import React from "react";
 import StatusBar from "@/components/StatusBar";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
 import Header from "@/components/Header";
-import { IglooViews } from "@/store/credentialsSlice";
+import { AuthViews } from "@/store/credentialsSlice";
 
 interface SignUpViewProps {
   signIn: () => void;
@@ -25,7 +25,7 @@ const SignUpView = ({
     <>
       <div className="flex flex-col gap-10 items-center">
         <div className="self-stretch flex flex-col gap-6 items-start">
-          <Header infoView={IglooViews.SIGN_UP} />
+          <Header infoView={AuthViews.SIGN_UP} />
 
           <input
             type="text"

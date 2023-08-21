@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import InitialView from "@/pages/InitialView";
+import InitialView from "@/pages/Views/InitialView";
 
 describe("InitialView", () => {
   it("renders without crashing", () => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import MintedIglooNFTView from "@/pages/MintedIglooNFTView";
+import MintedIglooNFTView from "@/pages/Views/MintedIglooNFTView";
 import { CHAINS } from "@/helpers/chains";
 
 describe("MintedIglooNFTView", () => {

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import WalletView from "@/pages/WalletView";
+import WalletView from "@/pages/Views/WalletView";
 import Box from "@/components/Box";
-import SignUpView from "@/pages/SignUpView";
-import MintedIglooNFT from "@/pages/MintedIglooNFTView";
+import SignUpView from "@/pages/Views/SignUpView";
+import MintedIglooNFT from "@/pages/Views/MintedIglooNFTView";
 import { CHAINS } from "@/helpers/chains";
-import InitialView from "@/pages/InitialView";
+import InitialView from "@/pages/Views/InitialView";
 import LoadingAnimation from "./LoadingAnimation";
 
 interface TestViewProps {}

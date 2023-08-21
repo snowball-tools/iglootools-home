@@ -1,5 +1,5 @@
 import React from "react";
-import { IglooViews } from "@/store/credentialsSlice";
+import { AuthViews } from "@/store/credentialsSlice";
 import Header from "@/components/Header";
 import Box from "@/components/Box";
 import { Head } from "next/document";
@@ -15,7 +15,7 @@ const BrowserUnsupported = ({}: BrowserUnsupportedProps) => (
       <link rel="icon" href="favicon.ico" />
     </Head>
     <Box>
-      <Header infoView={IglooViews.UNSUPPORTED_BROWSER} />
+      <Header infoView={AuthViews.UNSUPPORTED_BROWSER} />
     </Box>
   </>
 );
