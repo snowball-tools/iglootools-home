@@ -34,7 +34,11 @@ const Home = () => {
     checkSession();
   }, [sessionExpiration]);
 
-  return !isWebAuthnSupported ? <BrowserUnsupported /> : <PasskeyMainView />;
+  if (!isWebAuthnSupported) {
+    return <BrowserUnsupported />;
+  }
+
+  return <PasskeyMainView />;
 };
 
 export default Home;

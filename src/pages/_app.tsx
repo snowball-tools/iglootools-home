@@ -6,35 +6,17 @@ import { Analytics } from "@vercel/analytics/react";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // todo: push
-  useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/push-service-worker.ts")
-        .then((registration) => {
-          console.log(
-            "Service Worker registered with scope:",
-            registration.scope
-          );
-        })
-        .catch((error) => {
-          console.log("Service Worker registration failed: ", error);
-        });
-    }
-  }, []);
-
   const setVHVariable = () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   };
 
   useEffect(() => {
-    setVHVariable(); // Initial set
+    setVHVariable();
 
     window.addEventListener("resize", setVHVariable);
     window.addEventListener("orientationchange", setVHVariable);
 
-    // Cleanup
     return () => {
       window.removeEventListener("resize", setVHVariable);
       window.removeEventListener("orientationchange", setVHVariable);
