@@ -88,13 +88,12 @@ const WalletView = ({
           </a>{" "}
           - is changing the landscape of crypto UX forever enabling gas
           sponsored transactions, bundling, intents, social recovery, scheduling
-          “transactions” (user operations), limit orders, and so much more.
-          Learn more from our partners at{" "}
+          “transactions” (user operations), limit orders, and so much more.{" "}
           <a
             className="text-cyan-200"
             href="https://www.alchemy.com/learn/account-abstraction"
           >
-            Alchemy
+            Learn more
           </a>
         </div>
       </Card>

@@ -177,7 +177,11 @@ export default function PasskeyMainView() {
               infoView={view}
               mintingNFT={view === LoginViews.IGLOO_NFT_MINTING}
             />
-            <LoadingAnimation />
+            <LoadingAnimation
+              animationDuration={
+                view === LoginViews.IGLOO_NFT_MINTING ? 4 : 2.5
+              }
+            />
           </>
         );
       case LoginViews.MINTED:
