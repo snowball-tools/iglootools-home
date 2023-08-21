@@ -11,7 +11,6 @@ export interface HeaderConstants {
 
 function getHeaderConstants(
   loginView: string,
-  mintingNFT: boolean = false,
   errorMsg?: string
 ): HeaderConstants {
   switch (loginView) {
@@ -36,13 +35,18 @@ function getHeaderConstants(
         step: 0,
       };
     case AuthViews.IGLOO_NFT_MINTING:
+      return {
+        titleText: "Minting your Igloo NFT",
+        subtitleText:
+          "Stay with us on this page as your Igloo NFT is being minted on-chain.",
+        step: 0,
+      };
     case AuthViews.MINTING:
       return {
-        titleText: `Minting your ${mintingNFT ? "Igloo NFT" : "Wallet"}...`,
-        subtitleText: `Stay with us on this page as your ${
-          mintingNFT ? "Igloo NFT" : "cloud wallet"
-        } is being minted on-chain.`,
-        step: mintingNFT ? 0 : 3,
+        titleText: "Minting your Wallet",
+        subtitleText:
+          "Stay with us on this page as your cloud wallet is being minted on-chain.",
+        step: 3,
       };
     case AuthViews.MINTED:
       return {
@@ -87,14 +91,12 @@ function getHeaderConstants(
 
 interface InfoViewProps {
   infoView: string;
-  mintingNFT?: boolean;
   errorMsg?: string;
 }
 
-const Header = ({ infoView, mintingNFT, errorMsg }: InfoViewProps) => {
+const Header = ({ infoView, errorMsg }: InfoViewProps) => {
   const { titleText, subtitleText, step, additionalText } = getHeaderConstants(
     infoView,
-    mintingNFT,
     errorMsg
   );
 

@@ -88,10 +88,7 @@ const WalletView = ({}: WalletViewProps) => {
   } else if (view === AuthViews.IGLOO_NFT_MINTING) {
     return (
       <>
-        <Header
-          infoView={view}
-          mintingNFT={view === AuthViews.IGLOO_NFT_MINTING}
-        />
+        <Header infoView={view} />
         <LoadingAnimation
           animationDuration={view === AuthViews.IGLOO_NFT_MINTING ? 4 : 2.5}
         />
