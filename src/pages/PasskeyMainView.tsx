@@ -151,7 +151,7 @@ export default function PasskeyMainView() {
         dispatch(
           setMintedNFT({
             hash: result.hash,
-            nftId: result.nftId ?? "0",
+            nftId: result.nftId,
           })
         );
 

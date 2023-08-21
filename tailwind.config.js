@@ -39,7 +39,7 @@ module.exports = {
       keyframes: {
         drawCircle: {
           "0%": {
-            strokeDashoffset: "360",
+            strokeDashoffset: "300",
             opacity: "0.1",
           },
           "10%": {

@@ -81,7 +81,7 @@ const credentialsSlice = createSlice({
       state,
       action: PayloadAction<{
         hash: string;
-        nftId: string;
+        nftId: string | null;
       }>
     ) => {
       state.userOpHash = action.payload.hash;

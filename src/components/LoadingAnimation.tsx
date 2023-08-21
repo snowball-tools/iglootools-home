@@ -1,22 +1,24 @@
 import React, { useState, useRef, useEffect } from "react";
 
-const LoadingAnimation: React.FC = () => {
+interface LoadingAnimationProps {
+  animationDuration?: number;
+}
+
+const LoadingAnimation = ({
+  animationDuration = 2.5,
+}: LoadingAnimationProps) => {
   const numberOfCircles = 12;
-  const animationDuration = 2.5;
   const delayBetweenCircles = animationDuration;
   const containerRef = useRef<SVGSVGElement | null>(null);
   const [containerSize, setContainerSize] = useState(600);
   const radiusOfBigCircle = containerSize / 2;
   const radiusOfSmallCircle = radiusOfBigCircle / 3;
+  const adjustedRadiusOfBigCircle = radiusOfBigCircle - radiusOfSmallCircle - 1; // 1 is half of strokeWidth
 
   const circles = Array.from({ length: numberOfCircles }).map((_, index) => {
     const angle = (index / numberOfCircles) * 2 * Math.PI;
-    const cx =
-      (radiusOfBigCircle - radiusOfSmallCircle) * Math.cos(angle) +
-      radiusOfBigCircle;
-    const cy =
-      (radiusOfBigCircle - radiusOfSmallCircle) * Math.sin(angle) +
-      radiusOfBigCircle;
+    const cx = adjustedRadiusOfBigCircle * Math.cos(angle) + radiusOfBigCircle;
+    const cy = adjustedRadiusOfBigCircle * Math.sin(angle) + radiusOfBigCircle;
 
     return (
       <circle

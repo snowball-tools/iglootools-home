@@ -261,7 +261,7 @@ export async function sendUserOperation(
   chain: Chain
 ): Promise<{
   hash: string;
-  nftId: string | undefined;
+  nftId: string | null;
 }> {
   console.log("Sending user operation");
   console.log("chain", chain);
@@ -338,7 +338,7 @@ export async function sendUserOperation(
     if (mintedNFTs === undefined || mintedNFTs.ownedNfts.length === 0) {
       return {
         hash: result.hash,
-        nftId: undefined,
+        nftId: null,
       };
     }
 
