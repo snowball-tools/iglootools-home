@@ -1,4 +1,3 @@
-import exp from "constants";
 import {
   ALCHEMY_GOERLI_API_KEY,
   ALCHEMY_MAINNET_API_KEY,

@@ -29,16 +29,7 @@ import {
   getAlchemyNetwork,
   viemChain,
 } from "./chains";
-import {
-  Alchemy,
-  BlockTag,
-  GetBaseNftsForOwnerOptions,
-  NftOrdering,
-  OwnedBaseNft,
-  OwnedBaseNftsResponse,
-  OwnedNft,
-  OwnedNftsResponse,
-} from "alchemy-sdk";
+import { Alchemy, NftOrdering, OwnedNftsResponse } from "alchemy-sdk";
 import { retry } from "./promise";
 
 export const DEFAULT_EXP = new Date(
