@@ -18,6 +18,7 @@ import MintedIglooNFTView from "./MintedIglooNFTView";
 import Header from "@/components/Header";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { logErrorMsg, logInfo } from "@/helpers/bugsnag";
+import va from "@vercel/analytics";
 
 export interface WalletViewProps {}
 
@@ -70,6 +71,7 @@ const WalletView = ({}: WalletViewProps) => {
   }
 
   if (view === AuthViews.IGLOO_NFT_MINTED) {
+    va.track("Igloo NFT Minted");
     return (
       <MintedIglooNFTView
         nftLabel={nftId ? `IglooNFT #${nftId}` : "IglooNFT"}
@@ -88,6 +90,7 @@ const WalletView = ({}: WalletViewProps) => {
       />
     );
   } else if (view === AuthViews.IGLOO_NFT_MINTING) {
+    va.track("Igloo NFT Minting");
     return (
       <>
         <Header infoView={view} />
@@ -96,6 +99,8 @@ const WalletView = ({}: WalletViewProps) => {
         />
       </>
     );
+  } else {
+    va.track("Wallet View");
   }
 
   return (

@@ -24,6 +24,7 @@ import StickyButtonGroup from "@/components/StickyButtonGroup";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { RootState } from "@/store/store";
 import { logErrorMsg, logUser } from "@/helpers/bugsnag";
+import va from "@vercel/analytics";
 
 export default function AuthView() {
   const {
@@ -37,21 +38,30 @@ export default function AuthView() {
   const dispatch = useDispatch();
 
   async function createPKPWithWebAuthn() {
+    va.track("Signup Start");
     dispatch(setView(AuthViews.REGISTERING));
 
     try {
       const response = await registerPasskey(username);
 
       logUser(response.pkpPublicKey, username);
+      va.track("Signup", {
+        pkpPublicKey: response.pkpPublicKey,
+        pkpEthAddress: response.pkpEthAddress,
+        username: username,
+      });
 
       dispatch(setView(AuthViews.MINTED));
     } catch (e) {
+      va.track("Signup Failure");
       logErrorMsg(`${e}`);
       dispatch(setErrorMsg("Error creating passkey"));
     }
   }
 
   async function authThenGetSessionSigs() {
+    va.track("Auth Start");
+
     let pkp: string | undefined = currentPKP;
     let pkpEthAddress: string | undefined = currentPKPEthAddress;
 
@@ -66,11 +76,13 @@ export default function AuthView() {
         pkp = pkps[0].publicKey;
         pkpEthAddress = pkps[0].ethAddress;
 
+        va.track("Auth", { pkpPublicKey: pkp, pkpEthAddress: pkpEthAddress });
         logUser(pkp, pkpEthAddress);
       }
 
       await getSessionSig(pkp, pkpEthAddress, auth);
     } catch (e) {
+      va.track("Auth Failed", { error: `${e}` });
       logErrorMsg(`${e}`);
       dispatch(setErrorMsg("Error authenticating passkey"));
     }
@@ -81,6 +93,7 @@ export default function AuthView() {
     pkpEthAddress: string,
     auth: AuthMethod
   ) {
+    va.track("Getting Session Sig");
     const sessionSigs = await getSessionSigs(
       pkpPublicKey,
       pkpEthAddress,
@@ -94,6 +107,8 @@ export default function AuthView() {
       pkpEthWallet,
       currentAppChain
     );
+
+    va.track("Got AA Address", { smartWalletAddress: smartWalletAddress });
 
     dispatch(
       setSessionSig({
