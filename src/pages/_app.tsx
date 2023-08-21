@@ -7,16 +7,13 @@ import Box from "@/components/Box";
 import "../styles/globals.css";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
-import { BUGSNAG_API_KEY } from "@/helpers/env";
-import { logMetadata, logErrorMsg } from "@/helpers/bugsnag";
-import { log } from "console";
-import { logError } from "../helpers/bugsnag";
+import { BUGSNAG_API_KEY, NEXT_PUBLIC_DEBUG } from "@/helpers/env";
 
 Bugsnag.start({
   apiKey: BUGSNAG_API_KEY,
   plugins: [new BugsnagPluginReact()],
-  appVersion: process.env.NEXT_PUBLIC_APP_VERSION,
-  releaseStage: process.env.NODE_ENV,
+  appVersion: "0.0.1",
+  releaseStage: NEXT_PUBLIC_DEBUG ? "development" : "production",
 });
 
 const ErrorBoundary = Bugsnag.getPlugin("react")?.createErrorBoundary(React);
