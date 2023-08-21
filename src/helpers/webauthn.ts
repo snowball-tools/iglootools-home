@@ -344,6 +344,13 @@ export async function sendUserOperation(
       }
     );
 
+    if (mintedNFTs === undefined || mintedNFTs.ownedNfts.length === 0) {
+      return {
+        hash: result.hash,
+        nftId: undefined,
+      };
+    }
+
     let nft = mintedNFTs.ownedNfts.reduce((curr, next) => {
       return Number(curr.tokenId) > Number(next.tokenId) ? curr : next;
     });
