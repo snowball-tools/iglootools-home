@@ -1,6 +1,5 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store";
 import {
   setView,
   setErrorMsg,
@@ -23,22 +22,17 @@ import SignUpView from "./SignUpView";
 import Header from "../../components/Header";
 import { AuthMethod } from "@lit-protocol/types";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
-import MintedIglooNFTView from "./MintedIglooNFTView";
 import LoadingAnimation from "@/components/LoadingAnimation";
+import { RootState } from "@/store/store";
 
 export default function AuthView() {
   const {
     view,
     username,
     currentAppChain,
-    appChains,
     currentPKP,
     currentPKPEthAddress,
-    sessionSigs,
-    ethAddress,
     errorMsg,
-    userOpHash,
-    nftId,
   } = useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
 
@@ -101,12 +95,7 @@ export default function AuthView() {
       currentAppChain
     );
 
-    const pkpEthWallet = await createPkpEthersWallet(
-      pkpPublicKey,
-      pkpEthAddress,
-      sessionSigs,
-      currentAppChain
-    );
+    const pkpEthWallet = await createPkpEthersWallet(pkpPublicKey, sessionSigs);
 
     const smartWalletAddress = await getSmartWalletAddress(
       pkpEthWallet,
@@ -128,7 +117,6 @@ export default function AuthView() {
     switch (view) {
       case AuthViews.REGISTERING:
       case AuthViews.AUTHENTICATING:
-      case AuthViews.IGLOO_NFT_MINTING:
       case AuthViews.MINTING:
         return (
           <>
@@ -143,26 +131,6 @@ export default function AuthView() {
         );
       case AuthViews.MINTED:
         return <Header infoView={view} />;
-      case AuthViews.IGLOO_NFT_MINTED:
-        return (
-          <MintedIglooNFTView
-            nftLabel={nftId ? `IglooNFT #${nftId}` : "IglooNFT"}
-            chain={currentAppChain}
-            primaryActionAfterMint={() =>
-              window.open(
-                nftId
-                  ? `https://testnets.opensea.io/assets/${currentAppChain.name.toLowerCase()}/${
-                      currentAppChain.iglooNFTAddress
-                    }/${nftId}`
-                  : `https://www.jiffyscan.xyz/userOpHash/${userOpHash}?network=${currentAppChain.name.toLowerCase()}`,
-                "_blank"
-              )
-            }
-            returnToWalletAction={() =>
-              dispatch(setView(AuthViews.WALLET_HOME))
-            }
-          />
-        );
       case AuthViews.ERROR:
         return (
           <>

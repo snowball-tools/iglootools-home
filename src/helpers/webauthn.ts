@@ -158,9 +158,7 @@ export async function getSessionSigs(
 
 export async function createPkpEthersWallet(
   pkpPublicKey: string,
-  pkpEthAddress: string,
-  sessionSig: SessionSigsMap,
-  chain: Chain
+  sessionSig: SessionSigsMap
 ): Promise<PKPEthersWallet> {
   try {
     const pkpWallet = new PKPEthersWallet({

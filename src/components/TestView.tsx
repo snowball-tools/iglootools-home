@@ -20,18 +20,7 @@ const TestView = ({}: TestViewProps) => {
   const Views = {
     WALLET: {
       name: "Wallet View",
-      view: (
-        <WalletView
-          mintNftAction={() => setShowView(undefined)}
-          ethAddress="0x669E4aCd20Aa30ABA80483fc8B82aeD626e60B60"
-          exitAction={() => setShowView(undefined)}
-          openInBlockExplorerAction={() => setShowView(undefined)}
-          copyAddressAction={() => setShowView(undefined)}
-          switchChainAction={() => setShowView(undefined)}
-          chain={CHAINS.goerli}
-          supportedChains={CHAINS}
-        />
-      ),
+      view: <WalletView />,
     },
     SIGNIN: {
       name: "Sign In View",
