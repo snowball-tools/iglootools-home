@@ -42,18 +42,7 @@ export default function AuthView() {
     try {
       const response = await registerPasskey(username);
 
-      dispatch(
-        setCurrentPKP({
-          currentPKP: response.pkpPublicKey,
-          currentPKPEthAddress: response.pkpEthAddress,
-        })
-      );
-
-      dispatch(setView(AuthViews.MINTING));
-
-      const auth = await authenticatePasskey();
-
-      await getSessionSig(response.pkpPublicKey, response.pkpEthAddress, auth);
+      dispatch(setView(AuthViews.MINTED));
     } catch (e) {
       console.log(e);
       dispatch(setErrorMsg("Error creating passkey"));
@@ -122,12 +111,28 @@ export default function AuthView() {
           <>
             <Header infoView={view} />
             <LoadingAnimation
-              animationDuration={view === AuthViews.IGLOO_NFT_MINTING ? 4 : 2.5}
+              animationDuration={view === AuthViews.IGLOO_NFT_MINTING ? 5 : 2.5}
             />
           </>
         );
       case AuthViews.MINTED:
-        return <Header infoView={view} />;
+        return (
+          <>
+            <Header infoView={view} />;
+            <StickyButtonGroup
+              buttons={[
+                {
+                  label: "Log in",
+                  onClick: authThenGetSessionSigs,
+                  bgColor: "bg-cyan-200",
+                  textColor: "text-black",
+                  disabledColor:
+                    "disabled:bg-disabled-gray disabled:text-white/10",
+                },
+              ]}
+            />
+          </>
+        );
       case AuthViews.ERROR:
         return (
           <>

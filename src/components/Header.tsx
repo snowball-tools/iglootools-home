@@ -51,9 +51,8 @@ function getHeaderConstants(
     case AuthViews.MINTED:
       return {
         titleText: "Wallet created",
-        subtitleText:
-          "Creating a secured session so you can use your new cloud wallet.",
-        step: 4,
+        subtitleText: "Wallet minted. Log in",
+        step: 3,
       };
     case AuthViews.IGLOO_NFT_MINTED:
       return {

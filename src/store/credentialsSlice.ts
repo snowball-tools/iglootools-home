@@ -5,6 +5,7 @@ import { Chain, CHAINS } from "../helpers/chains";
 export const AuthViews = {
   INITIAL_VIEW: "initial_view",
   SIGN_UP: "sign_up",
+  SIGN_IN: "sign_in",
   REGISTERING: "registering",
   AUTHENTICATING: "authenticating",
   MINTING: "minting",
