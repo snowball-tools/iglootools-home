@@ -31,6 +31,7 @@ import {
 } from "./chains";
 import { Alchemy, NftOrdering, OwnedNftsResponse } from "alchemy-sdk";
 import { retry } from "./promise";
+import { logErrorMsg, logInfo, logMetadata } from "./bugsnag";
 
 export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
@@ -69,6 +70,9 @@ export async function registerPasskey(username: string): Promise<{
       response.pkpEthAddress === undefined ||
       response.pkpPublicKey === undefined
     ) {
+      logErrorMsg(
+        `Registration failed: ${response}. pkpPublicKey or pkpEthAddress undefined`
+      );
       return Promise.reject("Registration failed");
     }
     return {
@@ -76,7 +80,7 @@ export async function registerPasskey(username: string): Promise<{
       pkpPublicKey: response.pkpPublicKey,
     };
   } catch (error) {
-    console.error("Registration failed:", error);
+    logErrorMsg(`Registration failed: ${error}`);
     return Promise.reject("Registration failed");
   }
 }
@@ -90,8 +94,8 @@ export async function authenticatePasskey(): Promise<AuthMethod> {
     }
 
     return auth;
-  } catch (error) {
-    console.error("Authentication failed:", error);
+  } catch (error: any) {
+    logErrorMsg(`Authentication failed: ${error}`);
     return Promise.reject("Authentication failed");
   }
 }
@@ -102,11 +106,12 @@ export async function fetchPkpsForAuthMethod(
   try {
     const pkps = await webAuthnProvider.fetchPKPsThroughRelayer(authMethod);
     if (pkps.length === 0) {
+      logErrorMsg(`No PKPs found after fetching`);
       return Promise.reject("No PKPs found");
     }
     return pkps;
   } catch (error) {
-    console.error("Retrieving PKPs failed:", error);
+    logErrorMsg(`Retrieving PKPs failed: ${error}`);
     return Promise.reject("Retrieving PKPs failed");
   }
 }
@@ -146,12 +151,13 @@ export async function getSessionSigs(
     });
 
     if (sessionSigs === undefined) {
+      logErrorMsg(`Retrieving session sigs failed. undefined`);
       return Promise.reject("Retrieving session sigs failed. undefined");
     }
 
     return sessionSigs;
   } catch (error) {
-    console.error("Retrieving session sigs failed:", error);
+    logErrorMsg(`Retrieving session sigs failed: ${error}`);
     return Promise.reject("Retrieving session sigs failed");
   }
 }
@@ -169,12 +175,13 @@ export async function createPkpEthersWallet(
     await pkpWallet.init();
 
     if (pkpWallet === undefined) {
+      logErrorMsg(`pkpWallet undefined init failed`);
       return Promise.reject("Transaction failed");
     }
 
     return pkpWallet;
   } catch (error) {
-    console.error("Transaction failed:", error);
+    logErrorMsg(`Transaction failed: ${error}`);
     return Promise.reject("Transaction failed");
   }
 }
@@ -182,7 +189,7 @@ export async function createPkpEthersWallet(
 export async function getSimpleAccountOwner(
   pkpWallet: PKPEthersWallet
 ): Promise<SimpleSmartAccountOwner> {
-  console.log("Getting Simple Account Owner");
+  logInfo("getSimpleAccountOwner", "start");
   try {
     const owner: SimpleSmartAccountOwner = {
       signMessage: async (msg: Uint8Array) => {
@@ -212,7 +219,7 @@ export async function getSimpleAccountOwner(
 
     return owner;
   } catch (error) {
-    console.error("Get Simple Account Owner failed:", error);
+    logErrorMsg(`Get Simple Account Owner failed: ${error}`);
     return Promise.reject("Get Simple Account Owner failed");
   }
 }
@@ -221,7 +228,7 @@ export async function getSmartWalletAddress(
   pkpEthWallet: PKPEthersWallet,
   chain: Chain
 ): Promise<Address> {
-  console.log("Getting Smart Wallet Address");
+  logInfo("getSmartWalletAddress", "start");
 
   try {
     const owner: SimpleSmartAccountOwner = await getSimpleAccountOwner(
@@ -246,9 +253,10 @@ export async function getSmartWalletAddress(
 
     const address = await provider.getAddress();
 
+    logInfo("getSmartWalletAddress", `${address}`);
     return address;
   } catch (error) {
-    console.error("Getting Counterfactual Address failed:", error);
+    logErrorMsg(`Getting Counterfactual Address failed: ${error}`);
     return Promise.reject("Getting Counterfactual Address failed");
   }
 }
@@ -261,8 +269,8 @@ export async function sendUserOperation(
   hash: string;
   nftId: string | null;
 }> {
-  console.log("Sending user operation");
-  console.log("chain", chain);
+  logInfo("sendUserOperation", "Sending user operation");
+  logInfo("sendUserOperation", `Chain: ${chain.name}`);
   try {
     const owner: SimpleSmartAccountOwner = await getSimpleAccountOwner(
       pkpWallet
@@ -301,10 +309,14 @@ export async function sendUserOperation(
     });
 
     if (result === undefined || result.hash === undefined) {
+      logErrorMsg(`sending user op failed. result undefined`);
       return Promise.reject("Transaction failed");
     }
 
-    console.log("Transaction hash", result.hash, result.request);
+    logInfo(
+      "sendUserOperation",
+      `Transaction hash ${result.hash} ${result.request}`
+    );
 
     // wait for user op
     let receipt = await retry(
@@ -349,7 +361,7 @@ export async function sendUserOperation(
       nftId: nft.tokenId,
     };
   } catch (error) {
-    console.error("Transaction failed:", error);
+    logErrorMsg(`Transaction failed: ${error}`);
     return Promise.reject("Transaction failed");
   }
 }

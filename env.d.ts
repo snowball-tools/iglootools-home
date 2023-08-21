@@ -12,5 +12,6 @@ declare namespace NodeJS {
     ALCHEMY_GOERLI_WEBHOOK_ID: string;
     ALCHEMY_SEPOLIA_WEBHOOK_SIGNING_KEY: string;
     ALCHEMY_GOERLI_WEBHOOK_SIGNING_KEY: string;
+    BUGSNAG_API_KEY: string;
   }
 }

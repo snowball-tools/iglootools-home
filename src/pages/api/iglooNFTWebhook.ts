@@ -6,7 +6,7 @@ import {
 } from "@/helpers/chains";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as crypto from "crypto";
-import { Alchemy, Network, WebhookType } from "alchemy-sdk";
+import { logMetadata, logError, logErrorMsg, logInfo } from "@/helpers/bugsnag";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -15,7 +15,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   res.status(200).json({ success: true });
 
-  console.log("Webhook received", req.body);
+  logInfo("webhook handler", "Webhook received");
+  logMetadata("webhook", "body", JSON.stringify(req.body));
 
   // check if webhook is valid
   if (
@@ -44,9 +45,9 @@ export async function updateWebhookAddressesForChain(
   newAddresses: string[] = [],
   removeAddress: string[] = []
 ): Promise<void> {
-  console.log(
-    "adding address " + newAddresses,
-    "removing address " + removeAddress
+  logInfo(
+    "updateWebhookAddressesForChain",
+    `adding address ${newAddresses}, removing address ${removeAddress}`
   );
 
   const body = {
@@ -69,14 +70,12 @@ export async function updateWebhookAddressesForChain(
     );
 
     const json = await response.json();
-    console.log(
-      "sent webhook update for addresses: ",
-      newAddresses,
-      " and removed: ",
-      removeAddress
+    logInfo(
+      "updateWebhookAddressesForChain",
+      `sent webhook update for addresses: ${newAddresses} and removed: ${removeAddress}`
     );
-    console.log(json);
+    logInfo("updateWebhookAddressesForChain", json);
   } catch (err) {
-    console.error(err);
+    logErrorMsg(`${err}`);
   }
 }

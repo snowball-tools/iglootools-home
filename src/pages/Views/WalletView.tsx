@@ -17,6 +17,8 @@ import { RootState } from "@/store/store";
 import MintedIglooNFTView from "./MintedIglooNFTView";
 import Header from "@/components/Header";
 import LoadingAnimation from "@/components/LoadingAnimation";
+import { logErrorMsg, logInfo } from "@/helpers/bugsnag";
+import { log } from "console";
 
 export interface WalletViewProps {}
 
@@ -35,6 +37,7 @@ const WalletView = ({}: WalletViewProps) => {
   const dispatch = useDispatch();
 
   async function sendUserOp() {
+    logInfo("sendUserOp view", "Sending user operation");
     dispatch(setView(AuthViews.IGLOO_NFT_MINTING));
 
     if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
@@ -59,7 +62,7 @@ const WalletView = ({}: WalletViewProps) => {
 
         return result;
       } catch (e) {
-        console.log(e);
+        logErrorMsg("Error sending user operation");
         dispatch(setErrorMsg("Error sending user operation"));
       }
     } else {

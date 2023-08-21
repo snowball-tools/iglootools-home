@@ -5,6 +5,21 @@ import type { AppProps } from "next/app";
 import { Analytics } from "@vercel/analytics/react";
 import Box from "@/components/Box";
 import "../styles/globals.css";
+import Bugsnag from "@bugsnag/js";
+import BugsnagPluginReact from "@bugsnag/plugin-react";
+import { BUGSNAG_API_KEY } from "@/helpers/env";
+import { logMetadata, logErrorMsg } from "@/helpers/bugsnag";
+import { log } from "console";
+import { logError } from "../helpers/bugsnag";
+
+Bugsnag.start({
+  apiKey: BUGSNAG_API_KEY,
+  plugins: [new BugsnagPluginReact()],
+  appVersion: process.env.NEXT_PUBLIC_APP_VERSION,
+  releaseStage: process.env.NODE_ENV,
+});
+
+const ErrorBoundary = Bugsnag.getPlugin("react")?.createErrorBoundary(React);
 
 function MyApp({ Component, pageProps }: AppProps) {
   const setVHVariable = () => {
@@ -24,13 +39,21 @@ function MyApp({ Component, pageProps }: AppProps) {
     };
   }, []);
 
-  return (
-    <Provider store={store}>
-      <Box>
-        <Component {...pageProps} />
-        <Analytics />
-      </Box>
-    </Provider>
+  const renderView = () => {
+    return (
+      <Provider store={store}>
+        <Box>
+          <Component {...pageProps} />
+          <Analytics />
+        </Box>
+      </Provider>
+    );
+  };
+
+  return ErrorBoundary ? (
+    <ErrorBoundary>{renderView()}</ErrorBoundary>
+  ) : (
+    renderView()
   );
 }
 

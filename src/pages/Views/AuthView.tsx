@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setView,
   setErrorMsg,
-  setCurrentPKP,
   AuthViews,
   setSessionSig,
   disconnect,
@@ -24,6 +23,7 @@ import { AuthMethod } from "@lit-protocol/types";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { RootState } from "@/store/store";
+import { logErrorMsg, logUser } from "@/helpers/bugsnag";
 
 export default function AuthView() {
   const {
@@ -42,9 +42,11 @@ export default function AuthView() {
     try {
       const response = await registerPasskey(username);
 
+      logUser(response.pkpPublicKey, username);
+
       dispatch(setView(AuthViews.MINTED));
     } catch (e) {
-      console.log(e);
+      logErrorMsg(`${e}`);
       dispatch(setErrorMsg("Error creating passkey"));
     }
   }
@@ -63,11 +65,13 @@ export default function AuthView() {
 
         pkp = pkps[0].publicKey;
         pkpEthAddress = pkps[0].ethAddress;
+
+        logUser(pkp, pkpEthAddress);
       }
 
       await getSessionSig(pkp, pkpEthAddress, auth);
     } catch (e) {
-      console.log(e);
+      logErrorMsg(`${e}`);
       dispatch(setErrorMsg("Error authenticating passkey"));
     }
   }

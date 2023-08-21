@@ -22,3 +22,4 @@ export const ALCHEMY_GOERLI_WEBHOOK_SIGNING_KEY = process.env
   .ALCHEMY_GOERLI_WEBHOOK_SIGNING_KEY as string;
 export const ALCHEMY_SEPOLIA_WEBHOOK_SIGNING_KEY = process.env
   .ALCHEMY_SEPOLIA_WEBHOOK_SIGNING_KEY as string;
+export const BUGSNAG_API_KEY = process.env.BUGSNAG_API_KEY as string;
