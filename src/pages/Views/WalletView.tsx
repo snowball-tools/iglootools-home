@@ -18,7 +18,6 @@ import MintedIglooNFTView from "./MintedIglooNFTView";
 import Header from "@/components/Header";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { logErrorMsg, logInfo } from "@/helpers/bugsnag";
-import { log } from "console";
 
 export interface WalletViewProps {}
 
@@ -93,7 +92,7 @@ const WalletView = ({}: WalletViewProps) => {
       <>
         <Header infoView={view} />
         <LoadingAnimation
-          animationDuration={view === AuthViews.IGLOO_NFT_MINTING ? 4 : 2.5}
+          animationDuration={view === AuthViews.IGLOO_NFT_MINTING ? 7 : 2.5}
         />
       </>
     );
