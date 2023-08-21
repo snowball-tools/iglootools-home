@@ -19,7 +19,7 @@ describe("MintedIglooNFTView", () => {
       <MintedIglooNFTView
         nftLabel="Igloo #172"
         chain={CHAINS.goerli}
-        openInOpenSeaAction={mockOpenInOpenSeaAction}
+        primaryActionAfterMint={mockOpenInOpenSeaAction}
         returnToWalletAction={mockReturnToWalletAction}
       />
     );
@@ -33,7 +33,7 @@ describe("MintedIglooNFTView", () => {
       <MintedIglooNFTView
         nftLabel="Igloo #172"
         chain={CHAINS.goerli}
-        openInOpenSeaAction={mockOpenInOpenSeaAction}
+        primaryActionAfterMint={mockOpenInOpenSeaAction}
         returnToWalletAction={mockReturnToWalletAction}
       />
     );
@@ -49,7 +49,7 @@ describe("MintedIglooNFTView", () => {
       <MintedIglooNFTView
         nftLabel="Igloo #172"
         chain={CHAINS.goerli}
-        openInOpenSeaAction={mockOpenInOpenSeaAction}
+        primaryActionAfterMint={mockOpenInOpenSeaAction}
         returnToWalletAction={mockReturnToWalletAction}
       />
     );
