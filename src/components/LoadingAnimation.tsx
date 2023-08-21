@@ -57,7 +57,7 @@ const LoadingAnimation = ({
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <svg
         width="100%"
         height="100%"
