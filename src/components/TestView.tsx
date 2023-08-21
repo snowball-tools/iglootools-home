@@ -49,7 +49,7 @@ const TestView = ({}: TestViewProps) => {
       view: (
         <MintedIglooNFT
           chain={CHAINS.goerli}
-          openInOpenSeaAction={() => setShowView(undefined)}
+          primaryActionAfterMint={() => setShowView(undefined)}
           returnToWalletAction={() => setShowView(undefined)}
           nftLabel="Igloo #172"
         />
