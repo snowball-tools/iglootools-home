@@ -268,6 +268,7 @@ export function getChainWebhookSigningKey(chain: string): string {
 }
 
 export function getAlchemyNetwork(chain: Chain): Network {
+  console.log("chain getAlchemyNetwork", chain);
   switch (chain) {
     case CHAINS.ethereum:
       return Network.ETH_MAINNET;

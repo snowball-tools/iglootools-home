@@ -12,19 +12,24 @@ import {
   setView,
   switchChain,
 } from "@/store/credentialsSlice";
-import { RootState } from "@/store/store";
 import { createPkpEthersWallet, sendUserOperation } from "@/helpers/webauthn";
+import { RootState } from "@/store/store";
+import MintedIglooNFTView from "./MintedIglooNFTView";
+import Header from "@/components/Header";
+import LoadingAnimation from "@/components/LoadingAnimation";
 
 export interface WalletViewProps {}
 
 const WalletView = ({}: WalletViewProps) => {
   const {
+    view,
     currentAppChain,
     appChains,
     currentPKP,
     currentPKPEthAddress,
     sessionSigs,
     ethAddress,
+    nftId,
   } = useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
 
@@ -35,9 +40,7 @@ const WalletView = ({}: WalletViewProps) => {
       try {
         const pkpEthWallet = await createPkpEthersWallet(
           currentPKP,
-          currentPKPEthAddress,
-          sessionSigs,
-          currentAppChain
+          sessionSigs
         );
 
         const result = await sendUserOperation(
@@ -61,6 +64,40 @@ const WalletView = ({}: WalletViewProps) => {
     } else {
       dispatch(setErrorMsg("Error sending user operation"));
     }
+  }
+
+  if (view === AuthViews.IGLOO_NFT_MINTED) {
+    return (
+      <MintedIglooNFTView
+        nftLabel={nftId ? `IglooNFT #${nftId}` : "IglooNFT"}
+        chain={currentAppChain}
+        primaryActionAfterMint={() =>
+          window.open(
+            nftId
+              ? `https://testnets.opensea.io/assets/${currentAppChain.name.toLowerCase()}/${
+                  currentAppChain.iglooNFTAddress
+                }/${nftId}`
+              : `https://www.jiffyscan.xyz/userOpHash/${userOpHash}?network=${currentAppChain.name.toLowerCase()}`,
+            "_blank"
+          )
+        }
+        returnToWalletAction={() => dispatch(setView(AuthViews.WALLET_HOME))}
+      />
+    );
+  } else if (view === AuthViews.IGLOO_NFT_MINTING) {
+  
+
+    return (
+      <>
+        <Header
+          infoView={view}
+          mintingNFT={view === AuthViews.IGLOO_NFT_MINTING}
+        />
+        <LoadingAnimation
+          animationDuration={view === AuthViews.IGLOO_NFT_MINTING ? 4 : 2.5}
+        />
+      </>
+    );
   }
 
   return (

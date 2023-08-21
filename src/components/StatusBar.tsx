@@ -5,7 +5,7 @@ interface StatusBarProps {
 }
 
 const StatusBar = ({ step }: StatusBarProps) => (
-  <>
+  <div>
     {step === 0 ? (
       <></>
     ) : (
@@ -43,7 +43,7 @@ const StatusBar = ({ step }: StatusBarProps) => (
         />
       </svg>
     )}
-  </>
+  </div>
 );
 
 export default StatusBar;

@@ -1,6 +1,8 @@
 import { AuthMethod, SessionSigsMap } from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chain, CHAINS } from "../helpers/chains";
+import InitialView from "@/pages/Views/InitialView";
+import { act } from "react-dom/test-utils";
 
 export const AuthViews = {
   INITIAL_VIEW: "initial_view",
@@ -118,6 +120,18 @@ const credentialsSlice = createSlice({
       state.view = AuthViews.WALLET_HOME;
       state.isAuthenticated = true;
     },
+    restoreState: (state, action: PayloadAction<CredentialState>) => {
+      return {
+        ...action.payload,
+        view:
+          action.payload.view === AuthViews.MINTING
+            ? AuthViews.INITIAL_VIEW
+            : action.payload.view === AuthViews.IGLOO_NFT_MINTING
+            ? AuthViews.WALLET_HOME
+            : action.payload.view,
+        currentAppChain: CHAINS.goerli,
+      };
+    },
   },
 });
 
@@ -131,6 +145,7 @@ export const {
   setErrorMsg,
   setCurrentPKP,
   setSessionSig,
+  restoreState,
 } = credentialsSlice.actions;
 
 export default credentialsSlice.reducer;

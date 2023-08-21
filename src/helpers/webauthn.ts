@@ -158,9 +158,7 @@ export async function getSessionSigs(
 
 export async function createPkpEthersWallet(
   pkpPublicKey: string,
-  pkpEthAddress: string,
-  sessionSig: SessionSigsMap,
-  chain: Chain
+  sessionSig: SessionSigsMap
 ): Promise<PKPEthersWallet> {
   try {
     const pkpWallet = new PKPEthersWallet({
@@ -171,7 +169,7 @@ export async function createPkpEthersWallet(
     await pkpWallet.init();
 
     if (pkpWallet === undefined) {
-      return Promise.reject("Transaction failed");
+      return Promise.reject("pkp wallet");
     }
 
     return pkpWallet;
