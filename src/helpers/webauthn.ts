@@ -15,6 +15,7 @@ import {
   Address,
   SignTypedDataParams,
   SendUserOperationResult,
+  UserOperationReceipt,
 } from "@alchemy/aa-core";
 import { encodeFunctionData } from "viem";
 import { IglooNFTABI } from "./abis/IglooNFTABI";
@@ -28,7 +29,17 @@ import {
   getAlchemyNetwork,
   viemChain,
 } from "./chains";
-import { Alchemy, OwnedNft } from "alchemy-sdk";
+import {
+  Alchemy,
+  BlockTag,
+  GetBaseNftsForOwnerOptions,
+  NftOrdering,
+  OwnedBaseNft,
+  OwnedBaseNftsResponse,
+  OwnedNft,
+  OwnedNftsResponse,
+} from "alchemy-sdk";
+import { retry } from "./promise";
 
 export const DEFAULT_EXP = new Date(
   Date.now() + 1000 * 60 * 60 * 24 * 7
@@ -304,36 +315,42 @@ export async function sendUserOperation(
       return Promise.reject("Transaction failed");
     }
 
-    const settings = {
+    console.log("Transaction hash", result.hash, result.request);
+
+    // wait for user op
+    let receipt = await retry(
+      provider.waitForUserOperationTransaction,
+      [result.hash as Address],
+      10
+    );
+
+    let userOpReceipt: UserOperationReceipt = await retry(
+      provider.getUserOperationReceipt,
+      [result.hash as Address],
+      10
+    );
+
+    const alchemy = new Alchemy({
       apiKey: alchemyAPIKey(chain),
       network: getAlchemyNetwork(chain),
-    };
+    });
 
-    const alchemy = new Alchemy(settings);
+    // theres a better more accurate way to do this...
+    let mintedNFTs: OwnedNftsResponse = await alchemy.nft.getNftsForOwner(
+      address,
+      {
+        contractAddresses: [chain.iglooNFTAddress as Address],
+        orderBy: NftOrdering.TRANSFERTIME,
+      }
+    );
 
-    // theres a way better way hack for now
-    // fix this
-    let nfts = await alchemy.nft.getNftsForOwner(address);
-    let attempt = 0;
-
-    while (nfts.ownedNfts.length === 0 && attempt < 10) {
-      nfts = await alchemy.nft.getNftsForOwner(address);
-      attempt++;
-    }
-
-    if (nfts === undefined || nfts.ownedNfts.length === 0) {
-      return Promise.reject(
-        `NFT may have failed -- check hash: ${result.hash}`
-      );
-    }
-
-    const id = nfts.ownedNfts.reduce((prev: OwnedNft, curr: OwnedNft) => {
-      return curr.tokenId > prev.tokenId ? curr : prev;
-    }).tokenId;
+    let nft = mintedNFTs.ownedNfts.reduce((curr, next) => {
+      return Number(curr.tokenId) > Number(next.tokenId) ? curr : next;
+    });
 
     return {
       hash: result.hash,
-      nftId: id,
+      nftId: nft.tokenId,
     };
   } catch (error) {
     console.error("Transaction failed:", error);

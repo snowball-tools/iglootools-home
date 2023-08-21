@@ -43,6 +43,7 @@ export default function PasskeyMainView() {
     sessionSigs,
     ethAddress,
     errorMsg,
+    userOpHash,
     nftId,
   } = useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
@@ -184,14 +185,15 @@ export default function PasskeyMainView() {
       case LoginViews.IGLOO_NFT_MINTED:
         return (
           <MintedIglooNFTView
-            nftLabel={`IglooNFT #${nftId}`}
+            nftLabel={nftId ? `IglooNFT #${nftId}` : "IglooNFT"}
             chain={currentAppChain}
-            openInOpenSeaAction={() =>
-              // to do open sea link
+            primaryActionAfterMint={() =>
               window.open(
-                `https://testnets.opensea.io/assets/${currentAppChain.name.toLowerCase()}/${
-                  currentAppChain.iglooNFTAddress
-                }/${nftId}`,
+                nftId
+                  ? `https://testnets.opensea.io/assets/${currentAppChain.name.toLowerCase()}/${
+                      currentAppChain.iglooNFTAddress
+                    }/${nftId}`
+                  : `https://www.jiffyscan.xyz/userOpHash/${userOpHash}?network=${currentAppChain.name.toLowerCase()}`,
                 "_blank"
               )
             }

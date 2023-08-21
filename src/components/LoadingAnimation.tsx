@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 
-const numberOfCircles = 12;
-const animationDuration = 2.5;
-const delayBetweenCircles = animationDuration;
-
 const LoadingAnimation: React.FC = () => {
+  const numberOfCircles = 12;
+  const animationDuration = 2.5;
+  const delayBetweenCircles = animationDuration;
   const containerRef = useRef<SVGSVGElement | null>(null);
   const [containerSize, setContainerSize] = useState(600);
   const radiusOfBigCircle = containerSize / 2;

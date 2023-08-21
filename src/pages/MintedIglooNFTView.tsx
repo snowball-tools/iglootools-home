@@ -3,18 +3,19 @@ import Header from "../components/Header";
 import { LoginViews } from "@/store/credentialsSlice";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
 import { Chain } from "@/helpers/chains";
+import Image from "next/image";
 
 interface MintedIglooNFTProps {
   nftLabel: string;
   chain: Chain;
-  openInOpenSeaAction: () => void;
+  primaryActionAfterMint: () => void;
   returnToWalletAction: () => void;
 }
 
 const MintedIglooNFTView = ({
   nftLabel,
   chain,
-  openInOpenSeaAction,
+  primaryActionAfterMint,
   returnToWalletAction,
 }: MintedIglooNFTProps) => {
   // todo: fix. why compiler
@@ -25,8 +26,11 @@ const MintedIglooNFTView = ({
     <>
       <Header infoView={LoginViews.IGLOO_NFT_MINTED} />
       <div className="flex flex-col justify-between gap-2 w-full items-start">
-        <img
-          src="https://file.rendit.io/n/HUQNaYa4fQwtw3yDCZwC.svg"
+        <Image
+          src="snowball.svg"
+          alt="igloo"
+          width={200}
+          height={200}
           className="self-center"
         />
         <div className="text-center text-xl font-orelega_one leading-[40px] text-white w-full">
@@ -41,7 +45,7 @@ const MintedIglooNFTView = ({
         buttons={[
           {
             label: "View on OpenSea",
-            onClick: openInOpenSeaAction,
+            onClick: primaryActionAfterMint,
             bgColor: "bg-cyan-200",
             textColor: "text-black",
             disabledColor: "disabled:bg-disabled-gray disabled:text-white/10",

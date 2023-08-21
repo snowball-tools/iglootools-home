@@ -30,7 +30,7 @@ export interface CredentialState {
   currentAppChain: Chain;
   appChains: { [key: string]: Chain };
   errorMsg: string | null;
-  userOpResult: string | null;
+  userOpHash: string | null;
   ethAddress: string | null;
   nftId: string | null;
 }
@@ -47,7 +47,7 @@ export const initialState: CredentialState = {
   currentAppChain: CHAINS.goerli,
   appChains: CHAINS,
   errorMsg: null,
-  userOpResult: null,
+  userOpHash: null,
   ethAddress: null,
   nftId: null,
 };
@@ -84,7 +84,7 @@ const credentialsSlice = createSlice({
         nftId: string;
       }>
     ) => {
-      state.userOpResult = action.payload.hash;
+      state.userOpHash = action.payload.hash;
       state.nftId = action.payload.nftId;
       state.view = LoginViews.IGLOO_NFT_MINTED;
     },
