@@ -39,7 +39,7 @@ const InitialView = ({
       </div>
       <div className="flex flex-col relative gap-2">
         <div className="text-white text-opacity-60 text-xs font-normal leading-tight font-sf_pro_text">
-          In partnership with
+          Powered by
         </div>
         <div className="justify-center items-center gap-2 inline-flex">
           <a href="https://www.alchemy.com">
