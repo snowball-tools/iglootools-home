@@ -1,5 +1,6 @@
 import React from "react";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
+import Image from "next/image";
 
 interface InitialViewProps {
   creatNewPasskey: () => void;
@@ -11,8 +12,20 @@ const InitialView = ({
   useExistingPasskey,
 }: InitialViewProps) => (
   <>
-    <div className="self-stretch font-orelega_one text-white text-5xl font-normal leading-10">
-      igloo
+    <div className="flex flex-row justify-between w-full items-start">
+      <div className="self-stretch font-orelega_one text-white text-5xl font-normal leading-10">
+        igloo
+      </div>
+      <a href="https://www.alchemy.com">
+        <Image
+          width={0}
+          height={0}
+          style={{ width: "auto", height: 17 }}
+          className="pt-1"
+          src="twitter-logo.svg"
+          alt="alchemy logo"
+        />
+      </a>
     </div>
     <div className="flex-col justify-center items-start gap-7 inline-flex">
       <div className="self-stretch text-white text-2xl font-bold leading-7 tracking-tight font-sf_pro_display">
@@ -23,6 +36,31 @@ const InitialView = ({
         flow—passkeys. <br />
         <br />
         No more passwords, no more seed phrases, no more extensions.
+      </div>
+      <div className="flex flex-col relative gap-2">
+        <div className="text-white text-opacity-60 text-xs font-normal leading-tight font-sf_pro_text">
+          In partnership with
+        </div>
+        <div className="justify-center items-center gap-2 inline-flex">
+          <a href="https://www.alchemy.com">
+            <Image
+              width={0}
+              height={0}
+              style={{ width: "auto", height: 19 }}
+              src="alchemy-logo.svg"
+              alt="alchemy logo"
+            />
+          </a>
+          <a href="https://litprotocol.com">
+            <Image
+              width={0}
+              height={0}
+              style={{ width: "auto", height: 14, marginBottom: 2 }}
+              src="lit-logo.svg"
+              alt="lit protocol logo"
+            />
+          </a>
+        </div>
       </div>
     </div>
 
