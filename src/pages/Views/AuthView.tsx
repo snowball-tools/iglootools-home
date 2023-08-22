@@ -137,7 +137,7 @@ export default function AuthView() {
       case AuthViews.MINTED:
         return (
           <>
-            <Header infoView={view} />;
+            <Header infoView={view} />
             <StickyButtonGroup
               buttons={[
                 {
