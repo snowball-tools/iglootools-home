@@ -23,7 +23,7 @@ const InitialView = ({
           style={{ width: "auto", height: 17 }}
           className="pt-1"
           src="twitter-logo.svg"
-          alt="alchemy logo"
+          alt="twitter bird logo"
         />
       </a>
     </div>
