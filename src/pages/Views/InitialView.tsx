@@ -16,7 +16,7 @@ const InitialView = ({
       <div className="self-stretch font-orelega_one text-white text-5xl font-normal leading-10">
         igloo
       </div>
-      <a href="https://www.alchemy.com">
+      <a href="https://twitter.com/snowballtools">
         <Image
           width={0}
           height={0}
