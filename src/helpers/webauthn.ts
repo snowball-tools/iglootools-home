@@ -325,7 +325,7 @@ export async function sendUserOperation(
       10
     );
 
-    let userOpReceipt: UserOperationReceipt = await retry(
+    let userOpReceipt: UserOperationReceipt | null = await retry(
       provider.getUserOperationReceipt,
       [result.hash as Address],
       10
