@@ -67,17 +67,12 @@ const InitialView = ({
     <StickyButtonGroup
       buttons={[
         {
-          label: "Create a new passkey",
-          onClick: creatNewPasskey,
+          label: "Sign up for our waitlist",
+          onClick: () => {
+            window.open("https://forms.gle/NGrByHAFZqr7AKgj6", "_blank");
+          },
           bgColor: "bg-[#9ee7ff]",
           textColor: "text-black",
-          textSize: "text-md",
-        },
-        {
-          label: "Sign in",
-          onClick: useExistingPasskey,
-          bgColor: "bg-[#282828]",
-          textColor: "text-white",
           textSize: "text-md",
         },
       ]}
