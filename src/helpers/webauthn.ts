@@ -58,13 +58,28 @@ export async function registerPasskey(username: string): Promise<{
   pkpPublicKey: string;
 }> {
   try {
-    const options = await webAuthnProvider.register(username);
-    const txHash = await webAuthnProvider.verifyAndMintPKPThroughRelayer(
-      options
-    );
-    const response = await webAuthnProvider.relay.pollRequestUntilTerminalState(
-      txHash
-    );
+    const options = await webAuthnProvider.register(username).catch((error) => {
+      logErrorMsg(`Registration failed: ${error}`);
+      return Promise.reject("Registration failed");
+    });
+
+    const txHash = await webAuthnProvider
+      .verifyAndMintPKPThroughRelayer(options)
+      .catch((error) => {
+        logErrorMsg(
+          `verifyAndMintPKPThroughRelayer failed: ${error} with ${JSON.stringify(
+            options
+          )}`
+        );
+        throw error;
+      });
+
+    const response = await webAuthnProvider.relay
+      .pollRequestUntilTerminalState(txHash)
+      .catch((error) => {
+        logErrorMsg(`pollRequestUntilTerminalState failed: ${error}`);
+        return Promise.reject("Registration failed");
+      });
 
     if (
       response.pkpEthAddress === undefined ||
@@ -94,7 +109,7 @@ export async function authenticatePasskey(): Promise<AuthMethod> {
     }
 
     return auth;
-  } catch (error: any) {
+  } catch (error) {
     logErrorMsg(`Authentication failed: ${error}`);
     return Promise.reject("Authentication failed");
   }

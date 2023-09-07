@@ -13,7 +13,8 @@ Bugsnag.start({
   apiKey: BUGSNAG_API_KEY,
   plugins: [new BugsnagPluginReact()],
   appVersion: "0.0.1",
-  releaseStage: NEXT_PUBLIC_DEBUG ? "development" : "production",
+  releaseStage: NEXT_PUBLIC_DEBUG == "true" ? "development" : "production",
+  
 });
 
 const ErrorBoundary = Bugsnag.getPlugin("react")?.createErrorBoundary(React);

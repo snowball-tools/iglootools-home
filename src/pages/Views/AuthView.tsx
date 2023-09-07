@@ -52,9 +52,9 @@ export default function AuthView() {
       });
 
       dispatch(setView(AuthViews.MINTED));
-    } catch (e) {
+    } catch (error) {
       va.track("Signup Failure");
-      logErrorMsg(`${e}`);
+      logErrorMsg(`${error}`);
       dispatch(setErrorMsg("Error creating passkey"));
     }
   }
@@ -81,9 +81,9 @@ export default function AuthView() {
       }
 
       await getSessionSig(pkp, pkpEthAddress, auth);
-    } catch (e) {
-      va.track("Auth Failed", { error: `${e}` });
-      logErrorMsg(`${e}`);
+    } catch (error) {
+      va.track("Auth Failed", { error: `${error}` });
+      logErrorMsg(`${error}`);
       dispatch(setErrorMsg("Error authenticating passkey"));
     }
   }

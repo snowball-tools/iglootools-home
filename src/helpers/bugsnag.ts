@@ -1,5 +1,4 @@
 import Bugsnag from "@bugsnag/js";
-import exp from "constants";
 
 export function logInfo(where: string, message: string) {
   Bugsnag.addMetadata("log", where, message);

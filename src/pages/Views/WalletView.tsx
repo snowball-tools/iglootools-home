@@ -61,8 +61,8 @@ const WalletView = ({}: WalletViewProps) => {
         );
 
         return result;
-      } catch (e) {
-        logErrorMsg("Error sending user operation");
+      } catch (error) {
+        logErrorMsg(`Error sending user operation ${error}`);
         dispatch(setErrorMsg("Error sending user operation"));
       }
     } else {
