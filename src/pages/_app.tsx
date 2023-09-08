@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 import Box from "@/components/Box";
 import "../styles/globals.css";
 import { ErrorBoundary } from "@/helpers/bugsnag";
+import TestView from "@/components/TestView";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const setVHVariable = () => {
@@ -27,12 +28,14 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const renderView = () => {
     return (
-      <Provider store={store}>
-        <Box>
-          <Component {...pageProps} />
-          <Analytics />
-        </Box>
-      </Provider>
+      <TestView />
+
+      // <Provider store={store}>
+      //   <Box>
+      //     <Component {...pageProps} />
+      //     <Analytics />
+      //   </Box>
+      // </Provider>
     );
   };
 
