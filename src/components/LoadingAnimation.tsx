@@ -13,7 +13,7 @@ const LoadingAnimation = ({
   const [containerSize, setContainerSize] = useState(600);
   const radiusOfBigCircle = containerSize / 2;
   const radiusOfSmallCircle = radiusOfBigCircle / 3;
-  const adjustedRadiusOfBigCircle = radiusOfBigCircle - radiusOfSmallCircle - 1; // 1 is half of strokeWidth
+  const adjustedRadiusOfBigCircle = radiusOfBigCircle - radiusOfSmallCircle;
 
   const circles = Array.from({ length: numberOfCircles }).map((_, index) => {
     const angle = (index / numberOfCircles) * 2 * Math.PI;
