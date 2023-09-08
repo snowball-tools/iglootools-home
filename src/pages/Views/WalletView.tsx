@@ -47,11 +47,7 @@ const WalletView = ({}: WalletViewProps) => {
           sessionSigs
         );
 
-        const result = await sendUserOperation(
-          currentPKPEthAddress,
-          pkpEthWallet,
-          currentAppChain
-        );
+        const result = await sendUserOperation(pkpEthWallet, currentAppChain);
 
         dispatch(
           setMintedNFT({

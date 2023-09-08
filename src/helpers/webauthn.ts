@@ -118,7 +118,6 @@ export async function fetchPkpsForAuthMethod(
 
 export async function getSessionSigs(
   pkpPublicKey: string,
-  pkpEthAddress: string,
   authData: AuthMethod,
   chain: Chain
 ): Promise<SessionSigsMap> {
@@ -262,7 +261,6 @@ export async function getSmartWalletAddress(
 }
 
 export async function sendUserOperation(
-  pkpEthAddress: string,
   pkpWallet: PKPEthersWallet,
   chain: Chain
 ): Promise<{

@@ -96,7 +96,6 @@ export default function AuthView() {
     va.track("Getting Session Sig");
     const sessionSigs = await getSessionSigs(
       pkpPublicKey,
-      pkpEthAddress,
       auth,
       currentAppChain
     );

@@ -1,5 +1,21 @@
 import Bugsnag from "@bugsnag/js";
-import exp from "constants";
+import BugsnagPluginReact from "@bugsnag/plugin-react";
+import {
+  BUGSNAG_API_KEY,
+  NEXT_PUBLIC_APP_VERSION,
+  NEXT_PUBLIC_DEBUG,
+} from "@/helpers/env";
+import React from "react";
+
+Bugsnag.start({
+  apiKey: BUGSNAG_API_KEY,
+  plugins: [new BugsnagPluginReact()],
+  appVersion: NEXT_PUBLIC_APP_VERSION,
+  releaseStage: NEXT_PUBLIC_DEBUG === "true" ? "development" : "production",
+});
+
+export const ErrorBoundary =
+  Bugsnag.getPlugin("react")?.createErrorBoundary(React);
 
 export function logInfo(where: string, message: string) {
   Bugsnag.addMetadata("log", where, message);
