@@ -6,28 +6,12 @@
   font-style: normal;
 }
 
-/* BoldItalic */
-@font-face {
-  font-family: "SF_Pro_Text";
-  src: url("SF-Pro-Text-BoldItalic.otf") format("otf");
-  font-weight: 700;
-  font-style: italic;
-}
-
 /* Heavy */
 @font-face {
   font-family: "SF_Pro_Text";
   src: url("SF-Pro-Text-Heavy.otf") format("otf");
   font-weight: 800;
   font-style: normal;
-}
-
-/* HeavyItalic */
-@font-face {
-  font-family: "SF_Pro_Text";
-  src: url("SF-Pro-Text-HeavyItalic.otf") format("otf");
-  font-weight: 800;
-  font-style: italic;
 }
 
 /* Light */
@@ -38,28 +22,12 @@
   font-style: normal;
 }
 
-/* LightItalic */
-@font-face {
-  font-family: "SF_Pro_Text";
-  src: url("SF-Pro-Text-LightItalic.otf") format("otf");
-  font-weight: 300;
-  font-style: italic;
-}
-
 /* Medium */
 @font-face {
   font-family: "SF_Pro_Text";
   src: url("SF-Pro-Text-Medium.otf") format("otf");
   font-weight: 500;
   font-style: normal;
-}
-
-/* MediumItalic */
-@font-face {
-  font-family: "SF_Pro_Text";
-  src: url("SF-Pro-Text-MediumItalic.otf") format("otf");
-  font-weight: 500;
-  font-style: italic;
 }
 
 /* Regular */
@@ -70,28 +38,12 @@
   font-style: normal;
 }
 
-/* RegularItalic */
-@font-face {
-  font-family: "SF_Pro_Text";
-  src: url("SF-Pro-Text-RegularItalic.otf") format("otf");
-  font-weight: 400;
-  font-style: italic;
-}
-
 /* SemiBold */
 @font-face {
   font-family: "SF_Pro_Text";
   src: url("SF-Pro-Text-Semibold.otf") format("otf");
   font-weight: 600;
   font-style: normal;
-}
-
-/* SemiBoldItalic */
-@font-face {
-  font-family: "SF_Pro_Text";
-  src: url("SF-Pro-Text-SemiboldItalic.otf") format("otf");
-  font-weight: 600;
-  font-style: italic;
 }
 
 /* Thin */
@@ -102,26 +54,10 @@
   font-style: normal;
 }
 
-/* ThinItalic */
-@font-face {
-  font-family: "SF_Pro_Text";
-  src: url("SF-Pro-Text-ThinItalic.otf") format("otf");
-  font-weight: 100;
-  font-style: italic;
-}
-
 /* Ultralight */
 @font-face {
   font-family: "SF_Pro_Text";
   src: url("SF-Pro-Text-Ultralight.otf") format("otf");
   font-weight: 200;
   font-style: normal;
-}
-
-/* UltralightItalic */
-@font-face {
-  font-family: "SF_Pro_Text";
-  src: url("SF-Pro-Text-UltralightItalic.otf") format("otf");
-  font-weight: 200;
-  font-style: italic;
 }
