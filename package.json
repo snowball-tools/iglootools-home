@@ -36,7 +36,7 @@
     "@lit-protocol/types": "^2.2.39",
     "@reduxjs/toolkit": "^1.9.5",
     "@simplewebauthn/typescript-types": "^7.4.0",
-    "@snowballtools/snowball-ts-sdk": "^0.0.2",
+    "@snowballtools/snowball-ts-sdk": "^0.1.5",
     "@types/node": "20.4.8",
     "@vercel/analytics": "^1.0.1",
     "@vercel/postgres": "^0.4.1",
