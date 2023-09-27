@@ -1,6 +1,7 @@
 import { AuthMethod, SessionSigsMap } from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chain, CHAINS } from "../helpers/chains";
+import { Address } from "viem";
 
 export const AuthViews = {
   INITIAL_VIEW: "initial_view",
@@ -55,16 +56,10 @@ const credentialsSlice = createSlice({
   name: "credentials",
   initialState,
   reducers: {
-    authenticated: (
-      state,
-      action: PayloadAction<{
-        currentAuthMethod: AuthMethod;
-        view: string;
-      }>
-    ) => {
+    authenticated: (state, action: PayloadAction<Address>) => {
+      state.ethAddress = action.payload;
       state.isAuthenticated = true;
-      state.currentAuthMethod = action.payload.currentAuthMethod;
-      state.view = action.payload.view;
+      state.view = AuthViews.WALLET_HOME;
     },
     disconnect: () => initialState,
     switchChain: (state, action: PayloadAction<Chain>) => {
@@ -72,9 +67,6 @@ const credentialsSlice = createSlice({
     },
     setView: (state, action: PayloadAction<string>) => {
       state.view = action.payload;
-    },
-    setUsername: (state, action: PayloadAction<string>) => {
-      state.username = action.payload;
     },
     setMintedNFT: (
       state,
@@ -91,34 +83,6 @@ const credentialsSlice = createSlice({
       state.errorMsg = action.payload;
       state.view = AuthViews.ERROR;
     },
-    setCurrentPKP: (
-      state,
-      action: PayloadAction<{
-        currentPKP: string;
-        currentPKPEthAddress: string;
-      }>
-    ) => {
-      state.currentPKP = action.payload.currentPKP;
-      state.currentPKPEthAddress = action.payload.currentPKPEthAddress;
-    },
-    setSessionSig: (
-      state,
-      action: PayloadAction<{
-        currentPKP: string;
-        currentPKPEthAddress: string;
-        currentAuthMethod: AuthMethod;
-        sessionSigs: SessionSigsMap;
-        ethAddress: string;
-      }>
-    ) => {
-      state.currentPKP = action.payload.currentPKP;
-      state.currentPKPEthAddress = action.payload.currentPKPEthAddress;
-      state.currentAuthMethod = action.payload.currentAuthMethod;
-      state.sessionSigs = action.payload.sessionSigs;
-      state.ethAddress = action.payload.ethAddress;
-      state.view = AuthViews.WALLET_HOME;
-      state.isAuthenticated = true;
-    },
   },
 });
 
@@ -127,11 +91,8 @@ export const {
   disconnect,
   switchChain,
   setView,
-  setUsername,
   setMintedNFT,
   setErrorMsg,
-  setCurrentPKP,
-  setSessionSig,
 } = credentialsSlice.actions;
 
 export default credentialsSlice.reducer;

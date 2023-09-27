@@ -28,14 +28,14 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const renderView = () => {
     return (
-      <TestView />
+      // <TestView />
 
-      // <Provider store={store}>
-      //   <Box>
-      //     <Component {...pageProps} />
-      //     <Analytics />
-      //   </Box>
-      // </Provider>
+      <Provider store={store}>
+        <Box>
+          <Component {...pageProps} />
+          <Analytics />
+        </Box>
+      </Provider>
     );
   };
 

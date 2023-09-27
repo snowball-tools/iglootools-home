@@ -36,6 +36,7 @@
     "@lit-protocol/types": "^2.2.39",
     "@reduxjs/toolkit": "^1.9.5",
     "@simplewebauthn/typescript-types": "^7.4.0",
+    "@snowballtools/snowball-ts-sdk": "^0.0.2",
     "@types/node": "20.4.8",
     "@vercel/analytics": "^1.0.1",
     "@vercel/postgres": "^0.4.1",
@@ -53,7 +54,7 @@
     "swr": "^2.0.3",
     "tailwindcss": "^3.3.3",
     "util": "^0.12.5",
-    "viem": "^1.5.3"
+    "viem": "^1.12.1"
   },
   "devDependencies": {
     "@bugsnag/source-maps": "^2.3.1",

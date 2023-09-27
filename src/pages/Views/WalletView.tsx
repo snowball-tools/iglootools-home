@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import NavBar from "@/components/NavBar";
 import ColumnButton from "@/components/ColumnButton";
 import Card from "@/components/Card";
-import { Chain } from "@/helpers/chains";
+import { Chain, alchemyAPIKey, getAlchemyNetwork } from "@/helpers/chains";
 import {
   AuthViews,
   disconnect,
@@ -12,58 +12,82 @@ import {
   setView,
   switchChain,
 } from "@/store/credentialsSlice";
-import { createPkpEthersWallet, sendUserOperation } from "@/helpers/webauthn";
+import { snowball } from "@/helpers/webauthn";
 import { RootState } from "@/store/store";
 import MintedIglooNFTView from "./MintedIglooNFTView";
 import Header from "@/components/Header";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { logErrorMsg, logInfo } from "@/helpers/bugsnag";
 import va from "@vercel/analytics";
+import { Address, encodeFunctionData } from "viem";
+import { IglooNFTABI } from "@/helpers/abis/IglooNFTABI";
+import { Alchemy, NftOrdering, OwnedNftsResponse } from "alchemy-sdk";
 
 export interface WalletViewProps {}
 
 const WalletView = ({}: WalletViewProps) => {
-  const {
-    view,
-    currentAppChain,
-    appChains,
-    currentPKP,
-    currentPKPEthAddress,
-    sessionSigs,
-    ethAddress,
-    nftId,
-    userOpHash,
-  } = useSelector((state: RootState) => state.credentials);
+  const { view, currentAppChain, appChains, ethAddress, nftId, userOpHash } =
+    useSelector((state: RootState) => state.credentials);
   const dispatch = useDispatch();
 
   async function sendUserOp() {
     logInfo("sendUserOp view", "Sending user operation");
     dispatch(setView(AuthViews.IGLOO_NFT_MINTING));
+    try {
+      const address = await snowball.getAddress();
+      const result = await snowball.sendUserOperation(
+        currentAppChain.iglooNFTAddress,
+        encodeFunctionData({
+          abi: IglooNFTABI.abi,
+          functionName: "safeMint",
+          args: [address],
+        }),
+        true
+      );
 
-    if (currentPKP && currentPKPEthAddress && currentAppChain && sessionSigs) {
-      try {
-        const pkpEthWallet = await createPkpEthersWallet(
-          currentPKP,
-          sessionSigs
-        );
+      const alchemy = new Alchemy({
+        apiKey: alchemyAPIKey(currentAppChain),
+        network: getAlchemyNetwork(currentAppChain),
+      });
 
-        const result = await sendUserOperation(pkpEthWallet, currentAppChain);
+      // theres a better more accurate way to do this...
+      let mintedNFTs: OwnedNftsResponse = await alchemy.nft.getNftsForOwner(
+        address,
+        {
+          contractAddresses: [currentAppChain.iglooNFTAddress as Address],
+          orderBy: NftOrdering.TRANSFERTIME,
+        }
+      );
 
-        dispatch(
-          setMintedNFT({
-            hash: result.hash,
-            nftId: result.nftId,
-          })
-        );
-
-        return result;
-      } catch (e) {
-        logErrorMsg("Error sending user operation");
-        dispatch(setErrorMsg("Error sending user operation"));
+      if (mintedNFTs === undefined || mintedNFTs.ownedNfts.length === 0) {
+        return {
+          hash: result.hash,
+          nftId: null,
+        };
       }
-    } else {
+
+      let nft = mintedNFTs.ownedNfts.reduce((curr, next) => {
+        return Number(curr.tokenId) > Number(next.tokenId) ? curr : next;
+      });
+
+      dispatch(
+        setMintedNFT({
+          hash: result.hash,
+          nftId: nft.tokenId,
+        })
+      );
+
+      return result;
+    } catch (e) {
+      logErrorMsg(`Error sending user operation ${e}`);
       dispatch(setErrorMsg("Error sending user operation"));
     }
+  }
+
+  function changeChain(newChain: Chain) {
+    snowball.changeChain(newChain);
+
+    dispatch(switchChain(newChain));
   }
 
   if (view === AuthViews.IGLOO_NFT_MINTED) {
@@ -105,7 +129,7 @@ const WalletView = ({}: WalletViewProps) => {
         exitAction={() => dispatch(disconnect())}
         currentChain={currentAppChain}
         supportedChains={appChains}
-        switchChainAction={(newChain: Chain) => dispatch(switchChain(newChain))}
+        switchChainAction={(newChain: Chain) => changeChain(newChain)}
       />
       <div className="border-solid border-white/10 h-px shrink-0 mb-3 ml-px border-t border-b-0 border-x-0" />
       <div className="text-2xl font-sf_pro_display font-bold tracking-[0.35] leading-[26px] text-white self-start ml-px">

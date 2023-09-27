@@ -4,37 +4,24 @@ import {
   setView,
   setErrorMsg,
   AuthViews,
-  setSessionSig,
   disconnect,
-  setUsername,
+  authenticated,
 } from "../../store/credentialsSlice";
-import {
-  authenticatePasskey,
-  createPkpEthersWallet,
-  fetchPkpsForAuthMethod,
-  getSmartWalletAddress,
-  getSessionSigs,
-  registerPasskey,
-} from "../../helpers/webauthn";
+import { snowball } from "../../helpers/webauthn";
 import InitialView from "./InitialView";
 import SignUpView from "./SignUpView";
 import Header from "../../components/Header";
-import { AuthMethod } from "@lit-protocol/types";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { RootState } from "@/store/store";
-import { logErrorMsg, logUser } from "@/helpers/bugsnag";
+import { logErrorMsg } from "@/helpers/bugsnag";
 import va from "@vercel/analytics";
 
 export default function AuthView() {
-  const {
-    view,
-    username,
-    currentAppChain,
-    currentPKP,
-    currentPKPEthAddress,
-    errorMsg,
-  } = useSelector((state: RootState) => state.credentials);
+  const [username, setUsername] = React.useState("");
+  const { view, errorMsg } = useSelector(
+    (state: RootState) => state.credentials
+  );
   const dispatch = useDispatch();
 
   async function createPKPWithWebAuthn() {
@@ -42,14 +29,7 @@ export default function AuthView() {
     dispatch(setView(AuthViews.REGISTERING));
 
     try {
-      const response = await registerPasskey(username);
-
-      logUser(response.pkpPublicKey, username);
-      va.track("Signup", {
-        pkpPublicKey: response.pkpPublicKey,
-        pkpEthAddress: response.pkpEthAddress,
-        username: username,
-      });
+      await snowball.register(username);
 
       dispatch(setView(AuthViews.MINTED));
     } catch (e) {
@@ -62,62 +42,19 @@ export default function AuthView() {
   async function authThenGetSessionSigs() {
     va.track("Auth Start");
 
-    let pkp: string | undefined = currentPKP;
-    let pkpEthAddress: string | undefined = currentPKPEthAddress;
-
     dispatch(setView(AuthViews.AUTHENTICATING));
 
     try {
-      const auth = await authenticatePasskey();
+      await snowball.authenticate();
 
-      if (pkp === undefined || pkpEthAddress === undefined) {
-        const pkps = await fetchPkpsForAuthMethod(auth);
+      const address = await snowball.getAddress();
 
-        pkp = pkps[0].publicKey;
-        pkpEthAddress = pkps[0].ethAddress;
-
-        va.track("Auth", { pkpPublicKey: pkp, pkpEthAddress: pkpEthAddress });
-        logUser(pkp, pkpEthAddress);
-      }
-
-      await getSessionSig(pkp, pkpEthAddress, auth);
+      dispatch(authenticated(address));
     } catch (e) {
       va.track("Auth Failed", { error: `${e}` });
       logErrorMsg(`${e}`);
       dispatch(setErrorMsg("Error authenticating passkey"));
     }
-  }
-
-  async function getSessionSig(
-    pkpPublicKey: string,
-    pkpEthAddress: string,
-    auth: AuthMethod
-  ) {
-    va.track("Getting Session Sig");
-    const sessionSigs = await getSessionSigs(
-      pkpPublicKey,
-      auth,
-      currentAppChain
-    );
-
-    const pkpEthWallet = await createPkpEthersWallet(pkpPublicKey, sessionSigs);
-
-    const smartWalletAddress = await getSmartWalletAddress(
-      pkpEthWallet,
-      currentAppChain
-    );
-
-    va.track("Got AA Address", { smartWalletAddress: smartWalletAddress });
-
-    dispatch(
-      setSessionSig({
-        currentPKP: pkpPublicKey,
-        currentPKPEthAddress: pkpEthAddress,
-        currentAuthMethod: auth,
-        sessionSigs: sessionSigs,
-        ethAddress: smartWalletAddress,
-      })
-    );
   }
 
   const renderView = () => {
@@ -175,7 +112,7 @@ export default function AuthView() {
             signIn={authThenGetSessionSigs}
             createNewPasskey={createPKPWithWebAuthn}
             username={username}
-            setUsername={(newUsername) => dispatch(setUsername(newUsername))}
+            setUsername={(newUsername) => setUsername(newUsername)}
           />
         );
       default:
