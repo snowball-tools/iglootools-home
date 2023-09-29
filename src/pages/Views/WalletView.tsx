@@ -18,10 +18,10 @@ import MintedIglooNFTView from "./MintedIglooNFTView";
 import Header from "@/components/Header";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { logErrorMsg, logInfo } from "@/helpers/bugsnag";
-import va from "@vercel/analytics";
 import { Address, encodeFunctionData } from "viem";
 import { IglooNFTABI } from "@/helpers/abis/IglooNFTABI";
 import { Alchemy, NftOrdering, OwnedNftsResponse } from "alchemy-sdk";
+import va from "@vercel/analytics";
 
 export interface WalletViewProps {}
 
@@ -91,7 +91,7 @@ const WalletView = ({}: WalletViewProps) => {
   }
 
   if (view === AuthViews.IGLOO_NFT_MINTED) {
-    va.track("Igloo NFT Minted");
+    va.track("IGLOO_NFT_MINTED");
     return (
       <MintedIglooNFTView
         nftLabel={nftId ? `IglooNFT #${nftId}` : "IglooNFT"}

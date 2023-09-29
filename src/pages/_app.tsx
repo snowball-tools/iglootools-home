@@ -5,8 +5,11 @@ import type { AppProps } from "next/app";
 import { Analytics } from "@vercel/analytics/react";
 import Box from "@/components/Box";
 import "../styles/globals.css";
-import { ErrorBoundary } from "@/helpers/bugsnag";
+import { ErrorBoundary, start } from "@/helpers/bugsnag";
 import TestView from "@/components/TestView";
+import { NEXT_PUBLIC_DEBUG } from "@/helpers/env";
+
+start();
 
 function MyApp({ Component, pageProps }: AppProps) {
   const setVHVariable = () => {
@@ -28,12 +31,13 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const renderView = () => {
     return (
-      // <TestView />
-
       <Provider store={store}>
         <Box>
           <Component {...pageProps} />
-          <Analytics />
+          <Analytics
+            mode={NEXT_PUBLIC_DEBUG ? "development" : "production"}
+            debug={NEXT_PUBLIC_DEBUG}
+          />
         </Box>
       </Provider>
     );

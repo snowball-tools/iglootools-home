@@ -38,7 +38,7 @@
     "@simplewebauthn/typescript-types": "^7.4.0",
     "@snowballtools/snowball-ts-sdk": "^0.1.5",
     "@types/node": "20.4.8",
-    "@vercel/analytics": "^1.0.1",
+    "@vercel/analytics": "^1.0.2",
     "@vercel/postgres": "^0.4.1",
     "alchemy-sdk": "^2.9.2",
     "autoprefixer": "^10.4.14",
@@ -69,6 +69,7 @@
     "jest": "29.5.0",
     "jest-environment-jsdom": "29.5.0",
     "prisma": "4.9.0",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "webpack-bugsnag-plugins": "^1.6.0"
   }
 }

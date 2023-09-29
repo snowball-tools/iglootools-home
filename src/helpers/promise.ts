@@ -1,4 +1,4 @@
-import { logInfo } from "./bugsnag";
+import { logError, logInfo } from "./bugsnag";
 
 export async function retry<T extends (...arg0: any[]) => any>(
   fn: T,
@@ -13,7 +13,9 @@ export async function retry<T extends (...arg0: any[]) => any>(
   } catch (e) {
     logInfo("retry", `Retry ${currRetry} failed.`);
     if (currRetry > maxTry) {
-      logInfo("retry", `All ${maxTry} retry attempts exhausted`);
+      logError(
+        new Error(`[retry] All retry attempts exhausted. ${JSON.stringify(e)}`)
+      );
       throw e;
     }
     return retry(fn, args, maxTry, currRetry + 1);
