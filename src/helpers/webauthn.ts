@@ -21,11 +21,11 @@ export const snowball = new Snowball(
   {
     name: SmartWalletProvider.alchemy,
     apiKeys: {
-      [AlchemySmartWalletProviderKey.goerli]: ALCHEMY_GOERLI_API_KEY,
-      [AlchemySmartWalletProviderKey.goerli_gasPolicyId]:
+      [AlchemySmartWalletProviderKey.ethereumGoerli]: ALCHEMY_GOERLI_API_KEY,
+      [AlchemySmartWalletProviderKey.ethereumGoerli_gasPolicyId]:
         ALCHEMY_GOERLI_GAS_POLICY_ID,
-      [AlchemySmartWalletProviderKey.sepolia]: ALCHEMY_SEPOLIA_API_KEY,
-      [AlchemySmartWalletProviderKey.sepolia_gasPolicyId]:
+      [AlchemySmartWalletProviderKey.ethereumSepolia]: ALCHEMY_SEPOLIA_API_KEY,
+      [AlchemySmartWalletProviderKey.ethereumSepolia_gasPolicyId]:
         ALCHEMY_SEPOLIA_GAS_POLICY_ID,
     },
   }

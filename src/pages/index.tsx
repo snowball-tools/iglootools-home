@@ -9,7 +9,7 @@ import AuthView from "./Views/AuthView";
 import WalletView from "./Views/WalletView";
 import { NEXT_PUBLIC_SHOW_TEST_VIEW } from "@/helpers/env";
 import TestView from "@/components/TestView";
-import { track } from "@vercel/analytics";
+import { track } from "@vercel/analytics/server";
 
 const Home = () => {
   const { isAuthenticated, sessionExpiration } = useSelector(
