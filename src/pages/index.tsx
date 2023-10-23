@@ -9,7 +9,7 @@ import AuthView from "./Views/AuthView";
 import WalletView from "./Views/WalletView";
 import { NEXT_PUBLIC_SHOW_TEST_VIEW } from "@/helpers/env";
 import TestView from "@/components/TestView";
-import va from "@vercel/analytics";
+import { track } from "@vercel/analytics";
 
 const Home = () => {
   const { isAuthenticated, sessionExpiration } = useSelector(
@@ -47,13 +47,13 @@ const Home = () => {
     if (NEXT_PUBLIC_SHOW_TEST_VIEW) {
       return <TestView />;
     } else if (!isWebAuthnSupported) {
-      va.track("Unsupported Browser");
+      track("Unsupported Browser");
       return <BrowserUnsupportedView />;
     } else if (isAuthenticated) {
-      va.track("Authenticated User");
+      track("Authenticated User");
       return <WalletView />;
     }
-    va.track("Initial View");
+    track("Initial View");
     return <AuthView />;
   };
 

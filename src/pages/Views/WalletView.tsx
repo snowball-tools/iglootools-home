@@ -85,7 +85,7 @@ const WalletView = ({}: WalletViewProps) => {
   }
 
   function changeChain(newChain: Chain) {
-    snowball.changeChain(newChain);
+    snowball.switchChain(newChain);
 
     dispatch(switchChain(newChain));
   }
