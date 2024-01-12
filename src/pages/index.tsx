@@ -8,7 +8,7 @@ import BrowserUnsupportedView from "./Views/BrowserUnsupportedView";
 import AuthView from "./Views/AuthView";
 import WalletView from "./Views/WalletView";
 import TestView from "@/components/TestView";
-import { track } from "@vercel/analytics/server";
+import track from "@/helpers/analytics";
 
 const Home = () => {
   const { isAuthenticated, sessionExpiration } = useSelector(
