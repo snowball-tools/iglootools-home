@@ -7,9 +7,8 @@ import { disconnect } from "@/store/credentialsSlice";
 import BrowserUnsupportedView from "./Views/BrowserUnsupportedView";
 import AuthView from "./Views/AuthView";
 import WalletView from "./Views/WalletView";
-import { NEXT_PUBLIC_SHOW_TEST_VIEW } from "@/helpers/env";
 import TestView from "@/components/TestView";
-import { track } from "@vercel/analytics/server";
+import track from "@/helpers/analytics";
 
 const Home = () => {
   const { isAuthenticated, sessionExpiration } = useSelector(
@@ -44,7 +43,7 @@ const Home = () => {
   }
 
   const renderView = () => {
-    if (NEXT_PUBLIC_SHOW_TEST_VIEW) {
+    if (process.env.NEXT_PUBLIC_SHOW_TEST_VIEW === "true") {
       return <TestView />;
     } else if (!isWebAuthnSupported) {
       track("Unsupported Browser");

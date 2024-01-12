@@ -1,15 +1,3 @@
-import {
-  ALCHEMY_GOERLI_API_KEY,
-  ALCHEMY_MAINNET_API_KEY,
-  ALCHEMY_SEPOLIA_API_KEY,
-  ALCHEMY_GOERLI_GAS_POLICY_ID,
-  ALCHEMY_MAINNET_GAS_POLICY_ID,
-  ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-  ALCHEMY_GOERLI_WEBHOOK_ID,
-  ALCHEMY_SEPOLIA_WEBHOOK_ID,
-  ALCHEMY_GOERLI_WEBHOOK_SIGNING_KEY,
-  ALCHEMY_SEPOLIA_WEBHOOK_SIGNING_KEY,
-} from "../helpers/env";
 import { Address } from "viem";
 import { mainnet, sepolia, goerli, Chain as ViemChain } from "viem/chains";
 import { Network } from "alchemy-sdk";
@@ -183,31 +171,31 @@ export const CHAINS = {
     entryPointAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
     iglooNFTAddress: "0x98AdA10fC1EAf5d21DB0f91d09fAa6165e427106" as Address,
   },
-};
+} as { [key: string]: Chain };
 
 export const DEFAULT_CHAIN = CHAINS.goerli;
 
-export function alchemyAPIKey(chain: Chain) {
+export function alchemyAPIKey(chain: Chain): string {
   switch (chain) {
     case CHAINS.ethereum:
-      return ALCHEMY_MAINNET_API_KEY;
+      return process.env.NEXT_PUBLIC_ALCHEMY_MAINNET_API_KEY as string;
     case CHAINS.goerli:
-      return ALCHEMY_GOERLI_API_KEY;
+      return process.env.NEXT_PUBLIC_ALCHEMY_GOERLI_API_KEY as string;
     case CHAINS.sepolia:
-      return ALCHEMY_SEPOLIA_API_KEY;
+      return process.env.NEXT_PUBLIC_ALCHEMY_SEPOLIA_API_KEY as string;
     default:
       throw new Error("Unsupported chain");
   }
 }
 
-export function alchemyGasPolicyId(chain: Chain) {
+export function alchemyGasPolicyId(chain: Chain): string {
   switch (chain) {
     case CHAINS.ethereum:
-      return ALCHEMY_MAINNET_GAS_POLICY_ID;
+      return process.env.NEXT_PUBLIC_ALCHEMY_MAINNET_GAS_POLICY_ID as string;
     case CHAINS.goerli:
-      return ALCHEMY_GOERLI_GAS_POLICY_ID;
+      return process.env.NEXT_PUBLIC_ALCHEMY_GOERLI_GAS_POLICY_ID as string;
     case CHAINS.sepolia:
-      return ALCHEMY_SEPOLIA_GAS_POLICY_ID;
+      return process.env.NEXT_PUBLIC_ALCHEMY_SEPOLIA_GAS_POLICY_ID as string;
     default:
       throw new Error("Unsupported chain");
   }
@@ -248,9 +236,9 @@ export function getChainIcon(chain: Chain): string {
 export function getChainWebhookID(chain: Chain): string {
   switch (chain) {
     case CHAINS.goerli:
-      return ALCHEMY_GOERLI_WEBHOOK_ID;
+      return process.env.NEXT_PUBLIC_ALCHEMY_GOERLI_WEBHOOK_ID as string;
     case CHAINS.sepolia:
-      return ALCHEMY_SEPOLIA_WEBHOOK_ID;
+      return process.env.NEXT_PUBLIC_ALCHEMY_SEPOLIA_WEBHOOK_ID as string;
     default:
       return "";
   }
@@ -259,9 +247,11 @@ export function getChainWebhookID(chain: Chain): string {
 export function getChainWebhookSigningKey(chain: string): string {
   switch (chain) {
     case "ETH_SEPOLIA":
-      return ALCHEMY_SEPOLIA_WEBHOOK_SIGNING_KEY;
+      return process.env
+        .NEXT_PUBLIC_ALCHEMY_SEPOLIA_WEBHOOK_SIGNING_KEY as string;
     case "ETH_GOERLI":
-      return ALCHEMY_GOERLI_WEBHOOK_SIGNING_KEY;
+      return process.env
+        .NEXT_PUBLIC_ALCHEMY_GOERLI_WEBHOOK_SIGNING_KEY as string;
     default:
       return "";
   }

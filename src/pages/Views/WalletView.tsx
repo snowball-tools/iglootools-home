@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NavBar from "@/components/NavBar";
@@ -21,7 +23,7 @@ import { logErrorMsg, logInfo } from "@/helpers/bugsnag";
 import { Address, encodeFunctionData } from "viem";
 import { IglooNFTABI } from "@/helpers/abis/IglooNFTABI";
 import { Alchemy, NftOrdering, OwnedNftsResponse } from "alchemy-sdk";
-import va from "@vercel/analytics";
+import track from "@/helpers/analytics";
 
 export interface WalletViewProps {}
 
@@ -41,8 +43,7 @@ const WalletView = ({}: WalletViewProps) => {
           abi: IglooNFTABI.abi,
           functionName: "safeMint",
           args: [address],
-        }),
-        true
+        })
       );
 
       const alchemy = new Alchemy({
@@ -91,7 +92,7 @@ const WalletView = ({}: WalletViewProps) => {
   }
 
   if (view === AuthViews.IGLOO_NFT_MINTED) {
-    va.track("IGLOO_NFT_MINTED");
+    track("IGLOO_NFT_MINTED");
     return (
       <MintedIglooNFTView
         nftLabel={nftId ? `IglooNFT #${nftId}` : "IglooNFT"}
@@ -110,7 +111,7 @@ const WalletView = ({}: WalletViewProps) => {
       />
     );
   } else if (view === AuthViews.IGLOO_NFT_MINTING) {
-    va.track("Igloo NFT Minting");
+    track("Igloo NFT Minting");
     return (
       <>
         <Header infoView={view} />
@@ -120,7 +121,7 @@ const WalletView = ({}: WalletViewProps) => {
       </>
     );
   } else {
-    va.track("Wallet View");
+    track("Wallet View");
   }
 
   return (
