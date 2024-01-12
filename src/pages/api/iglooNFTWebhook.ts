@@ -6,7 +6,7 @@ import {
 } from "@/helpers/chains";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as crypto from "crypto";
-import { logMetadata, logError, logErrorMsg, logInfo } from "@/helpers/bugsnag";
+import { logMetadata, logErrorMsg, logInfo } from "@/helpers/bugsnag";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
