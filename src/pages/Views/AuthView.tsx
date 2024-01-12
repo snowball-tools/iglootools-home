@@ -8,11 +8,11 @@ import {
   AuthViews,
   disconnect,
   authenticated,
-} from "../../store/credentialsSlice";
-import { snowball } from "../../helpers/webauthn";
+} from "@/store/credentialsSlice";
+import { snowball } from "@/helpers/webauthn";
 import InitialView from "./InitialView";
 import SignUpView from "./SignUpView";
-import Header from "../../components/Header";
+import Header from "@/components/Header";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { RootState } from "@/store/store";

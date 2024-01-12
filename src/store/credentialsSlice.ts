@@ -1,6 +1,6 @@
 import { AuthMethod, SessionSigsMap } from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Chain, CHAINS } from "../helpers/chains";
+import { Chain, CHAINS } from "@/helpers/chains";
 import { Address } from "viem";
 
 export const AuthViews = {

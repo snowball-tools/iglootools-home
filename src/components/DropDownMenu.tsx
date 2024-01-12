@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Chain } from "../helpers/chains";
+import { Chain } from "@/helpers/chains";
 import ChainMenuItem from "./ChainMenuItem";
 
 interface DropDownMenuProps {
