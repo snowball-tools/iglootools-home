@@ -19,7 +19,7 @@
   "dependencies": {
     "@alchemy/aa-alchemy": "^0.1.0-alpha.21",
     "@alchemy/aa-core": "^0.1.0-alpha.20",
-    "@bugsnag/js": "^7.21.0",
+    "@bugsnag/js": "^7.22.3",
     "@bugsnag/plugin-react": "^7.19.0",
     "@emotion/react": "^11.11.1",
     "@ethersproject/abstract-signer": "^5.7.0",

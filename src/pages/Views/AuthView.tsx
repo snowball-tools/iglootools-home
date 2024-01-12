@@ -34,9 +34,9 @@ export default function AuthView() {
       await snowball.register(username);
 
       dispatch(setView(AuthViews.MINTED));
-    } catch (e) {
+    } catch (error) {
       track("Signup Failure");
-      logErrorMsg(`${e}`);
+      logErrorMsg(`${error}`);
       dispatch(setErrorMsg("Error creating passkey"));
     }
   }
@@ -52,9 +52,9 @@ export default function AuthView() {
       const address = await snowball.getAddress();
 
       dispatch(authenticated(address));
-    } catch (e) {
-      track(`Auth Failed ${JSON.stringify(e)}`);
-      logErrorMsg(`${e}`);
+    } catch (error) {
+      track(`Auth Failed ${JSON.stringify(error)}`);
+      logErrorMsg(`${error}`);
       dispatch(setErrorMsg("Error authenticating passkey"));
     }
   }

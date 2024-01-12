@@ -4,14 +4,13 @@ import BugsnagPluginReact, {
 } from "@bugsnag/plugin-react";
 import React from "react";
 import { track } from "@vercel/analytics/server";
+import { IS_DEBUG } from "./constants";
 
 export let ErrorBoundary: BugsnagErrorBoundary;
 
 export function start() {
   if (ErrorBoundary) {
-    (process.env.NEXT_PUBLIC_DEBUG as string) === "true"
-      ? console.log("Bugsnag already started")
-      : null;
+    IS_DEBUG ? console.log("Bugsnag already started") : null;
     return;
   }
   Bugsnag.start({
@@ -27,49 +26,41 @@ export function start() {
 }
 
 export function logInfo(where: string, message: string) {
-  (process.env.NEXT_PUBLIC_DEBUG as string) === "true"
+  IS_DEBUG
     ? console.log(`[logInfo][where: ${where}] ${message}`)
     : track(`[logInfo][where: ${where}] ${message}`);
   Bugsnag.addMetadata("log", where, message);
 }
 
 export function logWarning(message: string) {
-  (process.env.NEXT_PUBLIC_DEBUG as string) === "true"
-    ? console.warn(`[logWarning] ${message}`)
-    : null;
+  IS_DEBUG ? console.warn(`[logWarning] ${message}`) : null;
   Bugsnag.notify(new Error(message));
 }
 
 export function logErrorMsg(message: string) {
-  (process.env.NEXT_PUBLIC_DEBUG as string) === "true"
-    ? console.error(`[logErrorMsg] ${message}`)
-    : null;
+  IS_DEBUG ? console.error(`[logErrorMsg] ${message}`) : null;
   Bugsnag.notify(new Error(message));
 }
 
 export function logMetadata(about: string, key: string, value: string) {
-  (process.env.NEXT_PUBLIC_DEBUG as string) === "true"
+  IS_DEBUG
     ? console.log(`[logMetadata][about: ${about}] ${key}: ${value}`)
     : null;
   Bugsnag.addMetadata(about, key, value);
 }
 
 export function logError(error: Error) {
-  process.env.NEXT_PUBLIC_DEBUG
-    ? console.error(`[logError] ${JSON.stringify(error)}`)
-    : null;
+  IS_DEBUG ? console.error(`[logError] ${JSON.stringify(error)}`) : null;
   Bugsnag.notify(error);
 }
 
 export function startSession() {
-  (process.env.NEXT_PUBLIC_DEBUG as string) === "true"
-    ? console.log(`[startSession] debug`)
-    : null;
+  IS_DEBUG ? console.log(`[startSession] debug`) : null;
   Bugsnag.startSession();
 }
 
 export function logUser(id: string, username: string) {
-  (process.env.NEXT_PUBLIC_DEBUG as string) === "true"
+  IS_DEBUG
     ? console.log(`[logUser] ${id}: ${username}`)
     : track(`[logUser] ${id}: ${username}`);
   Bugsnag.setUser(id, username);
