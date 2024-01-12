@@ -6,7 +6,6 @@ import { Analytics } from "@vercel/analytics/react";
 import Box from "@/components/Box";
 import "../styles/globals.css";
 import { ErrorBoundary, start } from "@/helpers/bugsnag";
-import TestView from "@/components/TestView";
 import { NEXT_PUBLIC_DEBUG } from "@/helpers/env";
 
 start();
