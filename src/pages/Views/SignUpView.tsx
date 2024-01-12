@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
 import Header from "@/components/Header";

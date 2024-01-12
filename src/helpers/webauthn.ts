@@ -5,12 +5,6 @@ import {
   SmartWalletProvider,
   AlchemySmartWalletProviderKey,
 } from "@snowballtools/snowball-ts-sdk";
-import {
-  ALCHEMY_GOERLI_API_KEY,
-  ALCHEMY_GOERLI_GAS_POLICY_ID,
-  ALCHEMY_SEPOLIA_API_KEY,
-  ALCHEMY_SEPOLIA_GAS_POLICY_ID,
-} from "./env";
 
 export const snowball = new Snowball(
   "snowball-test",
@@ -21,12 +15,14 @@ export const snowball = new Snowball(
   {
     name: SmartWalletProvider.alchemy,
     apiKeys: {
-      [AlchemySmartWalletProviderKey.ethereumGoerli]: ALCHEMY_GOERLI_API_KEY,
-      [AlchemySmartWalletProviderKey.ethereumGoerli_gasPolicyId]:
-        ALCHEMY_GOERLI_GAS_POLICY_ID,
-      [AlchemySmartWalletProviderKey.ethereumSepolia]: ALCHEMY_SEPOLIA_API_KEY,
-      [AlchemySmartWalletProviderKey.ethereumSepolia_gasPolicyId]:
-        ALCHEMY_SEPOLIA_GAS_POLICY_ID,
+      [AlchemySmartWalletProviderKey.ethereumGoerli]: process.env
+        .NEXT_PUBLIC_ALCHEMY_GOERLI_API_KEY as string,
+      [AlchemySmartWalletProviderKey.ethereumGoerli_gasPolicyId]: process.env
+        .NEXT_PUBLIC_ALCHEMY_GOERLI_GAS_POLICY_ID as string,
+      [AlchemySmartWalletProviderKey.ethereumSepolia]: process.env
+        .NEXT_PUBLIC_ALCHEMY_SEPOLIA_API_KEY as string,
+      [AlchemySmartWalletProviderKey.ethereumSepolia_gasPolicyId]: process.env
+        .NEXT_PUBLIC_ALCHEMY_SEPOLIA_API_KEY as string,
     },
   }
 );
