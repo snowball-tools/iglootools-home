@@ -1,5 +1,4 @@
 import React from "react";
-import StatusBar from "@/components/StatusBar";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
 import Header from "@/components/Header";
 import { AuthViews } from "@/store/credentialsSlice";
