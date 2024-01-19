@@ -1,5 +1,5 @@
 import React from "react";
-import { Chain, getChainIcon } from "../helpers/chains";
+import { Chain, getChainIcon } from "@/helpers/chains";
 import Image from "next/image";
 
 interface ChainMenuItemProps {

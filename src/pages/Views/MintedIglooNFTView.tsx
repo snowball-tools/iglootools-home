@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Header from "../../components/Header";
+import Header from "@/components/Header";
 import { AuthViews } from "@/store/credentialsSlice";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
 import { Chain } from "@/helpers/chains";
