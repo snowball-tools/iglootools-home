@@ -17,7 +17,7 @@ import StickyButtonGroup from "@/components/StickyButtonGroup";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { RootState } from "@/store/store";
 import { logErrorMsg } from "@/helpers/bugsnag";
-import va from "@vercel/analytics";
+import track from "@/helpers/analytics";
 
 export default function AuthView() {
   const [username, setUsername] = React.useState("");
@@ -27,7 +27,7 @@ export default function AuthView() {
   const dispatch = useDispatch();
 
   async function createPKPWithWebAuthn() {
-    va.track("Signup Start");
+    track("Signup Start");
     dispatch(setView(AuthViews.REGISTERING));
 
     try {
@@ -35,14 +35,14 @@ export default function AuthView() {
 
       dispatch(setView(AuthViews.MINTED));
     } catch (e) {
-      va.track("Signup Failure");
+      track("Signup Failure");
       logErrorMsg(`${e}`);
       dispatch(setErrorMsg("Error creating passkey"));
     }
   }
 
   async function authThenGetSessionSigs() {
-    va.track("Auth Start");
+    track("Auth Start");
 
     dispatch(setView(AuthViews.AUTHENTICATING));
 
@@ -53,7 +53,7 @@ export default function AuthView() {
 
       dispatch(authenticated(address));
     } catch (e) {
-      va.track("Auth Failed", { error: `${e}` });
+      track(`Auth Failed ${JSON.stringify(e)}`);
       logErrorMsg(`${e}`);
       dispatch(setErrorMsg("Error authenticating passkey"));
     }

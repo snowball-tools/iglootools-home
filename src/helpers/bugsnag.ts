@@ -3,7 +3,7 @@ import BugsnagPluginReact, {
   BugsnagErrorBoundary,
 } from "@bugsnag/plugin-react";
 import React from "react";
-import va from "@vercel/analytics";
+import { track } from "@vercel/analytics/server";
 
 export let ErrorBoundary: BugsnagErrorBoundary;
 
@@ -29,7 +29,7 @@ export function start() {
 export function logInfo(where: string, message: string) {
   (process.env.NEXT_PUBLIC_DEBUG as string) === "true"
     ? console.log(`[logInfo][where: ${where}] ${message}`)
-    : va.track(`[logInfo][where: ${where}] ${message}`);
+    : track(`[logInfo][where: ${where}] ${message}`);
   Bugsnag.addMetadata("log", where, message);
 }
 
@@ -71,6 +71,6 @@ export function startSession() {
 export function logUser(id: string, username: string) {
   (process.env.NEXT_PUBLIC_DEBUG as string) === "true"
     ? console.log(`[logUser] ${id}: ${username}`)
-    : va.track(`[logUser] ${id}: ${username}`);
+    : track(`[logUser] ${id}: ${username}`);
   Bugsnag.setUser(id, username);
 }
