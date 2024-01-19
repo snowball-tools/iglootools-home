@@ -6,7 +6,6 @@ import { Analytics } from "@vercel/analytics/react";
 import Box from "@/components/Box";
 import "../styles/globals.css";
 import { ErrorBoundary, start } from "@/helpers/bugsnag";
-import { NEXT_PUBLIC_DEBUG } from "@/helpers/env";
 
 start();
 
@@ -34,8 +33,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Box>
           <Component {...pageProps} />
           <Analytics
-            mode={NEXT_PUBLIC_DEBUG ? "development" : "production"}
-            debug={NEXT_PUBLIC_DEBUG}
+            mode={
+              (process.env.NEXT_PUBLIC_DEBUG as string) === "true"
+                ? "development"
+                : "production"
+            }
+            debug={(process.env.NEXT_PUBLIC_DEBUG as string) === "true"}
           />
         </Box>
       </Provider>
