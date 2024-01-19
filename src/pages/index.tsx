@@ -7,7 +7,9 @@ import { disconnect } from "@/store/credentialsSlice";
 import BrowserUnsupportedView from "./Views/BrowserUnsupportedView";
 import AuthView from "./Views/AuthView";
 import WalletView from "./Views/WalletView";
-import va from "@vercel/analytics";
+import { NEXT_PUBLIC_SHOW_TEST_VIEW } from "@/helpers/env";
+import TestView from "@/components/TestView";
+import { track } from "@vercel/analytics/server";
 
 const Home = () => {
   const { isAuthenticated, sessionExpiration } = useSelector(
@@ -35,21 +37,23 @@ const Home = () => {
     }
 
     checkSession();
-  }, [sessionExpiration]);
+  }, [sessionExpiration, dispatch]);
 
   if (!isWebAuthnSupported) {
     return <BrowserUnsupportedView />;
   }
 
   const renderView = () => {
-    if (!isWebAuthnSupported) {
-      va.track("Unsupported Browser");
+    if (NEXT_PUBLIC_SHOW_TEST_VIEW) {
+      return <TestView />;
+    } else if (!isWebAuthnSupported) {
+      track("Unsupported Browser");
       return <BrowserUnsupportedView />;
     } else if (isAuthenticated) {
-      va.track("Authenticated User");
+      track("Authenticated User");
       return <WalletView />;
     }
-    va.track("Initial View");
+    track("Initial View");
     return <AuthView />;
   };
 

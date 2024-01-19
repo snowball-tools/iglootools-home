@@ -16,5 +16,6 @@ declare namespace NodeJS {
     BUGSNAG_API_KEY: string;
     NEXT_PUBLIC_DEBUG: string;
     NEXT_PUBLIC_APP_VERSION: string;
+    NEXT_PUBLIC_SHOW_TEST_VIEW: string;
   }
 }
