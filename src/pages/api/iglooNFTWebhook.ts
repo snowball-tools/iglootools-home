@@ -75,7 +75,7 @@ export async function updateWebhookAddressesForChain(
       `sent webhook update for addresses: ${newAddresses} and removed: ${removeAddress}`
     );
     logInfo("updateWebhookAddressesForChain", json);
-  } catch (err) {
-    logErrorMsg(`${err}`);
+  } catch (error) {
+    logErrorMsg(`${error}`);
   }
 }

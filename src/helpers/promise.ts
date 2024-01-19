@@ -10,13 +10,15 @@ export async function retry<T extends (...arg0: any[]) => any>(
   try {
     const result = await fn(...args);
     return result;
-  } catch (e) {
+  } catch (error) {
     logInfo("retry", `Retry ${currRetry} failed.`);
     if (currRetry > maxTry) {
       logError(
-        new Error(`[retry] All retry attempts exhausted. ${JSON.stringify(e)}`)
+        new Error(
+          `[retry] All retry attempts exhausted. ${JSON.stringify(error)}`
+        )
       );
-      throw e;
+      throw error;
     }
     return retry(fn, args, maxTry, currRetry + 1);
   }
