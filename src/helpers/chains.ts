@@ -29,19 +29,6 @@ export function alchemyAPIKey(chain: Chain): string {
   }
 }
 
-export function alchemyGasPolicyId(chain: Chain): string {
-  switch (chain) {
-    case CHAINS.ethereum:
-      return process.env.NEXT_PUBLIC_ALCHEMY_MAINNET_GAS_POLICY_ID as string;
-    case CHAINS.goerli:
-      return process.env.NEXT_PUBLIC_ALCHEMY_GOERLI_GAS_POLICY_ID as string;
-    case CHAINS.sepolia:
-      return process.env.NEXT_PUBLIC_ALCHEMY_SEPOLIA_GAS_POLICY_ID as string;
-    default:
-      throw new Error("Unsupported chain");
-  }
-}
-
 export function viemChain(chain: Chain): ViemChain {
   switch (chain) {
     case CHAINS.ethereum:

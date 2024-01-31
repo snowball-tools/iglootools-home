@@ -11,6 +11,9 @@ export const snowball = new Snowball(
   CHAINS.goerli,
   {
     name: AuthProvider.lit,
+    apiKeys: {
+      ["relayKey"]: process.env.NEXT_PUBLIC_LIT_API_KEY as string,
+    },
   },
   {
     name: SmartWalletProvider.alchemy,

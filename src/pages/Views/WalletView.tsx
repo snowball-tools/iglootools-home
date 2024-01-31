@@ -38,14 +38,13 @@ const WalletView = ({}: WalletViewProps) => {
     dispatch(setView(AuthViews.IGLOO_NFT_MINTING));
     try {
       const address = await snowball.getAddress();
-      const result = await snowball.sendUserOperation(
+      const result = await snowball.sendSponsoredUserOperation(
         getIglooNFTAddress(currentAppChain),
         encodeFunctionData({
           abi: IglooNFTABI.abi,
           functionName: "safeMint",
           args: [address],
         }),
-        true
       );
 
       const alchemy = new Alchemy({
