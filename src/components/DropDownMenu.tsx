@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Chain } from "@/helpers/chains";
 import ChainMenuItem from "./ChainMenuItem";
+import { Chain } from "@snowballtools/snowball-ts-sdk";
 
 interface DropDownMenuProps {
   currentChain: Chain;

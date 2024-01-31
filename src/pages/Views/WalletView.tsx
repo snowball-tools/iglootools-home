@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import NavBar from "@/components/NavBar";
 import ColumnButton from "@/components/ColumnButton";
 import Card from "@/components/Card";
-import { Chain, alchemyAPIKey, getAlchemyNetwork } from "@/helpers/chains";
+import { alchemyAPIKey, getAlchemyNetwork, getIglooNFTAddress } from "@/helpers/chains";
 import {
   AuthViews,
   disconnect,
@@ -24,6 +24,7 @@ import { Address, encodeFunctionData } from "viem";
 import { IglooNFTABI } from "@/helpers/abis/IglooNFTABI";
 import { Alchemy, NftOrdering, OwnedNftsResponse } from "alchemy-sdk";
 import track from "@/helpers/analytics";
+import { Chain } from "@snowballtools/snowball-ts-sdk";
 
 export interface WalletViewProps {}
 
@@ -38,7 +39,7 @@ const WalletView = ({}: WalletViewProps) => {
     try {
       const address = await snowball.getAddress();
       const result = await snowball.sendUserOperation(
-        currentAppChain.iglooNFTAddress,
+        getIglooNFTAddress(currentAppChain),
         encodeFunctionData({
           abi: IglooNFTABI.abi,
           functionName: "safeMint",
@@ -56,7 +57,7 @@ const WalletView = ({}: WalletViewProps) => {
       let mintedNFTs: OwnedNftsResponse = await alchemy.nft.getNftsForOwner(
         address,
         {
-          contractAddresses: [currentAppChain.iglooNFTAddress as Address],
+          contractAddresses: [getIglooNFTAddress(currentAppChain)],
           orderBy: NftOrdering.TRANSFERTIME,
         }
       );
@@ -102,7 +103,7 @@ const WalletView = ({}: WalletViewProps) => {
           window.open(
             nftId
               ? `https://testnets.opensea.io/assets/${currentAppChain.name.toLowerCase()}/${
-                  currentAppChain.iglooNFTAddress
+                  getIglooNFTAddress(currentAppChain)
                 }/${nftId}`
               : `https://www.jiffyscan.xyz/userOpHash/${userOpHash}?network=${currentAppChain.name.toLowerCase()}`,
             "_blank"

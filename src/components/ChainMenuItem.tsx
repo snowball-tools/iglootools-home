@@ -1,6 +1,7 @@
 import React from "react";
-import { Chain, getChainIcon } from "@/helpers/chains";
+import { getChainIcon } from "@/helpers/chains";
 import Image from "next/image";
+import { Chain } from "@snowballtools/snowball-ts-sdk";
 
 interface ChainMenuItemProps {
   chain: Chain;

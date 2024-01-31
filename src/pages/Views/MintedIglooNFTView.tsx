@@ -4,8 +4,8 @@ import React from "react";
 import Header from "@/components/Header";
 import { AuthViews } from "@/store/credentialsSlice";
 import StickyButtonGroup from "@/components/StickyButtonGroup";
-import { Chain } from "@/helpers/chains";
 import Image from "next/image";
+import { Chain } from "@snowballtools/snowball-ts-sdk";
 
 interface MintedIglooNFTProps {
   nftLabel: string;
