@@ -1,5 +1,4 @@
 import {
-  Chain,
   alchemyAPIKey,
   getChainWebhookID,
   getChainWebhookSigningKey,
@@ -7,6 +6,7 @@ import {
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as crypto from "crypto";
 import { logMetadata, logErrorMsg, logInfo } from "@/helpers/bugsnag";
+import { Chain } from "@snowballtools/snowball-ts-sdk";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {

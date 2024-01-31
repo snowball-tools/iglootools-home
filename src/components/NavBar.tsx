@@ -1,7 +1,7 @@
 import React from "react";
 import DropdownMenu from "./DropDownMenu";
 import Image from "next/image";
-import { Chain } from "@/helpers/chains";
+import { Chain } from "@snowballtools/snowball-ts-sdk";
 
 interface NavBarProps {
   currentChain: Chain;

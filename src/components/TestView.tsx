@@ -3,9 +3,9 @@ import WalletView from "@/pages/Views/WalletView";
 import Box from "@/components/Box";
 import SignUpView from "@/pages/Views/SignUpView";
 import MintedIglooNFT from "@/pages/Views/MintedIglooNFTView";
-import { CHAINS } from "@/helpers/chains";
 import InitialView from "@/pages/Views/InitialView";
 import LoadingAnimation from "./LoadingAnimation";
+import { CHAINS } from "@snowballtools/snowball-ts-sdk";
 
 interface TestViewProps {}
 
