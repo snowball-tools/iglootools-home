@@ -2,6 +2,7 @@ import { AuthMethod, SessionSigsMap } from "@lit-protocol/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Chain, CHAINS } from "@/helpers/chains";
 import { Address } from "viem";
+import { DEFAULT_CHAIN } from '../helpers/chains';
 
 export const AuthViews = {
   INITIAL_VIEW: "initial_view",
@@ -44,7 +45,7 @@ export const initialState: CredentialState = {
   currentAuthMethod: undefined,
   sessionSigs: {},
   sessionExpiration: null,
-  currentAppChain: CHAINS.goerli,
+  currentAppChain: DEFAULT_CHAIN,
   appChains: CHAINS,
   errorMsg: null,
   userOpHash: null,
