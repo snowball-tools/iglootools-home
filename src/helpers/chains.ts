@@ -42,7 +42,7 @@ export const CHAINS = {
     rpcUrls: ["https://eth-goerli.g.alchemy.com/v2/"],
     blockExplorerUrls: ["https://goerli.etherscan.io"],
     type: "ERC1155",
-    enabled: true,
+    enabled: false,
     vmType: "EVM",
     testNetwork: true,
     factoryAddress: "0x3c752E964f94A6e45c9547e86C70D3d9b86D3b17" as Address,
@@ -173,7 +173,7 @@ export const CHAINS = {
   },
 } as { [key: string]: Chain };
 
-export const DEFAULT_CHAIN = CHAINS.goerli;
+export const DEFAULT_CHAIN = CHAINS.sepolia;
 
 export function alchemyAPIKey(chain: Chain): string {
   switch (chain) {
