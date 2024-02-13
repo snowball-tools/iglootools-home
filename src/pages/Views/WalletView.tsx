@@ -22,7 +22,7 @@ import LoadingAnimation from "@/components/LoadingAnimation";
 import { logErrorMsg, logInfo } from "@/helpers/bugsnag";
 import { Address, encodeFunctionData } from "viem";
 import { IglooNFTABI } from "@/helpers/abis/IglooNFTABI";
-import { Alchemy, NftOrdering, OwnedNftsResponse } from "alchemy-sdk";
+import { Alchemy, NftOrdering, OwnedNft, OwnedNftsResponse } from "alchemy-sdk";
 import track from "@/helpers/analytics";
 
 export interface WalletViewProps {}
@@ -36,7 +36,9 @@ const WalletView = ({}: WalletViewProps) => {
     logInfo("sendUserOp view", "Sending user operation");
     dispatch(setView(AuthViews.IGLOO_NFT_MINTING));
     try {
+      console.log("currentAppChain", currentAppChain);
       const address = await snowball.getAddress();
+      console.log("owner", address);
       const result = await snowball.sendUserOperation(
         currentAppChain.iglooNFTAddress,
         encodeFunctionData({
@@ -53,11 +55,12 @@ const WalletView = ({}: WalletViewProps) => {
       });
 
       // theres a better more accurate way to do this...
-      let mintedNFTs: OwnedNftsResponse = await alchemy.nft.getNftsForOwner(
+      const mintedNFTs = await alchemy.nft.getNftsForOwner(
         address,
         {
-          contractAddresses: [currentAppChain.iglooNFTAddress as Address],
+          contractAddresses: [currentAppChain.iglooNFTAddress],
           orderBy: NftOrdering.TRANSFERTIME,
+          omitMetadata: false
         }
       );
 

@@ -9,7 +9,7 @@ describe("MintedIglooNFTView", () => {
 
   const props = {
     nftLabel: "Igloo #172",
-    chain: CHAINS.goerli,
+    chain: CHAINS.sepolia,
     openInOpenSeaAction: mockOpenInOpenSeaAction,
     returnToWalletAction: mockReturnToWalletAction,
   };
@@ -18,7 +18,7 @@ describe("MintedIglooNFTView", () => {
     const { getByText } = render(
       <MintedIglooNFTView
         nftLabel="Igloo #172"
-        chain={CHAINS.goerli}
+        chain={CHAINS.sepolia}
         primaryActionAfterMint={mockOpenInOpenSeaAction}
         returnToWalletAction={mockReturnToWalletAction}
       />
@@ -32,7 +32,7 @@ describe("MintedIglooNFTView", () => {
     const { getByText } = render(
       <MintedIglooNFTView
         nftLabel="Igloo #172"
-        chain={CHAINS.goerli}
+        chain={CHAINS.sepolia}
         primaryActionAfterMint={mockOpenInOpenSeaAction}
         returnToWalletAction={mockReturnToWalletAction}
       />
@@ -48,7 +48,7 @@ describe("MintedIglooNFTView", () => {
     const { getByText } = render(
       <MintedIglooNFTView
         nftLabel="Igloo #172"
-        chain={CHAINS.goerli}
+        chain={CHAINS.sepolia}
         primaryActionAfterMint={mockOpenInOpenSeaAction}
         returnToWalletAction={mockReturnToWalletAction}
       />

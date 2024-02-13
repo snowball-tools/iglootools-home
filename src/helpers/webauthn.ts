@@ -8,7 +8,7 @@ import {
 
 export const snowball = new Snowball(
   "snowball-test",
-  CHAINS.goerli,
+  CHAINS.sepolia,
   {
     name: AuthProvider.lit,
   },
