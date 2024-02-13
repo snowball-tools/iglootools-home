@@ -22,7 +22,7 @@ export const snowball = new Snowball(
       [AlchemySmartWalletProviderKey.ethereumSepolia]: process.env
         .NEXT_PUBLIC_ALCHEMY_SEPOLIA_API_KEY as string,
       [AlchemySmartWalletProviderKey.ethereumSepolia_gasPolicyId]: process.env
-        .NEXT_PUBLIC_ALCHEMY_SEPOLIA_API_KEY as string,
+        .NEXT_PUBLIC_ALCHEMY_SEPOLIA_GAS_POLICY_ID as string,
     },
   }
 );
